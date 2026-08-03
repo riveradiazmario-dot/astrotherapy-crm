@@ -12,6 +12,8 @@ import emailRouter from './routes/email';
 import smtpConfigRouter from './routes/smtp-config';
 import automationsRouter from './routes/automations';
 import sequencesRouter from './routes/sequences';
+import calendlyRouter from './routes/calendly';
+import stripeRouter from './routes/stripe';
 import authRouter from './routes/auth';
 import pipelineRouter from './routes/oportunidades';
 import { bootstrapAutomations } from './services/automations/bootstrap';
@@ -46,6 +48,8 @@ app.use('/api/email', emailRouter);
 app.use('/api/smtp-config', smtpConfigRouter);
 app.use('/api/automations', automationsRouter);
 app.use('/api/sequences', sequencesRouter);
+app.use('/api/calendly', calendlyRouter);
+app.use('/api/stripe', stripeRouter);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', async (_req, res) => {
@@ -108,6 +112,16 @@ app.get('/', (_req, res) => {
         'POST /api/sequences/:id/pasos': 'Agregar paso { tipo, config?, condicion_skip?, orden? }',
         'PUT  /api/sequences/pasos/:pasoId': 'Actualizar paso',
         'DELETE /api/sequences/pasos/:pasoId': 'Eliminar paso',
+      },
+      calendly: {
+        'POST /api/calendly/webhook': 'Receptor de webhooks Calendly (invitee.created / invitee.canceled)',
+        'POST /api/calendly/sync-manual': 'Sync manual de un booking { event, invitee, eventTypeSlug? }',
+        'GET  /api/calendly/event-types': 'Mapeo slugs Calendly → etiquetas CRM',
+      },
+      stripe: {
+        'POST /api/stripe/webhook': 'Receptor de webhooks Stripe (checkout.session.completed, subscription.deleted)',
+        'POST /api/stripe/sync-manual': 'Sync manual de checkout { id, customer_email, ... }',
+        'GET  /api/stripe/products': 'Mapeo productos Stripe → etiquetas CRM (14 productos)',
       },
       smtpConfig: {
         'GET  /api/smtp-config': 'Listar cuentas SMTP configuradas (sin password)',
