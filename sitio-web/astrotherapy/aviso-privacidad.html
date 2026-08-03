@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aviso de Privacidad | Astrología Terapéutica e Integración Energética</title>
+  <meta name="description" content="Aviso de Privacidad Integral de Astrología Terapéutica e Integración Energética, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares." />
+  <meta name="robots" content="noindex, follow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --purple:       #6b4e9e;
+      --purple-dark:  #4a3576;
+      --purple-deep:  #1e1233;
+      --gold:         #d4a373;
+      --gold-light:   #f0c987;
+      --cream:        #fdfcfb;
+      --warm:         #f4eee6;
+      --text:         #2a2438;
+      --text-muted:   #6b6477;
+      --border:       #ede7df;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--cream);
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    header {
+      background: rgba(30,18,51,0.97);
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(212,163,115,0.2);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: 960px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-logo { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(212,163,115,0.4); object-fit: cover; }
+    .brand-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--gold-light); line-height: 1.1; }
+    .brand-sub  { font-size: 0.6rem; color: rgba(255,255,255,0.45); letter-spacing: 1px; text-transform: uppercase; }
+    .header-back { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .header-back:hover { color: var(--gold-light); }
+
+    /* ── Hero del documento ── */
+    .doc-hero {
+      background: linear-gradient(135deg, var(--purple-deep) 0%, #2a1a4e 100%);
+      padding: 60px 24px 48px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .doc-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(107,78,158,0.25) 0%, transparent 70%);
+    }
+    .doc-hero-content { position: relative; z-index: 1; }
+    .doc-tipo {
+      display: inline-block;
+      background: rgba(212,163,115,0.15); border: 1px solid rgba(212,163,115,0.35);
+      color: var(--gold-light); padding: 5px 14px; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .doc-hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700; color: white; line-height: 1.15; margin-bottom: 12px;
+    }
+    .doc-hero p { color: rgba(255,255,255,0.55); font-size: 0.9rem; }
+    .doc-meta {
+      display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+      margin-top: 24px; padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.82rem; color: rgba(255,255,255,0.4);
+    }
+    .doc-meta span::before { content: '✦ '; color: var(--gold); font-size: 0.65rem; }
+
+    /* ── Índice flotante ── */
+    .toc-bar {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 12px 24px; overflow-x: auto; white-space: nowrap;
+    }
+    .toc-bar a {
+      color: var(--purple); text-decoration: none; font-size: 0.82rem; font-weight: 500;
+      margin-right: 20px; transition: color 0.2s;
+    }
+    .toc-bar a:hover { color: var(--purple-dark); text-decoration: underline; }
+
+    /* ── Contenido principal ── */
+    .doc-body {
+      max-width: 860px; margin: 0 auto; padding: 48px 24px 80px;
+    }
+
+    /* Aviso destacado */
+    .notice-box {
+      background: var(--warm); border: 1px solid var(--border);
+      border-left: 4px solid var(--purple);
+      border-radius: 12px; padding: 20px 24px; margin-bottom: 40px;
+      font-size: 0.9rem; color: var(--text-muted);
+    }
+    .notice-box strong { color: var(--purple-dark); }
+
+    /* Secciones */
+    .section {
+      margin-bottom: 48px; padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-of-type { border-bottom: none; }
+
+    .section-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: white; font-weight: 700; font-size: 0.85rem;
+      flex-shrink: 0; margin-bottom: 12px;
+    }
+    .section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--purple-dark); margin-bottom: 16px; line-height: 1.2;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section h3 {
+      font-size: 1rem; font-weight: 600; color: var(--purple-dark);
+      margin: 20px 0 8px;
+    }
+    .section p { color: var(--text); margin-bottom: 12px; font-size: 0.95rem; }
+    .section p:last-child { margin-bottom: 0; }
+
+    /* Tabla de datos */
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+    .data-table th {
+      background: var(--purple-dark); color: white;
+      padding: 10px 16px; text-align: left; font-weight: 600;
+    }
+    .data-table th:first-child { border-radius: 8px 0 0 0; }
+    .data-table th:last-child  { border-radius: 0 8px 0 0; }
+    .data-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .data-table tr:nth-child(even) td { background: var(--warm); }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* Tabla ARCO */
+    .arco-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin: 16px 0;
+    }
+    .arco-card {
+      background: white; border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 16px; text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .arco-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(42,36,56,0.08); }
+    .arco-letter {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: white; font-weight: 800; font-size: 1.3rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+    }
+    .arco-card h4 { color: var(--purple-dark); font-size: 0.9rem; margin-bottom: 6px; }
+    .arco-card p { color: var(--text-muted); font-size: 0.8rem; line-height: 1.5; margin: 0; }
+
+    /* Placeholder para completar */
+    .placeholder {
+      background: #fff9e6; border: 1.5px dashed #d4a373;
+      color: #8a6a20; padding: 4px 10px; border-radius: 6px;
+      font-family: monospace; font-size: 0.9em;
+      display: inline-block;
+    }
+
+    /* Proceso ARCO */
+    .process-steps {
+      counter-reset: steps;
+      list-style: none; margin: 16px 0;
+    }
+    .process-steps li {
+      counter-increment: steps;
+      display: flex; align-items: flex-start; gap: 14px;
+      margin-bottom: 14px; font-size: 0.92rem;
+    }
+    .process-steps li::before {
+      content: counter(steps);
+      min-width: 28px; height: 28px; border-radius: 50%;
+      background: var(--gold); color: var(--purple-deep);
+      font-weight: 800; font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+
+    /* Transferencias */
+    .transfer-item {
+      background: white; border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px; margin-bottom: 12px;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .transfer-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .transfer-item h4 { color: var(--purple-dark); font-size: 0.9rem; margin-bottom: 4px; }
+    .transfer-item p { color: var(--text-muted); font-size: 0.85rem; margin: 0; line-height: 1.5; }
+
+    /* Info box */
+    .info-box {
+      background: var(--warm); border-radius: 12px;
+      padding: 20px 24px; margin: 16px 0;
+      border: 1px solid var(--border);
+    }
+    .info-box.important {
+      background: #fff5f5; border-color: #f0c0c0;
+    }
+    .info-box .label {
+      font-weight: 700; color: var(--purple-dark);
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .info-box p { font-size: 0.92rem; color: var(--text-muted); margin: 0; }
+
+    /* Datos de contacto */
+    .contact-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px; margin: 16px 0;
+    }
+    .contact-item {
+      background: white; border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 18px;
+    }
+    .contact-item .ci-label {
+      font-size: 0.75rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
+    }
+    .contact-item .ci-val {
+      font-weight: 600; color: var(--purple-dark); font-size: 0.92rem;
+      word-break: break-word;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--purple-deep); color: rgba(255,255,255,0.4);
+      padding: 40px 24px; text-align: center; font-size: 0.82rem;
+    }
+    footer .brand-f {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem; color: var(--gold-light); margin-bottom: 8px;
+    }
+    footer a { color: rgba(255,255,255,0.5); text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: var(--gold-light); }
+
+    @media (max-width: 600px) {
+      .doc-meta { flex-direction: column; align-items: center; gap: 8px; }
+      .toc-bar { font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <img src="logo.jpeg" alt="Logo" class="brand-logo" onerror="this.style.display='none'" />
+      <div>
+        <div class="brand-name">Astrología Terapéutica</div>
+        <div class="brand-sub">e Integración Energética · LATAM</div>
+      </div>
+    </a>
+    <a href="index.html" class="header-back">← Regresar al sitio</a>
+  </div>
+</header>
+
+<!-- ── HERO ── -->
+<div class="doc-hero">
+  <div class="doc-hero-content">
+    <div class="doc-tipo">Aviso de Privacidad Integral</div>
+    <h1>Protección de Datos Personales</h1>
+    <p>Astrología Terapéutica e Integración Energética</p>
+    <div class="doc-meta">
+      <span>Versión 1.0 · Vigente desde: 30 de junio de 2026</span>
+      <span>Fundamento: LFPDPPP (DOF 20-III-2025)</span>
+      <span>Actualizado: 30 de junio de 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── ÍNDICE ── -->
+<div class="toc-bar">
+  <a href="#responsable">I. Responsable</a>
+  <a href="#datos">II. Datos personales</a>
+  <a href="#finalidades">III. Finalidades</a>
+  <a href="#sensibles">IV. Datos sensibles</a>
+  <a href="#transferencias">V. Transferencias</a>
+  <a href="#arco">VI. Derechos ARCO</a>
+  <a href="#limitacion">VII. Limitación de uso</a>
+  <a href="#cookies">VIII. Cookies</a>
+  <a href="#cambios">IX. Cambios al aviso</a>
+  <a href="#contacto">X. Contacto</a>
+</div>
+
+<!-- ── CUERPO ── -->
+<div class="doc-body">
+
+  <div class="notice-box">
+    <strong>Aviso importante:</strong> El presente Aviso de Privacidad Integral es emitido por <strong>Astrología Terapéutica e Integración Energética</strong> (en adelante, "el Responsable") en cumplimiento de la <strong>Ley Federal de Protección de Datos Personales en Posesión de los Particulares</strong> (LFPDPPP), publicada en el Diario Oficial de la Federación el 20 de marzo de 2025 y su última reforma del 14 de noviembre de 2025, así como de su Reglamento. Al proporcionar sus datos personales, usted manifiesta que ha leído, entendido y aceptado los términos del presente aviso.
+  </div>
+
+  <!-- I. RESPONSABLE -->
+  <div class="section" id="responsable">
+    <h2><span class="section-num">I</span> Identidad y domicilio del Responsable</h2>
+    <p>En términos del Artículo 15, fracción I de la LFPDPPP, el Responsable del tratamiento de sus datos personales es:</p>
+
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="ci-label">Nombre o denominación</div>
+        <div class="ci-val">Astrología Terapéutica e Integración Energética</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Actividad</div>
+        <div class="ci-val">Instituto especializado en astrología terapéutica, tarot, constelaciones familiares y herramientas energéticas para el autoconocimiento y transformación personal. Desarrollamos software profesional, formación y metodologías innovadoras para astrólogos, terapeutas holísticos y profesionales del bienestar emocional.</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Domicilio fiscal</div>
+        <div class="ci-val">Av. Río Becerra No. 283 B01, Colonia Nápoles, Alcaldía Benito Juárez, C.P. 03810, Ciudad de México</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">RFC</div>
+        <div class="ci-val">RIDM660922IG7</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Correo electrónico</div>
+        <div class="ci-val">contacto@luzholistica.com.mx</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Teléfono / WhatsApp</div>
+        <div class="ci-val">+52 55 5651 8415</div>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:16px;">
+      <div class="label">Responsable del Departamento de Datos Personales</div>
+      <p>Conforme al Artículo 29 de la LFPDPPP, el Responsable designa a <strong>Mario A. Rivera D.</strong> como responsable del trámite de solicitudes ARCO y del cumplimiento de las disposiciones de privacidad al interior de la organización.</p>
+    </div>
+  </div>
+
+  <!-- II. DATOS PERSONALES -->
+  <div class="section" id="datos">
+    <h2><span class="section-num">II</span> Datos personales que recabamos</h2>
+    <p>En términos del Artículo 15, fracción II de la LFPDPPP, los datos personales que el Responsable podrá recabar, usar y, en su caso, transferir, son los siguientes:</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Datos específicos</th>
+          <th>Fuente</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Identificación</strong></td>
+          <td>Nombre completo, imagen o fotografía de perfil (opcional)</td>
+          <td>Directamente del titular</td>
+        </tr>
+        <tr>
+          <td><strong>Contacto</strong></td>
+          <td>Correo electrónico, número de teléfono o WhatsApp, país de residencia</td>
+          <td>Directamente del titular</td>
+        </tr>
+        <tr>
+          <td><strong>Profesionales</strong></td>
+          <td>Tipo de práctica (astrólogo, terapeuta, coach, tarotista, otro), años de experiencia</td>
+          <td>Directamente del titular</td>
+        </tr>
+        <tr>
+          <td><strong>Financieros y patrimoniales</strong></td>
+          <td>Datos de tarjeta de crédito o débito para procesar pagos (procesados directamente por Stripe, Inc. — el Responsable no almacena estos datos)</td>
+          <td>Directamente del titular a través de Stripe</td>
+        </tr>
+        <tr>
+          <td><strong>De uso del software</strong></td>
+          <td>Registros de acceso, versión de la aplicación, sistema operativo, reportes de error, funciones utilizadas (sin datos de consultantes)</td>
+          <td>Generados automáticamente al usar el software</td>
+        </tr>
+        <tr>
+          <td><strong>Facturación (opcional)</strong></td>
+          <td>RFC, razón social, régimen fiscal, dirección fiscal — únicamente si el usuario solicita factura electrónica</td>
+          <td>Directamente del titular</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="info-box">
+      <div class="label">Nota sobre datos de consultantes (terceros)</div>
+      <p>El software AstroTherapy permite al <strong>usuario-terapeuta</strong> ingresar datos de sus propios consultantes (nombre, fecha, hora y lugar de nacimiento). En este caso, el <strong>terapeuta es el Responsable</strong> de dichos datos de terceros y <strong>Astrología Terapéutica e Integración Energética actúa únicamente como Encargado</strong>, en términos del Artículo 2, fracción XII de la LFPDPPP. Dado que el software opera con instalación local en los equipos del terapeuta, los datos de consultantes nunca son transmitidos ni almacenados en servidores del Responsable.</p>
+    </div>
+  </div>
+
+  <!-- III. FINALIDADES -->
+  <div class="section" id="finalidades">
+    <h2><span class="section-num">III</span> Finalidades del tratamiento</h2>
+    <p>Conforme al Artículo 15, fracción III de la LFPDPPP, sus datos personales serán tratados para las siguientes finalidades:</p>
+
+    <h3>Finalidades primarias (necesarias para la relación contractual)</h3>
+    <p>El tratamiento de sus datos para estas finalidades no requiere su consentimiento adicional, dado que son indispensables para la prestación del servicio que usted contrata:</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Finalidad</th><th>Datos utilizados</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Crear y gestionar su cuenta de usuario en la plataforma</td>
+          <td>Nombre, correo electrónico, contraseña</td>
+        </tr>
+        <tr>
+          <td>Procesar y confirmar el pago de la suscripción</td>
+          <td>Datos de contacto, datos de pago (vía Stripe)</td>
+        </tr>
+        <tr>
+          <td>Activar la licencia y acceso al software AstroTherapy</td>
+          <td>Correo electrónico, datos de dispositivo</td>
+        </tr>
+        <tr>
+          <td>Enviar confirmaciones de suscripción, renovación o cancelación</td>
+          <td>Correo electrónico, nombre</td>
+        </tr>
+        <tr>
+          <td>Proporcionar soporte técnico y atención al cliente</td>
+          <td>Nombre, correo electrónico, WhatsApp, datos de uso</td>
+        </tr>
+        <tr>
+          <td>Emitir facturas electrónicas cuando sean solicitadas</td>
+          <td>Datos fiscales proporcionados por el titular</td>
+        </tr>
+        <tr>
+          <td>Cumplir con obligaciones fiscales y legales</td>
+          <td>Datos de identificación, financieros y fiscales</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Finalidades secundarias (opcionales — requieren consentimiento)</h3>
+    <p>El tratamiento de sus datos para estas finalidades es opcional. Si usted no desea que sus datos sean utilizados para estas finalidades secundarias, puede manifestarlo enviando un correo a contacto@luzholistica.com.mx en cualquier momento, sin que ello afecte la prestación del servicio principal:</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Finalidad secundaria</th><th>Datos utilizados</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Envío de contenido educativo, actualizaciones y novedades del software</td>
+          <td>Nombre, correo electrónico</td>
+        </tr>
+        <tr>
+          <td>Elaboración de estadísticas y estudios sobre el uso del software para mejorar funcionalidades</td>
+          <td>Datos de uso (anonimizados)</td>
+        </tr>
+        <tr>
+          <td>Invitaciones a eventos, webinars o cursos de formación</td>
+          <td>Nombre, correo electrónico, tipo de práctica</td>
+        </tr>
+        <tr>
+          <td>Solicitudes de testimonio o reseña del servicio</td>
+          <td>Nombre, correo electrónico</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- IV. DATOS SENSIBLES -->
+  <div class="section" id="sensibles">
+    <h2><span class="section-num">IV</span> Datos personales sensibles</h2>
+    <p>Conforme al Artículo 2, fracción VI y el Artículo 8 de la LFPDPPP, los <strong>datos personales sensibles</strong> son aquellos que afectan la esfera más íntima de la persona, o cuya utilización indebida pueda originar discriminación o conllevar un riesgo grave.</p>
+
+    <div class="info-box">
+      <div class="label">Posición del Responsable respecto a datos sensibles</div>
+      <p><strong>Astrología Terapéutica e Integración Energética no recaba datos personales sensibles de sus usuarios-terapeutas</strong> de manera directa para la prestación de su servicio. Sin embargo, dada la naturaleza del software, el terapeuta-usuario podría ingresar en la aplicación información de sus consultantes que, en algunos casos, pudiera contener datos sensibles (como creencias religiosas o filosóficas vinculadas a la práctica espiritual). En este supuesto, el terapeuta es el único Responsable de dichos datos ante sus consultantes; el software opera localmente y el Responsable no tiene acceso a esa información.</p>
+    </div>
+
+    <p>Si en el futuro el Responsable llegara a recabar datos sensibles de sus usuarios, lo haría únicamente con el <strong>consentimiento expreso y por escrito</strong> del titular, conforme al Artículo 8 de la LFPDPPP, y mediante los mecanismos que al efecto se establezcan.</p>
+  </div>
+
+  <!-- V. TRANSFERENCIAS -->
+  <div class="section" id="transferencias">
+    <h2><span class="section-num">V</span> Transferencias de datos personales</h2>
+    <p>Conforme al Artículo 35 de la LFPDPPP, el Responsable podrá transferir sus datos personales a terceros nacionales o extranjeros en los siguientes casos:</p>
+
+    <div class="transfer-item">
+      <div class="transfer-icon">💳</div>
+      <div>
+        <h4>Stripe, Inc. (Estados Unidos) — Procesador de pagos</h4>
+        <p>Datos de pago y de contacto para procesar cobros de suscripción. Stripe actúa como encargado del tratamiento. Finalidad: ejecutar la relación contractual. No requiere consentimiento adicional (Art. 36, fracción VII LFPDPPP). Stripe cuenta con certificación PCI-DSS. <a href="https://stripe.com/privacy" target="_blank" rel="noopener" style="color:var(--purple);">Aviso de privacidad de Stripe →</a></p>
+      </div>
+    </div>
+
+    <div class="transfer-item">
+      <div class="transfer-icon">📧</div>
+      <div>
+        <h4>Proveedor de correo electrónico transaccional</h4>
+        <p>Nombre y correo electrónico para enviar confirmaciones de cuenta, recibos y comunicaciones relacionadas con el servicio. No requiere consentimiento adicional (Art. 36, fracción VII LFPDPPP).</p>
+      </div>
+    </div>
+
+    <div class="transfer-item">
+      <div class="transfer-icon">⚖️</div>
+      <div>
+        <h4>Autoridades competentes</h4>
+        <p>El Responsable podrá transferir datos a autoridades fiscales, judiciales o administrativas cuando así lo requiera una disposición legal o mandato de autoridad competente. No requiere consentimiento (Art. 36, fracción I y V LFPDPPP).</p>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="label">Transferencias que requieren su consentimiento</div>
+      <p>Cualquier transferencia de datos personales a terceros con fines distintos a los señalados anteriormente requerirá su consentimiento expreso previo. El Responsable se compromete a no vender, ceder ni arrendar su información personal a terceros con fines comerciales ajenos a la relación contractual.</p>
+    </div>
+  </div>
+
+  <!-- VI. DERECHOS ARCO -->
+  <div class="section" id="arco">
+    <h2><span class="section-num">VI</span> Derechos ARCO</h2>
+    <p>Conforme al Capítulo III y IV de la LFPDPPP (Artículos 21 al 34), usted como titular de datos personales tiene derecho a ejercer en cualquier momento los siguientes derechos:</p>
+
+    <div class="arco-grid">
+      <div class="arco-card">
+        <div class="arco-letter">A</div>
+        <h4>Acceso</h4>
+        <p>Conocer qué datos personales tenemos de usted, para qué los usamos y las condiciones generales de su tratamiento.</p>
+      </div>
+      <div class="arco-card">
+        <div class="arco-letter">R</div>
+        <h4>Rectificación</h4>
+        <p>Solicitar la corrección de sus datos cuando sean inexactos, incompletos o no se encuentren actualizados.</p>
+      </div>
+      <div class="arco-card">
+        <div class="arco-letter">C</div>
+        <h4>Cancelación</h4>
+        <p>Solicitar la supresión de sus datos de nuestros archivos y sistemas, en los casos que procedan conforme a la Ley.</p>
+      </div>
+      <div class="arco-card">
+        <div class="arco-letter">O</div>
+        <h4>Oposición</h4>
+        <p>Oponerse al tratamiento de sus datos por causa legítima o solicitar que cese el tratamiento para finalidades secundarias.</p>
+      </div>
+    </div>
+
+    <h3>Procedimiento para ejercer sus derechos ARCO</h3>
+    <p>Para ejercer cualquiera de los derechos anteriores, el titular o su representante legal deberá presentar una solicitud que contenga:</p>
+
+    <ol class="process-steps">
+      <li>Nombre completo del titular y dirección de correo electrónico o domicilio para recibir notificaciones.</li>
+      <li>Documentos que acrediten la identidad del titular (identificación oficial vigente) o, en su caso, la personalidad del representante legal.</li>
+      <li>Descripción clara y precisa de los datos personales respecto de los cuales se busca ejercer el derecho ARCO (excepto en el caso de Acceso).</li>
+      <li>Descripción del derecho que se pretende ejercer y cualquier elemento o documento que facilite la localización de los datos.</li>
+    </ol>
+
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="ci-label">Canal principal</div>
+        <div class="ci-val">Correo electrónico: contacto@luzholistica.com.mx</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Canal alternativo</div>
+        <div class="ci-val">WhatsApp: +52 55 5651 8415</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Plazo de respuesta</div>
+        <div class="ci-val">Máximo 20 días hábiles (Art. 31 LFPDPPP)</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Costo</div>
+        <div class="ci-val">Gratuito (Art. 34 LFPDPPP)</div>
+      </div>
+    </div>
+
+    <div class="info-box important" style="margin-top:16px;">
+      <div class="label">Autoridad competente</div>
+      <p>Si considera que su solicitud no fue atendida conforme a la Ley, puede presentar queja ante la <strong>Secretaría Anticorrupción y Buen Gobierno</strong> (autoridad garante en materia de protección de datos personales, conforme a la LFPDPPP vigente desde el 20 de marzo de 2025). Consulte los medios de contacto en <a href="https://www.gob.mx/sabg" target="_blank" rel="noopener" style="color:var(--purple);">www.gob.mx/sabg</a></p>
+    </div>
+  </div>
+
+  <!-- VII. LIMITACIÓN DE USO -->
+  <div class="section" id="limitacion">
+    <h2><span class="section-num">VII</span> Opciones para limitar el uso o divulgación de datos</h2>
+    <p>Conforme al Artículo 15, fracción IV de la LFPDPPP, usted puede limitar el uso o divulgación de sus datos personales a través de los siguientes mecanismos:</p>
+
+    <ul style="list-style:none;padding:0;">
+      <li style="padding:12px 0;border-bottom:1px solid var(--border);font-size:0.93rem;">
+        <strong style="color:var(--purple-dark);">Finalidades secundarias:</strong> Envíe un correo a contacto@luzholistica.com.mx con el asunto "Opt-out finalidades secundarias" para que sus datos dejen de ser utilizados para comunicaciones opcionales, estadísticas o invitaciones a eventos.
+      </li>
+      <li style="padding:12px 0;border-bottom:1px solid var(--border);font-size:0.93rem;">
+        <strong style="color:var(--purple-dark);">Revocación del consentimiento:</strong> Puede revocar en cualquier momento el consentimiento otorgado para el tratamiento de sus datos personales, sin efectos retroactivos, enviando su solicitud al correo indicado en la sección X de este aviso.
+      </li>
+      <li style="padding:12px 0;font-size:0.93rem;">
+        <strong style="color:var(--purple-dark);">Registro Público para Evitar Publicidad (REPEP):</strong> Si no desea recibir publicidad o promociones, puede inscribirse en el Registro Público para Evitar Publicidad de la Procuraduría Federal del Consumidor (PROFECO) en <a href="https://repep.profeco.gob.mx" target="_blank" rel="noopener" style="color:var(--purple);">repep.profeco.gob.mx</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- VIII. COOKIES -->
+  <div class="section" id="cookies">
+    <h2><span class="section-num">VIII</span> Uso de cookies y tecnologías de rastreo</h2>
+
+    <p>El sitio web de Astrología Terapéutica e Integración Energética y la plataforma de acceso al software pueden utilizar cookies y tecnologías similares con las siguientes finalidades:</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Tipo de cookie</th><th>Finalidad</th><th>¿Requiere consentimiento?</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Técnicas / esenciales</strong></td>
+          <td>Mantener su sesión activa, recordar preferencias básicas de idioma y configuración</td>
+          <td>No — son estrictamente necesarias</td>
+        </tr>
+        <tr>
+          <td><strong>Analíticas</strong></td>
+          <td>Medir el tráfico del sitio web y el comportamiento de los usuarios para mejorar la experiencia (datos anonimizados)</td>
+          <td>Sí — puede desactivarlas</td>
+        </tr>
+        <tr>
+          <td><strong>De preferencias</strong></td>
+          <td>Recordar sus elecciones de plan y configuración de la interfaz</td>
+          <td>Sí — puede desactivarlas</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Puede deshabilitar las cookies no esenciales en la configuración de su navegador o en el panel de preferencias de cookies disponible en nuestro sitio web. La desactivación de cookies esenciales puede afectar la funcionalidad del servicio.</p>
+  </div>
+
+  <!-- IX. CAMBIOS AL AVISO -->
+  <div class="section" id="cambios">
+    <h2><span class="section-num">IX</span> Cambios al Aviso de Privacidad</h2>
+    <p>Conforme al Artículo 15, fracción VI de la LFPDPPP, el Responsable se reserva el derecho de efectuar modificaciones o actualizaciones al presente Aviso de Privacidad en cualquier momento, para atender novedades legislativas, políticas internas o nuevas finalidades de tratamiento.</p>
+    <p>Cuando se realicen cambios sustanciales al presente aviso, el Responsable lo notificará a los titulares a través de los siguientes medios, con al menos <strong>15 días naturales de anticipación</strong> a la entrada en vigor de los cambios:</p>
+    <ul style="margin:12px 0 12px 24px;font-size:0.93rem;color:var(--text);">
+      <li style="margin-bottom:6px;">Correo electrónico registrado en la cuenta del usuario.</li>
+      <li style="margin-bottom:6px;">Aviso visible en la página principal del sitio web o en el panel de usuario del software.</li>
+      <li>Publicación de la versión actualizada en la dirección: luzholistica.com.mx/aviso-privacidad</li>
+    </ul>
+    <p>Si usted continúa utilizando el servicio después de la entrada en vigor de los cambios, se entenderá que ha aceptado el Aviso de Privacidad actualizado.</p>
+  </div>
+
+  <!-- X. CONTACTO -->
+  <div class="section" id="contacto">
+    <h2><span class="section-num">X</span> Datos de contacto del Responsable</h2>
+    <p>Para cualquier consulta, solicitud ARCO, revocación de consentimiento o duda relacionada con el tratamiento de sus datos personales, puede comunicarse con nosotros a través de los siguientes medios:</p>
+
+    <div class="contact-grid">
+      <div class="contact-item">
+        <div class="ci-label">Correo electrónico (privacidad)</div>
+        <div class="ci-val">contacto@luzholistica.com.mx</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">WhatsApp de atención</div>
+        <div class="ci-val">+52 55 5651 8415</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Domicilio para notificaciones</div>
+        <div class="ci-val">Av. Río Becerra No. 283 B01, Col. Nápoles, Alcaldía Benito Juárez, C.P. 03810, CDMX</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Horario de atención</div>
+        <div class="ci-val">Lunes a viernes · 9:00 a 18:00 hrs (CST)</div>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:24px;">
+      <div class="label">Base legal</div>
+      <p>El presente Aviso de Privacidad se emite en cumplimiento de la <strong>Ley Federal de Protección de Datos Personales en Posesión de los Particulares</strong> (publicada en el DOF el 20 de marzo de 2025, última reforma DOF 14 de noviembre de 2025), su Reglamento, y los <em>Lineamientos del Aviso de Privacidad</em> publicados por la autoridad competente. La autoridad responsable de la supervisión es la <strong>Secretaría Anticorrupción y Buen Gobierno</strong>, en sustitución del extinto Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales (INAI), disuelto al entrar en vigor la Ley el 20 de marzo de 2025.</p>
+    </div>
+  </div>
+
+  <p style="text-align:center;color:var(--text-muted);font-size:0.82rem;margin-top:16px;">
+    Última actualización: <strong>30 de junio de 2026</strong> &nbsp;·&nbsp; Versión 1.0
+  </p>
+
+</div><!-- /doc-body -->
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="brand-f">Astrología Terapéutica e Integración Energética</div>
+  <p style="margin-bottom:16px;">Desarrolladores de AstroTherapy Pro &amp; Premium</p>
+  <div style="margin-bottom:16px;">
+    <a href="index.html">Inicio</a>
+    <a href="aviso-privacidad.html">Aviso de Privacidad</a>
+    <a href="#">Términos de servicio</a>
+  </div>
+  <p>© 2026 Astrología Terapéutica e Integración Energética. Todos los derechos reservados.</p>
+</footer>
+
+</body>
+</html>

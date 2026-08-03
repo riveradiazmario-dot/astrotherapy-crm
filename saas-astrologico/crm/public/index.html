@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM — Luz Holística</title>
+<style>
+  :root {
+    --purple: #6B5BCC;
+    --purple-dark: #5547b0;
+    --purple-light: #ede9ff;
+    --teal: #2EC4B6;
+    --teal-light: #e0faf8;
+    --bg: #f4f3ff;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #7b7b9a;
+    --border: #e2e0f5;
+    --danger: #e63946;
+    --success: #2dc653;
+    --warning: #f4a261;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 220px; background: var(--purple); color: #fff; display: flex; flex-direction: column; flex-shrink: 0; }
+  .sidebar-logo { padding: 24px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.15); }
+  .sidebar-logo h1 { font-size: 15px; font-weight: 700; letter-spacing: .3px; }
+  .sidebar-logo p { font-size: 11px; opacity: .7; margin-top: 2px; }
+  nav { flex: 1; padding: 12px 0; }
+  nav a { display: flex; align-items: center; gap: 10px; padding: 10px 20px; font-size: 13.5px; color: rgba(255,255,255,.85); text-decoration: none; border-left: 3px solid transparent; transition: all .15s; cursor: pointer; }
+  nav a:hover, nav a.active { background: rgba(255,255,255,.12); color: #fff; border-left-color: var(--teal); }
+  nav a svg { flex-shrink: 0; }
+  .sidebar-footer { padding: 16px 20px; font-size: 11px; opacity: .5; border-top: 1px solid rgba(255,255,255,.1); }
+
+  /* ── Main ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
+  .topbar h2 { font-size: 17px; font-weight: 600; }
+  .topbar-actions { display: flex; gap: 10px; }
+  .content { flex: 1; overflow-y: auto; padding: 24px 28px; }
+
+  /* ── Cards ── */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+  .stat-card .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  .stat-card .value { font-size: 28px; font-weight: 700; margin: 6px 0 2px; color: var(--purple); }
+  .stat-card .sub { font-size: 12px; color: var(--muted); }
+
+  /* ── Panel grid ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-full { grid-column: 1 / -1; }
+  .panel { background: var(--card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+  .panel-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .panel-head h3 { font-size: 14px; font-weight: 600; }
+  .panel-body { padding: 20px; }
+
+  /* ── Forms ── */
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
+  .field input, .field textarea, .field select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13.5px; background: #fafafa; color: var(--text); font-family: inherit; transition: border .15s; }
+  .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--purple); background: #fff; }
+  .field textarea { min-height: 90px; resize: vertical; }
+
+  /* ── Buttons ── */
+  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer; border: none; transition: all .15s; }
+  .btn-primary { background: var(--purple); color: #fff; }
+  .btn-primary:hover { background: var(--purple-dark); }
+  .btn-teal { background: var(--teal); color: #fff; }
+  .btn-teal:hover { background: #25a89d; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost:hover { background: var(--bg); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-sm { padding: 6px 12px; font-size: 12.5px; }
+
+  /* ── Tags ── */
+  .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-purple { background: var(--purple-light); color: var(--purple); }
+  .badge-teal { background: var(--teal-light); color: #1a8a82; }
+  .badge-gray { background: #f0f0f5; color: var(--muted); }
+  .badge-red { background: #ffe5e7; color: var(--danger); }
+  .badge-green { background: #e6faea; color: #1a8a38; }
+  .badge-orange { background: #fff3e6; color: #c06a12; }
+
+  /* ── Result box ── */
+  .result-box { background: #f8f7ff; border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-top: 16px; max-height: 340px; overflow-y: auto; font-size: 13px; }
+  .result-box pre { white-space: pre-wrap; word-break: break-all; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; }
+  .contact-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+  .contact-card .name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .contact-card .meta { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 14px; font-size: 11.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; border-bottom: 1px solid var(--border); background: #fafafa; }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+
+  /* ── Score bar ── */
+  .score-bar { display: flex; align-items: center; gap: 8px; }
+  .bar-bg { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+
+  /* ── Loading ── */
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Alerts ── */
+  .alert { padding: 11px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
+  .alert-success { background: #e6faea; color: #1a5e2e; border: 1px solid #b6e8c4; }
+  .alert-error { background: #ffe5e7; color: #8b0000; border: 1px solid #f5b8bc; }
+
+  /* ── Pages ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── Sources grid ── */
+  .sources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .source-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .source-card h4 { font-size: 13.5px; font-weight: 600; margin-bottom: 4px; }
+  .source-card p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .source-card .endpoint { font-size: 11px; font-family: monospace; background: var(--bg); padding: 3px 7px; border-radius: 4px; margin-top: 8px; display: inline-block; }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty-state svg { margin-bottom: 12px; opacity: .4; }
+  .empty-state p { font-size: 14px; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+  .row { display: flex; gap: 10px; align-items: flex-end; }
+  .row .field { flex: 1; margin-bottom: 0; }
+
+  /* ── Kanban Pipeline ── */
+  .kanban-board { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 20px; min-height: calc(100vh - 200px); }
+  .kanban-col { flex: 0 0 240px; display: flex; flex-direction: column; }
+  .kanban-header { border-radius: 10px 10px 0 0; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .kanban-header .col-title { font-size: 13px; font-weight: 700; color: #fff; }
+  .kanban-header .col-count { font-size: 11px; background: rgba(255,255,255,.25); color: #fff; border-radius: 10px; padding: 2px 8px; }
+  .kanban-body { flex: 1; background: #f0eeff; border-radius: 0 0 10px 10px; padding: 10px 8px; min-height: 200px; border: 2px dashed transparent; transition: border-color .2s; }
+  .kanban-body.drag-over { border-color: var(--purple); background: #e8e4ff; }
+  .deal-card { background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 8px; border: 1px solid var(--border); cursor: grab; transition: box-shadow .15s, transform .1s; }
+  .deal-card:hover { box-shadow: 0 4px 12px rgba(107,91,204,.15); transform: translateY(-1px); }
+  .deal-card.dragging { opacity: .5; cursor: grabbing; }
+  .deal-card .deal-title { font-size: 13.5px; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+  .deal-card .deal-contact { font-size: 11.5px; color: var(--muted); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+  .deal-card .deal-valor { font-size: 14px; font-weight: 700; color: var(--purple); }
+  .deal-card .deal-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .deal-card .deal-prob { font-size: 11px; color: var(--muted); }
+  .deal-card .deal-actions { display: flex; gap: 4px; }
+  .btn-deal-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 13px; padding: 2px 4px; border-radius: 4px; }
+  .btn-deal-del:hover { color: var(--danger); background: #ffe5e7; }
+  .add-deal-btn { width: 100%; margin-top: 8px; padding: 8px; border: 1.5px dashed var(--border); border-radius: 8px; background: transparent; color: var(--muted); font-size: 12.5px; cursor: pointer; transition: all .15s; }
+  .add-deal-btn:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-light); }
+  .pipeline-resumen { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+  .modal-overlay.hidden { display: none; }
+  .modal { background: #fff; border-radius: 14px; padding: 28px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+  .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+  /* ── Login screen ── */
+  #login-screen {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  #login-screen.hidden { display: none; }
+  .login-card {
+    background: var(--card); border-radius: 16px; padding: 40px 36px;
+    width: 100%; max-width: 420px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 40px rgba(107,91,204,.12);
+  }
+  .login-card .logo { text-align: center; margin-bottom: 28px; }
+  .login-card .logo h1 { font-size: 20px; font-weight: 700; color: var(--purple); }
+  .login-card .logo p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .login-card h2 { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
+  .user-chip {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12.5px; color: rgba(255,255,255,.85);
+    padding: 8px 14px;
+  }
+  .user-chip strong { color: #fff; }
+  .btn-logout {
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+    color: rgba(255,255,255,.85); border-radius: 6px;
+    padding: 5px 11px; font-size: 12px; cursor: pointer;
+    margin-left: auto;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,.22); color: #fff; }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="logo">
+      <h1>⭐ Luz Holística</h1>
+      <p>CRM — Acceso seguro</p>
+    </div>
+
+    <div id="login-error" class="alert alert-error" style="display:none"></div>
+
+    <div id="login-form">
+      <h2>Iniciar sesión</h2>
+      <div class="field">
+        <label>Organización (slug)</label>
+        <input id="l-slug" type="text" placeholder="ej: luz-holistica" autocomplete="username" />
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">El identificador que usaste al registrarte</p>
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input id="l-email" type="email" placeholder="admin@tuemail.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input id="l-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px" onclick="doLogin()" id="btn-login">
+        Entrar
+      </button>
+      <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">
+        ¿Primera vez? <a href="#" onclick="showRegForm()" style="color:var(--purple)">Crear organización</a>
+      </p>
+    </div>
+
+    <div id="reg-form" style="display:none">
+      <h2>Crear organización</h2>
+      <div class="field">
+        <label>Nombre de la organización</label>
+        <input id="r-org" type="text" placeholder="ej: Luz Holística" />
+      </div>
+      <div class="field">
+        <label>Identificador (slug)</label>
+        <input id="r-slug" type="text" placeholder="ej: luz-holistica" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'-')" />
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">Solo minúsculas, números y guiones. Sin espacios.</p>
+      </div>
+      <div class="field">
+        <label>Tu nombre</label>
+        <input id="r-nombre" type="text" placeholder="Mario García" />
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input id="r-email" type="email" placeholder="admin@tuemail.com" />
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input id="r-pass" type="password" placeholder="Mínimo 8 caracteres" />
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px" onclick="doRegister()" id="btn-register">
+        Crear organización
+      </button>
+      <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">
+        ¿Ya tienes cuenta? <a href="#" onclick="showLoginForm()" style="color:var(--purple)">Iniciar sesión</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>⭐ Luz Holística</h1>
+    <p>CRM de Prospectos</p>
+  </div>
+  <nav>
+    <a class="active" onclick="showPage('dashboard')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a onclick="showPage('contactos')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Contactos
+    </a>
+    <a onclick="showPage('pipeline')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="4" height="18" rx="1"/><rect x="10" y="3" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="10" rx="1"/></svg>
+      Pipeline
+    </a>
+    <a onclick="showPage('scraping')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Scraping
+    </a>
+    <a onclick="showPage('fuentes')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Fuentes
+    </a>
+  </nav>
+  <div class="sidebar-footer" style="padding:0">
+    <div class="user-chip">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <div>
+        <strong id="sidebar-user-name">—</strong>
+        <div id="sidebar-org-name" style="font-size:10px;opacity:.6"></div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<main class="main">
+  <div class="topbar">
+    <h2 id="page-title">Dashboard</h2>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="loadDashboard()">↻ Actualizar</button>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div id="page-dashboard" class="page active">
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card"><div class="label">Contactos</div><div class="value" id="s-total">—</div><div class="sub">en base de datos</div></div>
+        <div class="stat-card"><div class="label">Con email</div><div class="value" id="s-email">—</div><div class="sub">listos para contactar</div></div>
+        <div class="stat-card"><div class="label">Score promedio</div><div class="value" id="s-score">—</div><div class="sub">de 100 puntos</div></div>
+        <div class="stat-card"><div class="label">Esta semana</div><div class="value" id="s-week">—</div><div class="sub">nuevos prospectos</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><h3>🔥 Top prospectos (por score)</h3></div>
+          <div class="panel-body" id="top-prospectos">
+            <div class="empty-state"><p>Cargando...</p></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>📊 Distribución por especialidad</h3></div>
+          <div class="panel-body" id="dist-esp">
+            <div class="empty-state"><p>Cargando...</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CONTACTOS ═══ -->
+    <div id="page-contactos" class="page">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Todos los contactos</h3>
+          <div style="display:flex;gap:8px">
+            <input id="search-q" type="text" placeholder="Buscar nombre, email..." style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;width:220px" oninput="buscarContactos()">
+          </div>
+        </div>
+        <div class="panel-body" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Especialidad</th>
+                  <th>País</th>
+                  <th>Score</th>
+                  <th>Nivel</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="contactos-tbody">
+                <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Cargando contactos...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PIPELINE ═══ -->
+    <div id="page-pipeline" class="page">
+
+      <!-- Resumen numérico -->
+      <div class="pipeline-resumen" id="pipeline-resumen">
+        <div class="stat-card"><div class="label">Deals activos</div><div class="value" id="pip-total">—</div><div class="sub">en el embudo</div></div>
+        <div class="stat-card"><div class="label">Valor pipeline</div><div class="value" id="pip-valor" style="font-size:20px">—</div><div class="sub">MXN estimado</div></div>
+        <div class="stat-card"><div class="label">Cerrado ganado</div><div class="value" id="pip-ganado" style="font-size:20px;color:var(--success)">—</div><div class="sub">este ciclo</div></div>
+      </div>
+
+      <!-- Tablero Kanban -->
+      <div class="kanban-board" id="kanban-board">
+        <div class="empty-state"><p>Cargando pipeline...</p></div>
+      </div>
+    </div>
+
+    <!-- Modal: Crear / Editar deal -->
+    <div class="modal-overlay hidden" id="deal-modal">
+      <div class="modal">
+        <h3 id="deal-modal-title">Nueva oportunidad</h3>
+        <input type="hidden" id="deal-id" />
+        <div class="field">
+          <label>Título del deal *</label>
+          <input id="deal-titulo" type="text" placeholder="ej: Consulta AstroTherapy Pro — María García" />
+        </div>
+        <div class="field">
+          <label>Etapa</label>
+          <select id="deal-etapa">
+            <option value="prospecto">Prospecto</option>
+            <option value="contactado">Contactado</option>
+            <option value="propuesta">Propuesta enviada</option>
+            <option value="negociacion">En negociación</option>
+            <option value="cerrado_ganado">Cerrado ✓</option>
+            <option value="cerrado_perdido">Perdido ✗</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field">
+            <label>Valor (MXN)</label>
+            <input id="deal-valor" type="number" placeholder="0" min="0" />
+          </div>
+          <div class="field">
+            <label>Probabilidad %</label>
+            <input id="deal-prob" type="number" placeholder="50" min="0" max="100" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Fecha estimada de cierre</label>
+          <input id="deal-fecha" type="date" />
+        </div>
+        <div class="field">
+          <label>Notas</label>
+          <textarea id="deal-notas" placeholder="Detalles del deal, acuerdos, próximos pasos..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" onclick="closeDealModal()">Cancelar</button>
+          <button class="btn btn-primary" onclick="saveDeal()" id="btn-save-deal">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SCRAPING ═══ -->
+    <div id="page-scraping" class="page">
+      <div class="grid-2">
+
+        <!-- Extractor de texto -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>📋 Extractor de texto</h3>
+            <span class="badge badge-green">Sin API key</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Pega texto de Telegram, Facebook, lista de contactos — extrae emails, teléfonos y @usernames automáticamente.</p>
+            <div class="field">
+              <label>Fuente</label>
+              <select id="ext-fuente">
+                <option value="telegram">Telegram</option>
+                <option value="facebook">Facebook</option>
+                <option value="instagram">Instagram</option>
+                <option value="manual">Manual</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Texto a procesar</label>
+              <textarea id="ext-texto" placeholder="Pega aquí el texto con contactos...&#10;&#10;María García&#10;astrologa@gmail.com&#10;@maria_astro&#10;+52 55 1234 5678"></textarea>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <button class="btn btn-primary" onclick="extraerTexto(false)">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                Extraer contactos
+              </button>
+              <button class="btn btn-teal" onclick="extraerTexto(true)">
+                ✚ Extraer y guardar
+              </button>
+            </div>
+            <div id="ext-result"></div>
+          </div>
+        </div>
+
+        <!-- Telegram -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>✈️ Scraping de Telegram</h3>
+            <span class="badge badge-green">Sin API key</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Extrae suscriptores, descripción y @menciones de canales públicos. También busca grupos por tema.</p>
+
+            <div class="field">
+              <label>Canal o grupo (@username)</label>
+              <div class="row">
+                <div class="field"><input id="tg-username" placeholder="ej: astrologiamx" /></div>
+                <button class="btn btn-primary btn-sm" onclick="scrapeTelegram()" style="margin-bottom:0;flex-shrink:0">Consultar</button>
+              </div>
+            </div>
+
+            <hr class="divider">
+
+            <div class="field">
+              <label>Buscar grupos por tema</label>
+              <div class="row">
+                <div class="field"><input id="tg-buscar" placeholder="ej: astrologia tarot" /></div>
+                <button class="btn btn-ghost btn-sm" onclick="buscarGruposTelegram()" style="margin-bottom:0;flex-shrink:0">Buscar</button>
+              </div>
+            </div>
+
+            <div id="tg-result"></div>
+          </div>
+        </div>
+
+        <!-- Instagram -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>📸 Scraping de Instagram</h3>
+            <span class="badge badge-green">Apify conectado</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Extrae bio, seguidores y email de perfiles públicos. Usa Apify con proxies rotativos — sin bloqueos.</p>
+            <div class="field">
+              <label>Username de Instagram</label>
+              <div class="row">
+                <div class="field"><input id="ig-username" placeholder="ej: maria_astrologia" /></div>
+                <button class="btn btn-primary btn-sm" onclick="scrapeInstagram()" style="margin-bottom:0;flex-shrink:0">Consultar</button>
+              </div>
+            </div>
+            <hr class="divider">
+            <div class="field">
+              <label>Lista de usernames (uno por línea, máx 50)</label>
+              <textarea id="ig-lote" placeholder="maria_astro&#10;tarot_carlos&#10;reiki_ana" style="min-height:70px"></textarea>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="scrapeInstagramLote()">Procesar lista</button>
+            <div id="ig-result"></div>
+          </div>
+        </div>
+
+        <!-- TikTok via Apify -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>🎵 TikTok — Buscar perfiles</h3>
+            <span class="badge badge-green">Apify conectado</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Busca creadores por keyword o hashtag y extrae perfiles, bios y emails públicos. Usa Apify (bajo riesgo de bloqueo).</p>
+            <div class="field">
+              <label>Búsqueda (keyword o hashtag)</label>
+              <div class="row">
+                <div class="field"><input id="tt-query" placeholder="ej: terapeuta holístico o #astrologia" /></div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Máximo de videos a analizar</label>
+              <select id="tt-max">
+                <option value="30">30 videos (rápido, ~1 min)</option>
+                <option value="50" selected>50 videos (recomendado, ~2 min)</option>
+                <option value="100">100 videos (~3 min)</option>
+                <option value="200">200 videos (lento, ~5 min)</option>
+              </select>
+            </div>
+            <div class="field" style="display:flex;align-items:center;gap:8px">
+              <input type="checkbox" id="tt-guardar" style="width:auto;margin:0">
+              <label style="margin:0;font-size:13px">Guardar automáticamente contactos con email</label>
+            </div>
+            <button class="btn btn-primary" onclick="buscarTikTok()">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              Buscar en TikTok
+            </button>
+            <div id="tt-result"></div>
+          </div>
+        </div>
+
+        <!-- Directorios -->
+        <div class="panel">
+          <div class="panel-head">
+            <h3>🌐 Buscar en directorios</h3>
+            <span class="badge badge-green">Sin API key</span>
+          </div>
+          <div class="panel-body">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Busca profesionales en la web (DuckDuckGo) y en Hotmart por especialidad y país.</p>
+            <div class="field">
+              <label>Especialidad</label>
+              <select id="dir-esp">
+                <option value="astrólogo">Astrólogo/a</option>
+                <option value="tarotista">Tarotista</option>
+                <option value="reiki">Reiki</option>
+                <option value="constelaciones familiares">Constelaciones familiares</option>
+                <option value="coach holístico">Coach holístico</option>
+                <option value="numeróloga">Numeróloga</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>País (opcional)</label>
+              <select id="dir-pais">
+                <option value="">Todos los países</option>
+                <option value="México">México</option>
+                <option value="Colombia">Colombia</option>
+                <option value="Argentina">Argentina</option>
+                <option value="Chile">Chile</option>
+                <option value="Perú">Perú</option>
+                <option value="España">España</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Fuente</label>
+              <select id="dir-fuente">
+                <option value="todas">Todas (web + Hotmart)</option>
+                <option value="web">Solo web (DuckDuckGo)</option>
+                <option value="hotmart">Solo Hotmart</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="buscarDirectorios()">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              Buscar
+            </button>
+            <div id="dir-result"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ FUENTES ═══ -->
+    <div id="page-fuentes" class="page">
+      <div class="panel">
+        <div class="panel-head"><h3>Fuentes de scraping disponibles</h3></div>
+        <div class="panel-body">
+          <div class="sources-grid" id="sources-grid">
+            <div class="empty-state"><p>Cargando...</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const API = 'http://localhost:3000/api';
+
+// ── Auth helpers — Modo LOCAL (sin login) ────────────────────────────────────
+// En modo local no se envía token. El servidor usa LOCAL_DEV=true para bypass.
+function authFetch(url, opts = {}) {
+  return fetch(url, opts);
+}
+
+function doLogout() {
+  // En modo local no hay sesión que cerrar
+}
+
+// Arrancar directamente sin pantalla de login
+document.getElementById('login-screen').classList.add('hidden');
+document.getElementById('sidebar-user-name').textContent = 'Mario Rivera';
+document.getElementById('sidebar-org-name').textContent = 'Luz Holística (local)';
+loadDashboard();
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── PIPELINE KANBAN ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+
+const ETAPAS = [
+  { id: 'prospecto',       label: 'Prospecto',          color: '#7b7b9a' },
+  { id: 'contactado',      label: 'Contactado',          color: '#6B5BCC' },
+  { id: 'propuesta',       label: 'Propuesta enviada',   color: '#f4a261' },
+  { id: 'negociacion',     label: 'En negociación',      color: '#2EC4B6' },
+  { id: 'cerrado_ganado',  label: 'Cerrado ✓',           color: '#2dc653' },
+  { id: 'cerrado_perdido', label: 'Perdido ✗',           color: '#e63946' },
+];
+
+let _pipelineData = null;
+let _draggedDealId = null;
+let _draggedFromEtapa = null;
+
+function formatMXN(val) {
+  return '$' + Number(val || 0).toLocaleString('es-MX', { minimumFractionDigits: 0 });
+}
+
+async function loadPipeline() {
+  try {
+    const r = await authFetch(`${API}/pipeline`);
+    const data = await r.json();
+    if (!data.ok) { document.getElementById('kanban-board').innerHTML = `<div class="alert alert-error">${data.error}</div>`; return; }
+    _pipelineData = data.data;
+    renderKanban(_pipelineData);
+  } catch(e) {
+    document.getElementById('kanban-board').innerHTML = `<div class="alert alert-error">Error conectando con el servidor</div>`;
+  }
+}
+
+function renderKanban(data) {
+  // Resumen
+  document.getElementById('pip-total').textContent = data.resumen.totalDeals;
+  document.getElementById('pip-valor').textContent = formatMXN(data.resumen.valorPipeline);
+  document.getElementById('pip-ganado').textContent = formatMXN(data.resumen.valorGanado);
+
+  // Columnas
+  const board = document.getElementById('kanban-board');
+  board.innerHTML = ETAPAS.map(etapa => {
+    const deals = data.porEtapa[etapa.id] || [];
+    const total = data.totales[etapa.id];
+    return `
+      <div class="kanban-col">
+        <div class="kanban-header" style="background:${etapa.color}">
+          <span class="col-title">${etapa.label}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            ${total.valorTotal > 0 ? `<span style="font-size:10px;color:rgba(255,255,255,.8)">${formatMXN(total.valorTotal)}</span>` : ''}
+            <span class="col-count">${total.cantidad}</span>
+          </div>
+        </div>
+        <div class="kanban-body"
+          id="col-${etapa.id}"
+          ondragover="onDragOver(event)"
+          ondragleave="onDragLeave(event)"
+          ondrop="onDrop(event,'${etapa.id}')">
+          ${deals.map(d => renderDealCard(d)).join('')}
+          <button class="add-deal-btn" onclick="openDealModal(null,'${etapa.id}')">+ Agregar deal</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Asociar eventos drag a las cards
+  board.querySelectorAll('.deal-card').forEach(card => {
+    card.addEventListener('dragstart', onDragStart);
+    card.addEventListener('dragend', onDragEnd);
+  });
+}
+
+function renderDealCard(d) {
+  const fecha = d.fechaCierre ? new Date(d.fechaCierre).toLocaleDateString('es-MX', { day:'2-digit', month:'short' }) : '';
+  return `
+    <div class="deal-card" draggable="true" data-id="${d.id}" data-etapa="${d.etapa}">
+      <div class="deal-title">${d.titulo}</div>
+      ${d.contacto ? `<div class="deal-contact">👤 ${d.contacto.nombre || d.contacto.email}</div>` : ''}
+      <div class="deal-meta">
+        <div>
+          <div class="deal-valor">${formatMXN(d.valor)}</div>
+          ${fecha ? `<div style="font-size:10px;color:var(--muted);margin-top:2px">📅 ${fecha}</div>` : ''}
+        </div>
+        <div class="deal-actions">
+          <span class="deal-prob">${d.probabilidad}%</span>
+          <button class="btn-deal-del" onclick="openDealModal('${d.id}')" title="Editar">✎</button>
+          <button class="btn-deal-del" onclick="deleteDeal('${d.id}')" title="Eliminar">✕</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Drag & Drop ────────────────────────────────────────────────────────────
+
+function onDragStart(e) {
+  _draggedDealId = e.currentTarget.dataset.id;
+  _draggedFromEtapa = e.currentTarget.dataset.etapa;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onDragEnd(e) { e.currentTarget.classList.remove('dragging'); }
+function onDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+
+async function onDrop(e, etapaDestino) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!_draggedDealId || etapaDestino === _draggedFromEtapa) return;
+
+  let motivoPerdida;
+  if (etapaDestino === 'cerrado_perdido') {
+    motivoPerdida = prompt('¿Cuál fue el motivo de pérdida? (opcional)') || undefined;
+  }
+
+  try {
+    const r = await authFetch(`${API}/pipeline/${_draggedDealId}/etapa`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ etapa: etapaDestino, motivoPerdida }),
+    });
+    const data = await r.json();
+    if (data.ok) loadPipeline();
+  } catch(e) { console.error(e); }
+}
+
+// ── Modal Crear/Editar ─────────────────────────────────────────────────────
+
+function openDealModal(id, etapaDefault) {
+  document.getElementById('deal-modal').classList.remove('hidden');
+  document.getElementById('deal-id').value = id || '';
+  document.getElementById('deal-modal-title').textContent = id ? 'Editar oportunidad' : 'Nueva oportunidad';
+
+  if (!id) {
+    // Limpiar form
+    document.getElementById('deal-titulo').value = '';
+    document.getElementById('deal-etapa').value = etapaDefault || 'prospecto';
+    document.getElementById('deal-valor').value = '';
+    document.getElementById('deal-prob').value = '';
+    document.getElementById('deal-fecha').value = '';
+    document.getElementById('deal-notas').value = '';
+  } else {
+    // Buscar deal en datos locales y rellenar
+    const deal = Object.values(_pipelineData?.porEtapa || {}).flat().find(d => d.id === id);
+    if (deal) {
+      document.getElementById('deal-titulo').value = deal.titulo;
+      document.getElementById('deal-etapa').value = deal.etapa;
+      document.getElementById('deal-valor').value = deal.valor || '';
+      document.getElementById('deal-prob').value = deal.probabilidad || '';
+      document.getElementById('deal-fecha').value = deal.fechaCierre ? deal.fechaCierre.substring(0, 10) : '';
+      document.getElementById('deal-notas').value = deal.notas || '';
+    }
+  }
+}
+
+function closeDealModal() {
+  document.getElementById('deal-modal').classList.add('hidden');
+}
+
+async function saveDeal() {
+  const id = document.getElementById('deal-id').value;
+  const titulo = document.getElementById('deal-titulo').value.trim();
+  if (!titulo) { alert('El título es requerido'); return; }
+
+  const body = {
+    titulo,
+    etapa: document.getElementById('deal-etapa').value,
+    valor: Number(document.getElementById('deal-valor').value) || 0,
+    probabilidad: Number(document.getElementById('deal-prob').value) || undefined,
+    fechaCierre: document.getElementById('deal-fecha').value || undefined,
+    notas: document.getElementById('deal-notas').value || undefined,
+  };
+
+  const btn = document.getElementById('btn-save-deal');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+
+  try {
+    const r = await authFetch(id ? `${API}/pipeline/${id}` : `${API}/pipeline`, {
+      method: id ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (data.ok) { closeDealModal(); loadPipeline(); }
+    else alert(data.error || 'Error al guardar');
+  } catch(e) {
+    alert('Error de conexión');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Guardar';
+  }
+}
+
+async function deleteDeal(id) {
+  if (!confirm('¿Eliminar este deal del pipeline?')) return;
+  try {
+    await authFetch(`${API}/pipeline/${id}`, { method: 'DELETE' });
+    loadPipeline();
+  } catch(e) { alert('Error al eliminar'); }
+}
+
+// ── Navegación ──────────────────────────────────────────────────────────────
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('nav a')[['dashboard','contactos','pipeline','scraping','fuentes'].indexOf(name)].classList.add('active');
+  const titles = { dashboard: 'Dashboard', contactos: 'Contactos', pipeline: 'Pipeline de Ventas', scraping: 'Herramientas de Scraping', fuentes: 'Fuentes disponibles' };
+  document.getElementById('page-title').textContent = titles[name];
+  if (name === 'contactos') loadContactos();
+  if (name === 'pipeline') loadPipeline();
+  if (name === 'fuentes') loadFuentes();
+}
+
+// ── Dashboard ───────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const r = await authFetch(`${API}/contactos?limite=100`);
+    const data = await r.json();
+    const contactos = data.data || [];
+    const total = data.paginacion?.total ?? contactos.length;
+
+    document.getElementById('s-total').textContent = total;
+    const conEmail = contactos.filter(c => c.email).length;
+    document.getElementById('s-email').textContent = conEmail;
+    const scores = contactos.filter(c => c.score > 0).map(c => c.score);
+    document.getElementById('s-score').textContent = scores.length ? Math.round(scores.reduce((a,b) => a+b, 0)/scores.length) : '—';
+
+    const semana = new Date(); semana.setDate(semana.getDate() - 7);
+    const nuevos = contactos.filter(c => new Date(c.createdAt) > semana).length;
+    document.getElementById('s-week').textContent = nuevos;
+
+    // Top prospectos
+    const top = [...contactos].sort((a,b) => (b.score||0) - (a.score||0)).slice(0, 6);
+    const topEl = document.getElementById('top-prospectos');
+    if (!top.length) {
+      topEl.innerHTML = '<div class="empty-state"><p>Sin contactos aún. Usa Scraping para agregar prospectos.</p></div>';
+    } else {
+      topEl.innerHTML = top.map(c => `
+        <div class="contact-card">
+          <div class="name">${c.nombre || c.email || 'Sin nombre'}</div>
+          <div class="meta">
+            ${c.email ? `<span>✉ ${c.email}</span>` : ''}
+            ${c.especialidad ? `<span class="badge badge-purple">${c.especialidad.replace(/_/g,' ')}</span>` : ''}
+            <span class="score-bar" style="flex:1;min-width:80px">
+              <div class="bar-bg"><div class="bar-fill" style="width:${c.score||0}%;background:${(c.score||0)>60?'var(--teal)':'var(--purple)'}"></div></div>
+              <span style="font-size:11px;color:var(--muted);white-space:nowrap">${c.score||0} pts</span>
+            </span>
+          </div>
+        </div>`).join('');
+    }
+
+    // Distribución por especialidad
+    const esp = {};
+    contactos.forEach(c => { if(c.especialidad) esp[c.especialidad] = (esp[c.especialidad]||0)+1; });
+    const distEl = document.getElementById('dist-esp');
+    const entries = Object.entries(esp).sort((a,b) => b[1]-a[1]);
+    if (!entries.length) {
+      distEl.innerHTML = '<div class="empty-state"><p>Sin datos de especialidad todavía.</p></div>';
+    } else {
+      const max = entries[0][1];
+      distEl.innerHTML = entries.map(([k,v]) => `
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:13px">
+            <span>${k.replace(/_/g,' ')}</span><span style="color:var(--muted)">${v}</span>
+          </div>
+          <div class="bar-bg" style="height:8px"><div class="bar-fill" style="width:${Math.round(v/max*100)}%;background:var(--purple)"></div></div>
+        </div>`).join('');
+    }
+  } catch(e) {
+    document.getElementById('s-total').textContent = 'Error';
+  }
+}
+
+// ── Contactos ───────────────────────────────────────────────────────────────
+let allContactos = [];
+async function loadContactos() {
+  try {
+    const r = await authFetch(`${API}/contactos?limite=200`);
+    const data = await r.json();
+    allContactos = data.data || [];
+    renderContactos(allContactos);
+  } catch(e) {
+    document.getElementById('contactos-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--danger)">Error conectando con el servidor</td></tr>';
+  }
+}
+
+function buscarContactos() {
+  const q = document.getElementById('search-q').value.toLowerCase();
+  const filtered = allContactos.filter(c =>
+    (c.nombre||'').toLowerCase().includes(q) ||
+    (c.email||'').toLowerCase().includes(q) ||
+    (c.especialidad||'').toLowerCase().includes(q)
+  );
+  renderContactos(filtered);
+}
+
+const NIVEL_BADGE = { frio:'badge-gray', tibio:'badge-orange', caliente:'badge-red', cliente:'badge-green' };
+function renderContactos(lista) {
+  const tbody = document.getElementById('contactos-tbody');
+  if (!lista.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Sin resultados</td></tr>';
+    return;
+  }
+  tbody.innerHTML = lista.map(c => `
+    <tr id="row-${c.id}">
+      <td><strong>${c.nombre || '—'}</strong></td>
+      <td style="color:var(--muted);font-size:12px">${c.email || '—'}</td>
+      <td>${c.especialidad ? `<span class="badge badge-purple" style="font-size:11px">${c.especialidad.replace(/_/g,' ')}</span>` : '—'}</td>
+      <td>${c.pais || '—'}</td>
+      <td>
+        <div class="score-bar">
+          <div class="bar-bg" style="width:60px"><div class="bar-fill" style="width:${c.score||0}%;background:${(c.score||0)>60?'var(--teal)':'var(--purple)'}"></div></div>
+          <span style="font-size:12px;color:var(--muted)">${c.score||0}</span>
+        </div>
+      </td>
+      <td><span class="badge ${NIVEL_BADGE[c.nivel]||'badge-gray'}">${c.nivel||'frio'}</span></td>
+      <td>
+        <button class="btn btn-sm" onclick="borrarContacto('${c.id}')" style="background:transparent;border:1px solid var(--border);color:var(--danger);padding:4px 10px;font-size:12px" title="Eliminar contacto">✕</button>
+      </td>
+    </tr>`).join('');
+}
+
+// ── Extractor de texto ───────────────────────────────────────────────────────
+async function extraerTexto(guardar) {
+  const texto = document.getElementById('ext-texto').value.trim();
+  const fuente = document.getElementById('ext-fuente').value;
+  if (!texto) { alert('Pega texto primero'); return; }
+  const el = document.getElementById('ext-result');
+  el.innerHTML = '<div style="margin-top:12px;color:var(--muted);font-size:13px">⏳ Procesando...</div>';
+  try {
+    const r = await authFetch(`${API}/scraping/extraer-texto`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ texto, fuente, guardarAutomatico: guardar })
+    });
+    const data = await r.json();
+    if (!data.ok) { el.innerHTML = `<div class="alert alert-error">${data.error}</div>`; return; }
+    const { totalExtraidos, conEmail, sinEmail, confianzaAlta, contactos, importacion } = data.data;
+    let html = `
+      <div style="margin-top:14px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+          <span class="badge badge-purple">📋 ${totalExtraidos} extraídos</span>
+          <span class="badge badge-teal">✉ ${conEmail} con email</span>
+          <span class="badge badge-green">⭐ ${confianzaAlta} confianza alta</span>
+          ${importacion ? `<span class="badge badge-orange">✚ ${importacion.importados} guardados</span>` : ''}
+        </div>`;
+    if (contactos.length) {
+      html += contactos.map(c => `
+        <div class="contact-card">
+          <div class="name">${c.nombre || c.email || c.instagramUsername || 'Contacto'}</div>
+          <div class="meta">
+            ${c.email ? `<span>✉ ${c.email}</span>` : ''}
+            ${c.telefono ? `<span>📞 ${c.telefono}</span>` : ''}
+            ${c.instagramUsername ? `<span>📸 @${c.instagramUsername}</span>` : ''}
+            ${c.telegramUsername ? `<span>✈️ @${c.telegramUsername}</span>` : ''}
+            ${c.especialidad ? `<span class="badge badge-purple" style="font-size:10px">${c.especialidad.replace(/_/g,' ')}</span>` : ''}
+            ${c.pais ? `<span class="badge badge-gray" style="font-size:10px">${c.pais}</span>` : ''}
+            <span class="badge ${c.confianza==='alta'?'badge-green':c.confianza==='media'?'badge-orange':'badge-gray'}" style="font-size:10px">${c.confianza}</span>
+          </div>
+        </div>`).join('');
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+// ── Telegram ────────────────────────────────────────────────────────────────
+async function scrapeTelegram() {
+  const username = document.getElementById('tg-username').value.trim().replace('@','');
+  if (!username) { alert('Ingresa un username'); return; }
+  const el = document.getElementById('tg-result');
+  el.innerHTML = '<div style="margin-top:12px;color:var(--muted);font-size:13px">⏳ Consultando Telegram...</div>';
+  try {
+    const r = await authFetch(`${API}/scraping/telegram/${username}`);
+    const data = await r.json();
+    if (!data.ok) { el.innerHTML = `<div class="alert alert-error">${data.error}</div>`; return; }
+    const d = data.data;
+    el.innerHTML = `
+      <div class="result-box" style="margin-top:14px">
+        <div style="margin-bottom:10px">
+          <strong style="font-size:14px">${d.titulo || '@'+username}</strong>
+          <span class="badge badge-teal" style="margin-left:8px">${d.tipo}</span>
+          ${d.suscriptores ? `<span class="badge badge-gray" style="margin-left:6px">👥 ${d.suscriptores.toLocaleString()}</span>` : ''}
+        </div>
+        ${d.descripcion ? `<p style="font-size:12px;color:var(--muted);margin-bottom:8px">${d.descripcion}</p>` : ''}
+        ${d.emailsEncontrados.length ? `<p style="font-size:12px;margin-bottom:6px">✉ Emails: <strong>${d.emailsEncontrados.join(', ')}</strong></p>` : ''}
+        ${d.perfilesMencionados.length ? `<p style="font-size:12px;margin-bottom:6px">@Menciones: ${d.perfilesMencionados.slice(0,10).map(m=>`<span class="badge badge-purple" style="margin-right:4px">@${m}</span>`).join('')}</p>` : ''}
+        <p style="font-size:12px;color:var(--muted);margin-top:8px">📩 ${d.ultimosMensajes.length} mensajes recientes capturados</p>
+      </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+async function buscarGruposTelegram() {
+  const q = document.getElementById('tg-buscar').value.trim() || 'astrologia';
+  const el = document.getElementById('tg-result');
+  el.innerHTML = '<div style="margin-top:12px;color:var(--muted);font-size:13px">⏳ Buscando grupos...</div>';
+  try {
+    const r = await authFetch(`${API}/scraping/telegram-buscar?q=${encodeURIComponent(q)}`);
+    const data = await r.json();
+    if (!data.ok) { el.innerHTML = `<div class="alert alert-error">Error</div>`; return; }
+    el.innerHTML = `<div class="result-box" style="margin-top:14px">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">${data.total} grupos encontrados</p>
+      ${data.data.map(g => `
+        <div class="contact-card">
+          <div class="name">@${g.username} — ${g.titulo}</div>
+          <div class="meta">
+            ${g.descripcion ? `<span>${g.descripcion}</span>` : ''}
+            ${g.miembros ? `<span>👥 ${g.miembros.toLocaleString()}</span>` : ''}
+            <a href="${g.url}" target="_blank" style="color:var(--teal);font-size:11px">Ver canal →</a>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+// ── Instagram ────────────────────────────────────────────────────────────────
+// variable temporal para guardar el último perfil IG scrapeado
+let _ultimoPerfilIG = null;
+
+async function scrapeInstagram() {
+  const username = document.getElementById('ig-username').value.trim().replace('@','');
+  if (!username) { alert('Ingresa un username'); return; }
+  const el = document.getElementById('ig-result');
+  el.innerHTML = '<div style="margin-top:12px;color:var(--muted);font-size:13px">⏳ Consultando Instagram...</div>';
+  try {
+    const r = await authFetch(`${API}/scraping/instagram/${username}`);
+    const data = await r.json();
+    if (!data.ok) { el.innerHTML = `<div class="alert alert-error">${data.error}</div>`; return; }
+    const d = data.data;
+    _ultimoPerfilIG = d;
+    el.innerHTML = `
+      <div class="result-box" style="margin-top:14px">
+        ${d.imagenPerfil ? `<img src="${d.imagenPerfil}" style="width:48px;height:48px;border-radius:50%;margin-bottom:10px;object-fit:cover">` : ''}
+        <div style="font-size:14px;font-weight:600;margin-bottom:4px">${d.nombre || '@'+username}</div>
+        ${d.bio ? `<p style="font-size:12px;color:var(--muted);margin-bottom:8px">${d.bio}</p>` : ''}
+        <div style="display:flex;gap:14px;font-size:12px;margin-bottom:8px">
+          ${d.seguidores ? `<span>👥 <strong>${d.seguidores.toLocaleString()}</strong> seguidores</span>` : ''}
+          ${d.publicaciones ? `<span>🖼 <strong>${d.publicaciones}</strong> posts</span>` : ''}
+        </div>
+        ${d.emailEnBio ? `<p style="font-size:12px">✉ Email: <strong>${d.emailEnBio}</strong></p>` : ''}
+        ${d.webEnBio ? `<p style="font-size:12px">🌐 Web: <a href="${d.webEnBio}" target="_blank" style="color:var(--teal)">${d.webEnBio}</a></p>` : ''}
+        ${d.especialidadDetectada ? `<span class="badge badge-purple" style="margin-top:6px">${d.especialidadDetectada.replace(/_/g,' ')}</span>` : ''}
+        <div style="margin-top:12px">
+          <button class="btn btn-teal btn-sm" onclick="guardarPerfilIG()" id="btn-guardar-ig">✚ Guardar en CRM</button>
+        </div>
+      </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+async function guardarPerfilIG() {
+  if (!_ultimoPerfilIG) return;
+  const d = _ultimoPerfilIG;
+  const btn = document.getElementById('btn-guardar-ig');
+  btn.disabled = true; btn.textContent = '⏳ Guardando...';
+  try {
+    const contacto = { contactos: [{
+      email: d.emailEnBio || `ig_${d.username}@sin-email.crm`,
+      nombre: d.nombre || d.username,
+      instagramUrl: d.url,
+      especialidad: d.especialidadDetectada || '',
+      fuente: 'instagram',
+      notas: d.bio ? d.bio.substring(0, 300) : '',
+      etiquetas: (d.seguidores > 5000) ? 'influencer' : 'prospecto',
+    }]};
+    const r = await authFetch(`${API}/scraping/importar-json`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(contacto)
+    });
+    const res = await r.json();
+    if (res.ok && res.data.importados > 0) {
+      btn.textContent = '✓ Guardado';
+      btn.style.background = 'var(--success)';
+    } else if (res.data?.duplicados > 0) {
+      btn.textContent = '⚠ Ya existe';
+      btn.style.background = 'var(--warning)'; btn.style.color = '#fff';
+    } else {
+      btn.textContent = '✗ Error'; btn.disabled = false;
+    }
+  } catch(e) {
+    btn.textContent = '✗ Error'; btn.disabled = false;
+  }
+}
+
+async function scrapeInstagramLote() {
+  const texto = document.getElementById('ig-lote').value.trim();
+  if (!texto) { alert('Ingresa usernames'); return; }
+  const usernames = texto.split('\n').map(u => u.trim().replace('@','')).filter(Boolean);
+  const el = document.getElementById('ig-result');
+  el.innerHTML = `<div style="margin-top:12px;color:var(--muted);font-size:13px">⏳ Procesando ${usernames.length} perfiles (puede tardar ${usernames.length*2}s)...</div>`;
+  try {
+    const r = await authFetch(`${API}/scraping/instagram/lote`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ usernames, delayMs: 1500 })
+    });
+    const data = await r.json();
+    el.innerHTML = `<div class="result-box" style="margin-top:14px">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">${data.mensaje}</p>
+      ${data.data.map(r => r.ok ? `
+        <div class="contact-card">
+          <div class="name">@${r.username} — ${r.data?.nombre||''}</div>
+          <div class="meta">
+            ${r.data?.seguidores ? `<span>👥 ${r.data.seguidores.toLocaleString()}</span>` : ''}
+            ${r.data?.emailEnBio ? `<span>✉ ${r.data.emailEnBio}</span>` : ''}
+            ${r.data?.especialidadDetectada ? `<span class="badge badge-purple" style="font-size:10px">${r.data.especialidadDetectada}</span>` : ''}
+          </div>
+        </div>` :
+        `<div style="font-size:12px;color:var(--danger);padding:6px 0">✗ @${r.username}: ${r.error}</div>`
+      ).join('')}
+    </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+// ── TikTok via Apify ─────────────────────────────────────────────────────────
+async function buscarTikTok() {
+  const query = document.getElementById('tt-query').value.trim();
+  const maxVideos = parseInt(document.getElementById('tt-max').value);
+  const guardar = document.getElementById('tt-guardar').checked;
+  const el = document.getElementById('tt-result');
+
+  if (!query) { alert('Escribe un término de búsqueda'); return; }
+
+  const minutos = maxVideos <= 50 ? '~2 min' : maxVideos <= 100 ? '~3 min' : '~5 min';
+  el.innerHTML = `<div style="margin-top:12px;color:var(--muted);font-size:13px">⏳ Buscando "${query}" en TikTok con Apify (${minutos})... No cierres esta ventana.</div>`;
+
+  try {
+    const r = await authFetch(`${API}/scraping/tiktok/buscar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, maxVideos, guardarAutomatico: guardar }),
+    });
+    const data = await r.json();
+
+    if (!data.ok) {
+      el.innerHTML = `<div class="alert alert-error">${data.error}</div>`;
+      return;
+    }
+
+    const perfiles = data.data || [];
+    const importMsg = data.importacion
+      ? `<p style="font-size:12px;color:var(--success);margin-top:8px">✓ ${data.importacion.importados} contactos guardados en el CRM</p>`
+      : '';
+
+    el.innerHTML = `<div class="result-box" style="margin-top:14px">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:4px">
+        ${data.totalPerfiles} perfiles únicos encontrados · ${data.conEmail} con email
+      </p>
+      ${importMsg}
+      ${perfiles.slice(0,30).map(p => `
+        <div class="contact-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div>
+              <div class="name">
+                ${p.verificado ? '✓ ' : ''}
+                <a href="${p.perfilUrl}" target="_blank" style="color:inherit">@${p.username}</a>
+                — ${p.nombreDisplay}
+              </div>
+              <div class="meta">
+                <span>👥 ${p.seguidores.toLocaleString()}</span>
+                ${p.emailEnBio ? `<span>✉ ${p.emailEnBio}</span>` : ''}
+                ${p.bioLink ? `<a href="${p.bioLink}" target="_blank" style="color:var(--teal);font-size:11px">🔗 Link</a>` : ''}
+                ${p.especialidadDetectada ? `<span class="badge badge-purple" style="font-size:10px">${p.especialidadDetectada}</span>` : ''}
+              </div>
+              ${p.bio ? `<p style="font-size:11px;color:var(--muted);margin-top:4px;margin-bottom:0">${p.bio.substring(0,120)}</p>` : ''}
+            </div>
+            ${p.emailEnBio ? `<button class="btn btn-ghost btn-sm" onclick="guardarContactoTikTok(this,'${p.username}','${p.nombreDisplay.replace(/'/g,'').replace(/"/g,'')}','${p.emailEnBio}','${p.especialidadDetectada||''}','${p.seguidores}','${(p.bio||'').substring(0,100).replace(/'/g,'').replace(/\n/g,' ')}')" style="flex-shrink:0;margin:0">Guardar</button>` : ''}
+          </div>
+        </div>`).join('')}
+      ${perfiles.length > 30 ? `<p style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px">Mostrando 30 de ${perfiles.length} perfiles. Activa "Guardar automáticamente" para capturar todos con email.</p>` : ''}
+    </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+async function guardarContactoTikTok(btn, username, nombre, email, especialidad, seguidores, bio) {
+  btn.disabled = true; btn.textContent = '...';
+  try {
+    const contacto = { contactos: [{
+      email, nombre,
+      fuente: 'tiktok',
+      cargo: especialidad || null,
+      notas: `TikTok: @${username}\nSeguidores: ${parseInt(seguidores).toLocaleString()}\n${bio}`,
+      etiquetas: ['tiktok', parseInt(seguidores) > 5000 ? 'influencer' : 'prospecto'].join('|'),
+    }]};
+    const r = await authFetch(`${API}/scraping/importar-json`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(contacto),
+    });
+    const res = await r.json();
+    if (res.ok && res.data.importados > 0) {
+      btn.textContent = '✓ Guardado'; btn.style.background = 'var(--success)'; btn.style.color = '#fff';
+    } else if (res.data?.duplicados > 0) {
+      btn.textContent = '⚠ Duplicado'; btn.style.background = 'var(--warning)'; btn.style.color = '#fff';
+    } else {
+      btn.textContent = '✗ Error'; btn.disabled = false;
+    }
+  } catch(e) {
+    btn.textContent = '✗ Error'; btn.disabled = false;
+  }
+}
+
+// ── Directorios ──────────────────────────────────────────────────────────────
+async function buscarDirectorios() {
+  const especialidad = document.getElementById('dir-esp').value;
+  const pais = document.getElementById('dir-pais').value;
+  const fuente = document.getElementById('dir-fuente').value;
+  const el = document.getElementById('dir-result');
+  el.innerHTML = '<div style="margin-top:12px;color:var(--muted);font-size:13px">⏳ Buscando en directorios...</div>';
+  try {
+    const r = await authFetch(`${API}/scraping/buscar-directorios`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ especialidad, pais: pais||undefined, fuente })
+    });
+    const data = await r.json();
+    el.innerHTML = `<div class="result-box" style="margin-top:14px">
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px">${data.total} resultados — Fuentes: ${(data.fuentes||[]).join(', ')}</p>
+      ${(data.resultados||[]).map(r => `
+        <div class="contact-card">
+          <div class="name">${r.nombre || 'Sin nombre'}</div>
+          <div class="meta">
+            ${r.email ? `<span>✉ ${r.email}</span>` : ''}
+            ${r.pais ? `<span class="badge badge-gray" style="font-size:10px">${r.pais}</span>` : ''}
+            <span class="badge badge-purple" style="font-size:10px">${r.fuente}</span>
+            ${r.webUrl ? `<a href="${r.webUrl}" target="_blank" style="color:var(--teal);font-size:11px">Ver →</a>` : ''}
+          </div>
+          ${r.descripcion ? `<p style="font-size:11px;color:var(--muted);margin-top:4px">${r.descripcion.substring(0,120)}...</p>` : ''}
+        </div>`).join('') || '<p style="font-size:13px;color:var(--muted)">Sin resultados. Intenta con otro término.</p>'}
+    </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+// ── Fuentes ──────────────────────────────────────────────────────────────────
+async function loadFuentes() {
+  try {
+    const r = await authFetch(`${API}/scraping/fuentes`);
+    const data = await r.json();
+    const conf = { alta:'badge-green', media:'badge-orange', baja:'badge-gray' };
+    document.getElementById('sources-grid').innerHTML = data.data.fuentes.map(f => `
+      <div class="source-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <h4>${f.nombre}</h4>
+          <span class="badge ${conf[f.confiabilidad]}">${f.confiabilidad}</span>
+        </div>
+        <p>${f.descripcion}</p>
+        ${f.limitacion ? `<p style="color:var(--warning);margin-top:6px;font-size:11px">⚠ ${f.limitacion}</p>` : ''}
+        <span class="endpoint">${f.endpoint}</span>
+        ${f.requiereApiKey ? '<span class="badge badge-red" style="margin-left:6px;font-size:10px">API Key</span>' : '<span class="badge badge-green" style="margin-left:6px;font-size:10px">Sin API key</span>'}
+      </div>`).join('');
+  } catch(e) {
+    document.getElementById('sources-grid').innerHTML = '<div class="alert alert-error">Error conectando con el servidor</div>';
+  }
+}
+
+// ── Borrar contacto ──────────────────────────────────────────────────────────
+async function borrarContacto(id) {
+  if (!confirm('¿Eliminar este contacto? Esta acción no se puede deshacer.')) return;
+  try {
+    const r = await authFetch(`${API}/contactos/${id}`, { method: 'DELETE' });
+    const data = await r.json();
+    if (data.ok) {
+      // Remover la fila visualmente sin recargar toda la tabla
+      const row = document.getElementById('row-' + id);
+      if (row) {
+        row.style.transition = 'opacity .3s';
+        row.style.opacity = '0';
+        setTimeout(() => { row.remove(); allContactos = allContactos.filter(c => c.id !== id); }, 300);
+      }
+    } else {
+      alert('Error al eliminar: ' + (data.error || 'desconocido'));
+    }
+  } catch(e) {
+    alert('Error de conexión: ' + e.message);
+  }
+}
+
+</script>
+</body>
+</html>

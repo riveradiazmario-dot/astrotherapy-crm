@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Descargar AstroTherapy | Astrología Terapéutica e Integración Energética</title>
+  <meta name="description" content="Descarga AstroTherapy Pro para Mac o Windows. Instalación en menos de 2 minutos." />
+  <meta name="robots" content="noindex, follow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --purple:       #6b4e9e;
+      --purple-dark:  #4a3576;
+      --purple-deep:  #1e1233;
+      --gold:         #d4a373;
+      --gold-light:   #f0c987;
+      --cream:        #fdfcfb;
+      --warm:         #f4eee6;
+      --text:         #2a2438;
+      --text-muted:   #6b6477;
+      --border:       #ede7df;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--cream);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: rgba(30,18,51,0.97);
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(212,163,115,0.2);
+    }
+    .header-inner {
+      max-width: 960px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-logo { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(212,163,115,0.4); object-fit: cover; }
+    .brand-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--gold-light); line-height: 1.1; }
+    .brand-sub  { font-size: 0.6rem; color: rgba(255,255,255,0.45); letter-spacing: 1px; text-transform: uppercase; }
+    .header-back { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .header-back:hover { color: var(--gold-light); }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--purple-deep) 0%, #2a1a4e 100%);
+      padding: 64px 24px 56px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(107,78,158,0.3) 0%, transparent 70%);
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(212,163,115,0.15); border: 1px solid rgba(212,163,115,0.35);
+      color: var(--gold-light); padding: 5px 14px; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700; color: white; line-height: 1.15; margin-bottom: 16px;
+    }
+    .hero p {
+      color: rgba(255,255,255,0.6); font-size: 1rem; margin-bottom: 0;
+    }
+    /* Plan tag dinámico */
+    #planTag {
+      display: none;
+      background: rgba(212,163,115,0.2); border: 1px solid rgba(212,163,115,0.4);
+      color: var(--gold-light); padding: 4px 12px; border-radius: 20px;
+      font-size: 0.8rem; font-weight: 600; margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* ── Pasos ── */
+    .steps-section {
+      max-width: 860px; margin: 0 auto; padding: 64px 24px 48px;
+    }
+    .steps-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--purple-dark);
+      text-align: center; margin-bottom: 40px;
+    }
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px; margin-bottom: 48px;
+    }
+    .step-card {
+      background: white; border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px;
+      text-align: center; position: relative;
+    }
+    .step-num {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: white; font-weight: 800; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .step-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+    .step-card h3 { color: var(--purple-dark); font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+    .step-card p { color: var(--text-muted); font-size: 0.87rem; line-height: 1.55; margin: 0; }
+    .step-connector {
+      display: none;
+    }
+    @media (min-width: 700px) {
+      .steps-grid { grid-template-columns: 1fr auto 1fr auto 1fr; align-items: start; }
+      .step-connector {
+        display: flex; align-items: flex-start; padding-top: 52px;
+        color: var(--gold); font-size: 1.2rem; font-weight: 300;
+      }
+    }
+
+    /* ── Descarga ── */
+    .download-section {
+      background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 56px 24px;
+    }
+    .download-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+    .download-inner h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem; font-weight: 700; color: var(--purple-deep); margin-bottom: 8px;
+    }
+    .download-inner > p {
+      color: var(--text-muted); font-size: 0.9rem; margin-bottom: 36px;
+    }
+
+    /* Grid de planes de descarga */
+    .plan-download-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px; margin-bottom: 8px; text-align: left;
+    }
+    .plan-dl-card {
+      border: 1px solid var(--border); border-radius: 20px; overflow: hidden;
+      position: relative; background: white;
+    }
+    .plan-dl-card-featured {
+      border-color: var(--purple); box-shadow: 0 8px 32px rgba(107,78,158,0.15);
+    }
+    .plan-dl-badge {
+      position: absolute; top: 14px; right: 14px;
+      background: var(--gold); color: var(--purple-deep);
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px;
+      padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
+    }
+    .plan-dl-header {
+      padding: 24px 24px 20px; color: white;
+    }
+    .plan-dl-pro    { background: linear-gradient(135deg, #3d3060, var(--purple-dark)); }
+    .plan-dl-premium { background: linear-gradient(135deg, var(--purple-deep), var(--purple)); }
+    .plan-dl-name { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; }
+    .plan-dl-price { font-size: 2rem; font-weight: 800; line-height: 1; }
+    .plan-dl-price span { font-size: 0.9rem; font-weight: 400; opacity: 0.7; }
+    .plan-dl-annual { font-size: 0.78rem; opacity: 0.6; margin-top: 4px; }
+
+    .plan-dl-body {
+      padding: 20px 20px 24px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .btn-download {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px; border-radius: 12px;
+      text-decoration: none; font-weight: 600; font-size: 0.92rem;
+      transition: transform 0.2s, box-shadow 0.2s; width: 100%;
+    }
+    .btn-download:hover { transform: translateY(-2px); }
+    .btn-mac {
+      background: linear-gradient(135deg, #1a1a1a, #3a3a3a);
+      color: white; box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+    .btn-mac:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
+    .btn-win {
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: white; box-shadow: 0 4px 14px rgba(107,78,158,0.25);
+    }
+    .btn-win:hover { box-shadow: 0 8px 24px rgba(107,78,158,0.4); }
+    .btn-download-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .btn-download-text { text-align: left; }
+    .btn-download-text span { display: block; font-size: 0.68rem; font-weight: 400; opacity: 0.7; margin-bottom: 1px; }
+
+    .mac-support-box {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: linear-gradient(135deg, #f0eaf8, #fdf9f4);
+      border: 1px solid rgba(107,78,158,0.2);
+      border-radius: 12px; padding: 14px 16px;
+      margin: 2px 0 4px;
+    }
+    .mac-support-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+    .mac-support-box strong { display: block; color: var(--purple-dark); font-size: 0.85rem; margin-bottom: 3px; }
+    .mac-support-box p { color: var(--text-muted); font-size: 0.78rem; margin: 0 0 6px; line-height: 1.4; }
+    .mac-support-box a { color: var(--purple); font-weight: 600; font-size: 0.82rem; text-decoration: none; }
+    .mac-support-box a:hover { text-decoration: underline; }
+
+    .req-note {
+      font-size: 0.82rem; color: var(--text-muted);
+      background: var(--warm); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 20px; display: inline-block;
+    }
+
+    /* ── Info pago interno ── */
+    .payment-info {
+      max-width: 700px; margin: 48px auto 0; padding: 0 24px;
+    }
+    .info-box {
+      background: var(--warm); border: 1px solid var(--border);
+      border-left: 4px solid var(--purple);
+      border-radius: 12px; padding: 20px 24px;
+    }
+    .info-box h3 {
+      font-size: 1rem; font-weight: 600; color: var(--purple-dark); margin-bottom: 10px;
+    }
+    .info-box p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px; }
+    .info-box p:last-child { margin-bottom: 0; }
+    .info-box a { color: var(--purple); font-weight: 500; }
+
+    /* ── FAQ mini ── */
+    .mini-faq {
+      max-width: 700px; margin: 40px auto 64px; padding: 0 24px;
+    }
+    .mini-faq h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem; color: var(--purple-dark); margin-bottom: 20px; text-align: center;
+    }
+    .faq-item { margin-bottom: 16px; }
+    .faq-q { font-weight: 600; color: var(--text); font-size: 0.92rem; margin-bottom: 4px; }
+    .faq-a { color: var(--text-muted); font-size: 0.88rem; padding-left: 12px; border-left: 2px solid var(--border); }
+
+    /* ── WhatsApp CTA ── */
+    .wa-cta {
+      text-align: center; padding: 32px 24px 48px;
+    }
+    .wa-cta p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 14px; }
+    .btn-wa {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #25D366; color: white; text-decoration: none;
+      font-weight: 600; font-size: 0.95rem;
+      padding: 14px 28px; border-radius: 50px;
+      box-shadow: 0 4px 16px rgba(37,211,102,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-wa:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,0.4); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--purple-deep); padding: 28px 24px;
+      text-align: center; color: rgba(255,255,255,0.3); font-size: 0.82rem;
+    }
+    footer a { color: rgba(255,255,255,0.45); text-decoration: none; margin: 0 8px; }
+    footer a:hover { color: var(--gold-light); }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <img src="logo.jpeg" alt="Logo" class="brand-logo" />
+      <div>
+        <div class="brand-name">Astrología Terapéutica</div>
+        <div class="brand-sub">e Integración Energética · LATAM</div>
+      </div>
+    </a>
+    <a href="index.html" class="header-back">← Volver al inicio</a>
+  </div>
+</header>
+
+<!-- ══════════ HERO ══════════ -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Instalación gratuita · Sin tarjeta de crédito</div>
+    <h1>Descarga AstroTherapy <span id="planTag"></span></h1>
+    <p>Tu software de astrología terapéutica disponible para Mac y Windows.<br>
+       Listo en menos de 2 minutos. La suscripción la activas dentro del software.</p>
+  </div>
+</div>
+
+<!-- ══════════ PASOS ══════════ -->
+<div class="steps-section">
+  <p class="steps-title">3 pasos para empezar</p>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <span class="step-icon">⬇️</span>
+      <h3>Descarga e instala</h3>
+      <p>Elige tu sistema operativo aquí abajo y descarga el instalador. El proceso tarda menos de 2 minutos.</p>
+    </div>
+    <div class="step-connector">→</div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <span class="step-icon">👤</span>
+      <h3>Crea tu cuenta</h3>
+      <p>Al abrir el software por primera vez, crea una cuenta con tu correo y una contraseña. Verifica tu correo para activarla.</p>
+    </div>
+    <div class="step-connector">→</div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <span class="step-icon">✨</span>
+      <h3>Suscríbete y comienza</h3>
+      <p>Dentro del software elige tu plan (Pro o Premium). El pago es vía Stripe, seguro y sin que guardemos datos de tarjeta.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ BOTONES DE DESCARGA ══════════ -->
+<div class="download-section">
+  <div class="download-inner">
+    <h2>Elige tu plan y sistema operativo</h2>
+    <p>Versión 1.0.0 · El mismo instalador para ambos planes — la suscripción se activa dentro del software</p>
+
+    <div class="plan-download-grid">
+
+      <!-- ── Plan Pro ── -->
+      <div class="plan-dl-card">
+        <div class="plan-dl-header plan-dl-pro">
+          <div class="plan-dl-name">Pro</div>
+          <div class="plan-dl-price">$29 <span>USD/mes</span></div>
+          <div class="plan-dl-annual">o $290/año · Ahorras $58</div>
+        </div>
+        <div class="plan-dl-body">
+          <!-- Windows Pro -->
+          <a href="https://drive.google.com/file/d/1cbbf96nyGsDzs5iZQ3S3bQCkXOUM9AQD/view?usp=sharing" class="btn-download btn-win" target="_blank">
+            <span class="btn-download-icon">🪟</span>
+            <div class="btn-download-text">
+              <span>Plan Pro · $29/mes · Windows 10/11</span>
+              Descargar desde Google Drive
+            </div>
+          </a>
+          <!-- Mac Pro -->
+          <a href="https://wa.me/525556518415?text=Hola%2C%20quiero%20instalar%20AstroTherapy%20Pro%20en%20mi%20Mac%2C%20%C2%BFme%20pueden%20apoyar%3F" class="btn-download btn-mac" target="_blank">
+            <span class="btn-download-icon">🍎</span>
+            <div class="btn-download-text">
+              <span>Plan Pro · $29/mes</span>
+              macOS — Solicitar instalación
+            </div>
+          </a>
+          <div class="mac-support-box">
+            <span class="mac-support-icon">🍎</span>
+            <div>
+              <strong>Instalación en Mac acompañada</strong>
+              <p>Te guiamos paso a paso por WhatsApp para que quede funcionando en minutos.</p>
+              <a href="https://wa.me/525556518415?text=Hola%2C%20descargué%20AstroTherapy%20Pro%20para%20Mac%20y%20necesito%20ayuda%20para%20instalarlo" target="_blank">Escribir para instalar →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Plan Premium ── -->
+      <div class="plan-dl-card plan-dl-card-featured">
+        <div class="plan-dl-badge">Recomendado</div>
+        <div class="plan-dl-header plan-dl-premium">
+          <div class="plan-dl-name">Premium</div>
+          <div class="plan-dl-price">$39 <span>USD/mes</span></div>
+          <div class="plan-dl-annual">o $390/año · Ahorras $78</div>
+        </div>
+        <div class="plan-dl-body">
+          <!-- Windows Premium -->
+          <a href="https://drive.google.com/file/d/1ZXNELUAam5t-IwgoMWEh0HlQf5eAj47S/view?usp=sharing" class="btn-download btn-win" target="_blank">
+            <span class="btn-download-icon">🪟</span>
+            <div class="btn-download-text">
+              <span>Plan Premium · $39/mes · Windows 10/11</span>
+              Descargar desde Google Drive
+            </div>
+          </a>
+          <!-- Mac Premium -->
+          <a href="https://wa.me/525556518415?text=Hola%2C%20quiero%20instalar%20AstroTherapy%20Premium%20en%20mi%20Mac%2C%20%C2%BFme%20pueden%20apoyar%3F" class="btn-download btn-mac" target="_blank">
+            <span class="btn-download-icon">🍎</span>
+            <div class="btn-download-text">
+              <span>Plan Premium · $39/mes</span>
+              macOS — Solicitar instalación
+            </div>
+          </a>
+          <div class="mac-support-box">
+            <span class="mac-support-icon">🍎</span>
+            <div>
+              <strong>Instalación en Mac acompañada</strong>
+              <p>Te guiamos paso a paso por WhatsApp para que quede funcionando en minutos.</p>
+              <a href="https://wa.me/525556518415?text=Hola%2C%20descargué%20AstroTherapy%20Premium%20para%20Mac%20y%20necesito%20ayuda%20para%20instalarlo" target="_blank">Escribir para instalar →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /plan-download-grid -->
+
+    <!-- Nota advertencia Google Drive -->
+    <div style="margin-top:28px; background:#fff8e6; border:1px solid #f0c040; border-left:4px solid #d4a373; border-radius:12px; padding:18px 22px; max-width:680px; margin-left:auto; margin-right:auto; text-align:left;">
+      <p style="font-weight:700; color:#7a5500; font-size:0.92rem; margin-bottom:8px;">⚠️ ¿Google Drive muestra una advertencia?</p>
+      <p style="color:#6b5000; font-size:0.87rem; line-height:1.6; margin:0;">
+        Es normal. Google Drive muestra ese aviso automáticamente para <strong>todos</strong> los archivos .exe, sin importar su origen.
+        Para continuar: en la pantalla de advertencia haz clic en <strong>"Descargar de todas formas"</strong>.
+        En Windows, si aparece una ventana azul de SmartScreen, haz clic en <strong>"Más información"</strong> → <strong>"Ejecutar de todas formas"</strong>.
+      </p>
+    </div>
+
+    <p class="req-note" style="margin-top:16px;">
+      macOS 11 Big Sur o superior · Windows 10 (64-bit) o superior · 4 GB RAM mínimo · 500 MB de espacio libre
+    </p>
+  </div>
+</div>
+
+<!-- ══════════ CÓMO FUNCIONA EL PAGO ══════════ -->
+<div class="payment-info">
+  <div class="info-box">
+    <h3>💳 ¿Cómo funciona el pago?</h3>
+    <p>No necesitas ingresar tu tarjeta aquí. Una vez que instales el software y crees tu cuenta, el propio software te mostrará la pantalla de suscripción donde podrás elegir entre <strong>Pro ($29/mes)</strong> o <strong>Premium ($39/mes)</strong> — o sus equivalentes anuales con descuento.</p>
+    <p>El pago se procesa vía <strong>Stripe</strong>, plataforma segura usada por millones de empresas. Nosotros nunca almacenamos los datos de tu tarjeta. Una vez confirmado el pago, el software se activa automáticamente.</p>
+    <p>¿Pagaste y el software no se activó? Dentro de la app hay un botón <em>"Verificar suscripción"</em> que sincroniza tu pago al instante. También puedes escribirnos por <a href="https://wa.me/525556518415?text=Hola%2C%20necesito%20ayuda%20con%20mi%20suscripci%C3%B3n%20de%20AstroTherapy" target="_blank">WhatsApp</a>.</p>
+  </div>
+</div>
+
+<!-- ══════════ FAQ MINI ══════════ -->
+<div class="mini-faq">
+  <h3>Preguntas frecuentes de instalación</h3>
+
+  <div class="faq-item">
+    <div class="faq-q">¿En cuántas computadoras puedo instalar el software?</div>
+    <div class="faq-a">Puedes tenerlo instalado en hasta 2 dispositivos simultáneos con un mismo plan (Pro o Premium).</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Mis datos y los de mis clientes están seguros?</div>
+    <div class="faq-a">Sí. El software instala una base de datos local en tu propio equipo. Ni nosotros ni nadie externo tiene acceso a esos datos. Tú generas y controlas la contraseña de acceso.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Necesito internet para usar el software?</div>
+    <div class="faq-a">Para la activación de la cuenta y las funciones de IA (análisis kármico, interpretaciones narrativas) sí necesitas conexión. La gestión de consultantes y cartas natales funciona sin conexión una vez activado.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Qué pasa con mis datos si cancelo?</div>
+    <div class="faq-a">Tus datos permanecen en tu computadora — nunca los borramos. Si reactivas tu suscripción en el futuro, el software los reconoce automáticamente.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Mac con chip M1/M2/M3 es compatible?</div>
+    <div class="faq-a">Sí. El instalador de macOS incluye versiones nativas para Apple Silicon (arm64) e Intel. La aplicación detecta tu chip automáticamente al instalarse.</div>
+  </div>
+</div>
+
+<!-- ══════════ WHATSAPP CTA ══════════ -->
+<div class="wa-cta">
+  <p>¿Problemas con la instalación o con tu suscripción? Te ayudamos de inmediato.</p>
+  <a href="https://wa.me/525556518415?text=Hola%2C%20necesito%20soporte%20t%C3%A9cnico%20con%20AstroTherapy" target="_blank" class="btn-wa">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+    Soporte técnico
+  </a>
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <p>© 2026 Astrología Terapéutica e Integración Energética · RFC: RIDM660922IG7 · Ciudad de México</p>
+  <p style="margin-top:8px;">
+    <a href="index.html">Inicio</a>
+    <a href="aviso-privacidad.html">Aviso de Privacidad</a>
+    <a href="terminos-servicio.html">Términos del Servicio</a>
+  </p>
+</footer>
+
+<script>
+  // Lee el parámetro ?plan= de la URL y muestra el tag correspondiente
+  const params = new URLSearchParams(window.location.search);
+  const plan = params.get('plan');
+  const tag = document.getElementById('planTag');
+  if (plan === 'pro') {
+    tag.textContent = 'Pro';
+    tag.style.display = 'inline-block';
+  } else if (plan === 'premium') {
+    tag.textContent = 'Premium';
+    tag.style.display = 'inline-block';
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+// ─── Prisma Schema — CRM Luz Holística ────────────────────────────────────────
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Multi-tenant: Organización ───────────────────────────────────────────────
+model Organizacion {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  nombre  String
+  slug    String  @unique   // ej: "luz-holistica" — usado en URLs
+  plan    String  @default("interno") // interno | starter | pro
+  activa  Boolean @default(true)
+
+  // Relaciones
+  usuarios      Usuario[]
+  contactos     Contacto[]
+  campanas      Campana[]
+  oportunidades Oportunidad[]
+
+
+}
+
+// ─── Usuarios del sistema ─────────────────────────────────────────────────────
+model Usuario {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  nombre   String
+  email    String
+  password String  // bcrypt hash
+  rol      String  @default("agente") // admin | agente
+  activo   Boolean @default(true)
+
+  organizacionId String
+  organizacion   Organizacion @relation(fields: [organizacionId], references: [id], onDelete: Cascade)
+
+  @@unique([email, organizacionId])
+  @@index([organizacionId])
+
+}
+
+// ─── Contacto ─────────────────────────────────────────────────────────────────
+model Contacto {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ── Datos de contacto ────────────────────────────────────────────────────────
+  nombre       String?
+  email        String
+  telefono     String?
+  usuarioRedes String?
+
+  // ── Perfil profesional ───────────────────────────────────────────────────────
+  especialidadPrimaria   String  @default("otro")
+  especialidadSecundaria String?
+  nivelExperiencia       String  @default("principiante")
+  formacion              String?
+  certificaciones        String? // JSON array serializado
+
+  // ── Ubicación ────────────────────────────────────────────────────────────────
+  pais        String @default("MX")
+  ciudad      String?
+  region      String?
+  zonaHoraria String?
+
+  // ── Presencia digital ────────────────────────────────────────────────────────
+  instagramUrl        String?
+  instagramSeguidores Int?
+  tiktokUrl           String?
+  tiktokSeguidores    Int?
+  facebookUrl         String?
+  youtubeUrl          String?
+  webUrl              String?
+  telegramUsername    String?
+
+  // ── Scoring y estado ─────────────────────────────────────────────────────────
+  leadScore         Int      @default(0)
+  estado            String   @default("prospecto")
+  etiquetas         String   @default("[]")
+  interacciones     Int      @default(0)
+  ultimaInteraccion DateTime?
+
+  // ── Pipeline ─────────────────────────────────────────────────────────────────
+  notas             String?
+  proximosPasos     String?
+  proximaAccionFecha DateTime?
+
+  // ── Fuente de captura ────────────────────────────────────────────────────────
+  fuente String @default("manual")
+
+  // ── Consentimiento ───────────────────────────────────────────────────────────
+  consentimientoEmail  Boolean   @default(false)
+  fechaConsentimiento  DateTime?
+  fuenteConsentimiento String?
+
+  // ── Integración MailerLite ───────────────────────────────────────────────────
+  mailerliteId       String?
+  mailerliteSyncedAt DateTime?
+
+  // ── Métricas de email ────────────────────────────────────────────────────────
+  emailsEnviados Int @default(0)
+  emailsAbiertos Int @default(0)
+  emailsClicados Int @default(0)
+
+  // ── Multi-tenant ─────────────────────────────────────────────────────────────
+  organizacionId String
+  organizacion   Organizacion @relation(fields: [organizacionId], references: [id], onDelete: Cascade)
+
+  // ── Relaciones ───────────────────────────────────────────────────────────────
+  acciones      Accion[]
+  oportunidades Oportunidad[]
+
+  @@unique([email, organizacionId])
+  @@index([organizacionId])
+  @@index([estado])
+  @@index([pais])
+  @@index([especialidadPrimaria])
+  @@index([leadScore])
+
+}
+
+// ─── Historial de acciones sobre un contacto ──────────────────────────────────
+model Accion {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  tipo            String
+  descripcion     String?
+  puntosAplicados Int @default(0)
+
+  contactoId String
+  contacto   Contacto @relation(fields: [contactoId], references: [id], onDelete: Cascade)
+
+  @@index([contactoId])
+
+}
+
+// ─── Pipeline de ventas: Oportunidad ─────────────────────────────────────────
+// Etapas: prospecto → contactado → propuesta → negociacion → cerrado_ganado | cerrado_perdido
+model Oportunidad {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  titulo      String
+  descripcion String?
+  etapa       String  @default("prospecto")
+  // prospecto | contactado | propuesta | negociacion | cerrado_ganado | cerrado_perdido
+
+  valor       Float   @default(0)      // valor estimado del deal (MXN)
+  probabilidad Int    @default(0)      // % 0-100
+  fechaCierre  DateTime?               // fecha estimada de cierre
+
+  motivoPerdida String?                // por qué se perdió (si aplica)
+  notas         String?
+
+  // Contacto asociado (opcional — puede ser un prospecto sin email)
+  contactoId    String?
+  contacto      Contacto? @relation(fields: [contactoId], references: [id], onDelete: SetNull)
+
+  // Responsable (usuario que lleva el deal)
+  responsableId String?
+
+  // Multi-tenant
+  organizacionId String
+  organizacion   Organizacion @relation(fields: [organizacionId], references: [id], onDelete: Cascade)
+
+  @@index([organizacionId])
+  @@index([etapa])
+  @@index([contactoId])
+
+}
+
+// ─── Campañas de email ────────────────────────────────────────────────────────
+model Campana {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  nombre      String
+  descripcion String?
+  tipo        String @default("email")
+  estado      String @default("borrador")
+  segmento    String?
+  mailerliteId String?
+
+  totalContactos Int @default(0)
+  totalEnviados  Int @default(0)
+  totalAbiertos  Int @default(0)
+  totalClics     Int @default(0)
+
+  // ── Multi-tenant ─────────────────────────────────────────────────────────────
+  organizacionId String
+  organizacion   Organizacion @relation(fields: [organizacionId], references: [id], onDelete: Cascade)
+
+  @@index([organizacionId])
+
+}

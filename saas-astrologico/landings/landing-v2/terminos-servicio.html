@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Términos del Servicio | Astrología Terapéutica e Integración Energética</title>
+  <meta name="description" content="Términos y condiciones que regulan el acceso y uso del software AstroTherapy Pro y Premium, conforme a la legislación mexicana." />
+  <meta name="robots" content="noindex, follow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --purple:       #6b4e9e;
+      --purple-dark:  #4a3576;
+      --purple-deep:  #1e1233;
+      --gold:         #d4a373;
+      --gold-light:   #f0c987;
+      --cream:        #fdfcfb;
+      --warm:         #f4eee6;
+      --text:         #2a2438;
+      --text-muted:   #6b6477;
+      --border:       #ede7df;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--cream);
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    header {
+      background: rgba(30,18,51,0.97);
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(212,163,115,0.2);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: 960px; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-logo { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(212,163,115,0.4); object-fit: cover; }
+    .brand-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--gold-light); line-height: 1.1; }
+    .brand-sub  { font-size: 0.6rem; color: rgba(255,255,255,0.45); letter-spacing: 1px; text-transform: uppercase; }
+    .header-back { color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .header-back:hover { color: var(--gold-light); }
+
+    /* ── Hero del documento ── */
+    .doc-hero {
+      background: linear-gradient(135deg, var(--purple-deep) 0%, #2a1a4e 100%);
+      padding: 60px 24px 48px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .doc-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(107,78,158,0.25) 0%, transparent 70%);
+    }
+    .doc-hero-content { position: relative; z-index: 1; }
+    .doc-tipo {
+      display: inline-block;
+      background: rgba(212,163,115,0.15); border: 1px solid rgba(212,163,115,0.35);
+      color: var(--gold-light); padding: 5px 14px; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .doc-hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700; color: white; line-height: 1.15; margin-bottom: 12px;
+    }
+    .doc-hero p { color: rgba(255,255,255,0.55); font-size: 0.9rem; }
+    .doc-meta {
+      display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+      margin-top: 24px; padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.82rem; color: rgba(255,255,255,0.4);
+    }
+    .doc-meta span::before { content: '✦ '; color: var(--gold); font-size: 0.65rem; }
+
+    /* ── Índice ── */
+    .toc-bar {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 12px 24px; overflow-x: auto; white-space: nowrap;
+    }
+    .toc-bar a {
+      color: var(--purple); text-decoration: none; font-size: 0.82rem; font-weight: 500;
+      margin-right: 20px; transition: color 0.2s;
+    }
+    .toc-bar a:hover { color: var(--purple-dark); text-decoration: underline; }
+
+    /* ── Contenido ── */
+    .doc-body {
+      max-width: 860px; margin: 0 auto; padding: 48px 24px 80px;
+    }
+
+    .notice-box {
+      background: var(--warm); border: 1px solid var(--border);
+      border-left: 4px solid var(--purple);
+      border-radius: 12px; padding: 20px 24px; margin-bottom: 40px;
+      font-size: 0.9rem; color: var(--text-muted);
+    }
+    .notice-box strong { color: var(--purple-dark); }
+
+    .alert-box {
+      background: #fff8f0; border: 1px solid rgba(212,163,115,0.4);
+      border-left: 4px solid var(--gold);
+      border-radius: 12px; padding: 16px 20px; margin: 16px 0;
+      font-size: 0.88rem; color: var(--text-muted);
+    }
+    .alert-box strong { color: #7a5c1e; }
+
+    .section {
+      margin-bottom: 48px; padding-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-of-type { border-bottom: none; }
+
+    .section-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: white; font-weight: 700; font-size: 0.85rem;
+      flex-shrink: 0; margin-bottom: 12px;
+    }
+    .section h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--purple-dark); margin-bottom: 16px; line-height: 1.2;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section h3 {
+      font-size: 1rem; font-weight: 600; color: var(--purple-dark);
+      margin: 20px 0 8px;
+    }
+    .section p { color: var(--text); margin-bottom: 12px; font-size: 0.95rem; }
+    .section p:last-child { margin-bottom: 0; }
+
+    /* Tabla de planes */
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+    .data-table th {
+      background: var(--purple-dark); color: white;
+      padding: 10px 16px; text-align: left; font-weight: 600;
+    }
+    .data-table th:first-child { border-radius: 8px 0 0 0; }
+    .data-table th:last-child  { border-radius: 0 8px 0 0; }
+    .data-table td { padding: 10px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .data-table tr:nth-child(even) td { background: var(--warm); }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* Lista de items */
+    .item-list { list-style: none; margin: 12px 0; padding: 0; }
+    .item-list li {
+      padding: 8px 0 8px 28px; position: relative;
+      border-bottom: 1px solid var(--border); font-size: 0.93rem;
+    }
+    .item-list li:last-child { border-bottom: none; }
+    .item-list li::before {
+      content: '✦';
+      position: absolute; left: 0; top: 10px;
+      color: var(--gold); font-size: 0.65rem;
+    }
+
+    /* Tarjetas de contacto */
+    .contact-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px; margin: 20px 0;
+    }
+    .contact-card {
+      background: white; border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; text-align: center;
+    }
+    .contact-card .icon {
+      font-size: 1.8rem; margin-bottom: 10px; display: block;
+    }
+    .contact-card h4 { color: var(--purple-dark); font-size: 0.9rem; margin-bottom: 4px; }
+    .contact-card p { color: var(--text-muted); font-size: 0.85rem; margin: 0; }
+    .contact-card a { color: var(--purple); text-decoration: none; font-weight: 500; }
+    .contact-card a:hover { text-decoration: underline; }
+
+    /* Proceso numbered */
+    .process-steps { counter-reset: steps; list-style: none; margin: 16px 0; }
+    .process-steps li {
+      counter-increment: steps;
+      display: flex; align-items: flex-start; gap: 14px;
+      margin-bottom: 14px; font-size: 0.92rem;
+    }
+    .process-steps li::before {
+      content: counter(steps);
+      min-width: 28px; height: 28px; border-radius: 50%;
+      background: var(--gold); color: var(--purple-deep);
+      font-weight: 800; font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+
+    /* Footer */
+    .doc-footer {
+      background: var(--purple-deep);
+      padding: 32px 24px; text-align: center;
+      color: rgba(255,255,255,0.35); font-size: 0.82rem;
+    }
+    .doc-footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
+    .doc-footer a:hover { color: var(--gold-light); }
+
+    @media (max-width: 600px) {
+      .doc-meta { gap: 12px; }
+      .toc-bar { font-size: 0.78rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════ HEADER ══════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <img src="logo.jpeg" alt="Logo" class="brand-logo" />
+      <div>
+        <div class="brand-name">Astrología Terapéutica</div>
+        <div class="brand-sub">e Integración Energética · LATAM</div>
+      </div>
+    </a>
+    <a href="index.html" class="header-back">← Regresar al inicio</a>
+  </div>
+</header>
+
+<!-- ══════════════════════════════ HERO ══════════════════════════════ -->
+<div class="doc-hero">
+  <div class="doc-hero-content">
+    <div class="doc-tipo">Documento Legal</div>
+    <h1>Términos del Servicio</h1>
+    <p>Condiciones que rigen el acceso y uso del software AstroTherapy Pro y Premium</p>
+    <div class="doc-meta">
+      <span>Vigencia: 30 de junio de 2026</span>
+      <span>Versión 1.0</span>
+      <span>Ley aplicable: México</span>
+      <span>Empresa: Astrología Terapéutica e Integración Energética</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ ÍNDICE ══════════════════════════════ -->
+<div class="toc-bar">
+  <a href="#s1">1. Las Partes</a>
+  <a href="#s2">2. Objeto</a>
+  <a href="#s3">3. Registro</a>
+  <a href="#s4">4. Planes y Precios</a>
+  <a href="#s5">5. Pagos y Facturación</a>
+  <a href="#s6">6. Cancelación y Reembolsos</a>
+  <a href="#s7">7. Licencia de Uso</a>
+  <a href="#s8">8. Propiedad Intelectual</a>
+  <a href="#s9">9. Obligaciones del Usuario</a>
+  <a href="#s10">10. Limitación de Responsabilidad</a>
+  <a href="#s11">11. Privacidad</a>
+  <a href="#s12">12. Suspensión y Terminación</a>
+  <a href="#s13">13. Modificaciones</a>
+  <a href="#s14">14. Ley Aplicable</a>
+  <a href="#s15">15. Contacto</a>
+</div>
+
+<!-- ══════════════════════════════ CUERPO ══════════════════════════════ -->
+<div class="doc-body">
+
+  <div class="notice-box">
+    <strong>Lea este documento antes de contratar.</strong> Al crear una cuenta, activar una suscripción o usar el software AstroTherapy, usted acepta quedar vinculado por estos Términos del Servicio. Si no está de acuerdo con alguna disposición, no utilice el servicio.
+  </div>
+
+  <!-- 1 -->
+  <div class="section" id="s1">
+    <h2><span class="section-num">1</span> Las Partes</h2>
+    <p>El presente contrato se celebra entre:</p>
+
+    <h3>Prestador del servicio</h3>
+    <p><strong>Denominación:</strong> Astrología Terapéutica e Integración Energética<br>
+    <strong>Responsable:</strong> Mario A. Rivera D.<br>
+    <strong>RFC:</strong> RIDM660922IG7<br>
+    <strong>Domicilio fiscal:</strong> Av. Río Becerra No. 283 B01, Colonia Nápoles, Alcaldía Benito Juárez, C.P. 03810, Ciudad de México<br>
+    <strong>Correo electrónico:</strong> <a href="mailto:contacto@luzholistica.com.mx">contacto@luzholistica.com.mx</a><br>
+    <strong>Teléfono:</strong> +52 55 5651 8415<br>
+    En adelante <em>"la Empresa"</em>.</p>
+
+    <h3>Usuario / Suscriptor</h3>
+    <p>Persona física o moral que crea una cuenta en AstroTherapy y contrata uno de los planes de suscripción disponibles. En adelante <em>"el Usuario"</em>.</p>
+  </div>
+
+  <!-- 2 -->
+  <div class="section" id="s2">
+    <h2><span class="section-num">2</span> Objeto del Contrato</h2>
+    <p>La Empresa se obliga a otorgar al Usuario acceso al software de escritorio <strong>AstroTherapy Pro</strong> o <strong>AstroTherapy Premium</strong>, según el plan contratado, mediante licencia de uso no exclusiva, intransferible y revocable, durante el periodo de suscripción activa y pagada.</p>
+    <p>El software es una herramienta de apoyo para astrólogos y terapeutas holísticos que facilita la gestión de cartas natales, perfiles de clientes, seguimiento de sesiones terapéuticas y generación de reportes. Se instala localmente en el equipo del Usuario y los datos permanecen en sus propios dispositivos.</p>
+    <div class="alert-box">
+      <strong>Importante:</strong> AstroTherapy es una herramienta profesional de apoyo. No constituye, ni debe entenderse como, diagnóstico médico, psicológico o terapéutico de ningún tipo. El Usuario es responsable del uso que haga del software en su práctica profesional.
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="section" id="s3">
+    <h2><span class="section-num">3</span> Registro y Cuenta</h2>
+    <h3>3.1 Requisitos</h3>
+    <p>Para crear una cuenta el Usuario debe ser mayor de 18 años, proporcionar información veraz y completa, y mantenerla actualizada. Una misma persona no podrá crear múltiples cuentas para eludir restricciones o tarifas.</p>
+
+    <h3>3.2 Credenciales</h3>
+    <p>El Usuario es responsable de la confidencialidad de sus credenciales de acceso (usuario y contraseña). Deberá notificar de inmediato a la Empresa ante cualquier uso no autorizado de su cuenta escribiendo a <a href="mailto:contacto@luzholistica.com.mx">contacto@luzholistica.com.mx</a>.</p>
+
+    <h3>3.3 Datos de instalación</h3>
+    <p>La contraseña de acceso a la base de datos local del software la genera y administra exclusivamente el propio Usuario. La Empresa no tiene acceso a ella ni puede recuperarla. La pérdida de esta contraseña puede resultar en la pérdida de acceso a los datos almacenados localmente, responsabilidad que recae íntegramente en el Usuario.</p>
+  </div>
+
+  <!-- 4 -->
+  <div class="section" id="s4">
+    <h2><span class="section-num">4</span> Planes, Precios y Características</h2>
+    <p>La Empresa ofrece los siguientes planes de suscripción, cuyos precios están expresados en dólares americanos (USD):</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Característica</th>
+          <th>AstroTherapy Pro</th>
+          <th>AstroTherapy Premium</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Precio mensual</td>
+          <td>USD $29 / mes</td>
+          <td>USD $39 / mes</td>
+        </tr>
+        <tr>
+          <td>Precio anual (pago adelantado)</td>
+          <td>USD $290 / año (~$24/mes)</td>
+          <td>USD $390 / año (~$32/mes)</td>
+        </tr>
+        <tr>
+          <td>Dispositivos simultáneos</td>
+          <td>2</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>Cartas natales ilimitadas</td>
+          <td>✓</td>
+          <td>✓</td>
+        </tr>
+        <tr>
+          <td>Reportes terapéuticos</td>
+          <td>Estándar</td>
+          <td>Avanzados</td>
+        </tr>
+        <tr>
+          <td>Soporte prioritario</td>
+          <td>—</td>
+          <td>✓</td>
+        </tr>
+        <tr>
+          <td>Actualizaciones de contenido</td>
+          <td>Incluidas</td>
+          <td>Incluidas + anticipadas</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Los precios podrán actualizarse con un aviso mínimo de 30 días calendario al correo registrado por el Usuario. Los cambios de precio no aplicarán a suscripciones anuales durante el periodo ya pagado.</p>
+  </div>
+
+  <!-- 5 -->
+  <div class="section" id="s5">
+    <h2><span class="section-num">5</span> Pagos y Facturación</h2>
+    <h3>5.1 Procesador de pagos</h3>
+    <p>Los cobros se realizan a través de <strong>Stripe</strong>, proveedor externo de procesamiento de pagos. Al contratar, el Usuario acepta también las condiciones de uso de Stripe aplicables. La Empresa no almacena datos de tarjetas de crédito o débito en sus sistemas.</p>
+
+    <h3>5.2 Ciclo de facturación</h3>
+    <p>La suscripción mensual se renueva automáticamente cada 30 días a partir de la fecha de contratación. La suscripción anual se renueva automáticamente cada 12 meses. El cargo se realiza en la fecha de renovación utilizando el método de pago registrado.</p>
+
+    <h3>5.3 Fallos de pago</h3>
+    <p>En caso de que un cargo no pueda procesarse, la Empresa notificará al Usuario por correo electrónico. Se realizarán hasta 3 intentos de cobro en un periodo de 7 días. Si el pago no se regulariza en ese lapso, el acceso al software se suspenderá hasta que se realice el pago correspondiente, sin que ello implique la cancelación definitiva de la cuenta ni la pérdida de datos.</p>
+
+    <h3>5.4 Comprobantes fiscales</h3>
+    <p>Para solicitar una factura (CFDI) el Usuario deberá enviar sus datos fiscales completos (RFC, razón social, régimen fiscal y correo para facturación) a <a href="mailto:contacto@luzholistica.com.mx">contacto@luzholistica.com.mx</a> dentro de los 3 días naturales posteriores al cobro. Solicitudes fuera de plazo quedan sujetas a disponibilidad conforme a las disposiciones del SAT.</p>
+  </div>
+
+  <!-- 6 -->
+  <div class="section" id="s6">
+    <h2><span class="section-num">6</span> Cancelación y Política de Reembolsos</h2>
+    <h3>6.1 Cancelación por el Usuario</h3>
+    <p>El Usuario puede cancelar su suscripción en cualquier momento desde su panel de cuenta o escribiendo a <a href="mailto:contacto@luzholistica.com.mx">contacto@luzholistica.com.mx</a>. La cancelación surte efecto al término del periodo ya pagado; el acceso se mantiene activo hasta esa fecha.</p>
+
+    <h3>6.2 Reembolsos</h3>
+    <p>En suscripciones <strong>mensuales</strong>, no se otorgan reembolsos por periodos parciales del mes en curso.</p>
+    <p>En suscripciones <strong>anuales</strong>, el Usuario puede solicitar un reembolso proporcional dentro de los primeros <strong>30 días naturales</strong> desde la fecha de pago, siempre que no haya hecho uso del software durante ese periodo. Transcurrido ese plazo, no aplican reembolsos.</p>
+
+    <h3>6.3 Garantía de satisfacción</h3>
+    <p>Los nuevos usuarios que contraten por primera vez cuentan con <strong>7 días de garantía</strong>: si el software no cumple sus expectativas por razones técnicas atribuibles a la Empresa, pueden solicitar el reembolso total del primer pago escribiendo antes de que venza ese plazo.</p>
+
+    <div class="alert-box">
+      <strong>Nota:</strong> Los reembolsos no aplican en casos de uso indebido del software, violación de estos Términos o cancelaciones motivadas por restricciones de uso contrarias a las condiciones aceptadas al contratar.
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="section" id="s7">
+    <h2><span class="section-num">7</span> Licencia de Uso</h2>
+    <p>Sujeto al pago puntual de la suscripción, la Empresa otorga al Usuario una licencia de uso:</p>
+    <ul class="item-list">
+      <li><strong>No exclusiva:</strong> la misma licencia puede otorgarse a múltiples usuarios.</li>
+      <li><strong>Intransferible:</strong> el Usuario no puede ceder, sublicenciar, vender ni arrendar el acceso al software a terceros.</li>
+      <li><strong>Limitada al plan:</strong> el uso queda restringido al número de dispositivos y funcionalidades del plan contratado.</li>
+      <li><strong>Revocable:</strong> la Empresa puede revocarla en caso de incumplimiento de estos Términos.</li>
+      <li><strong>Para uso profesional personal:</strong> la licencia es para el uso del propio terapeuta en su práctica; no autoriza la reventa del software ni su uso como servicio para terceros.</li>
+    </ul>
+  </div>
+
+  <!-- 8 -->
+  <div class="section" id="s8">
+    <h2><span class="section-num">8</span> Propiedad Intelectual</h2>
+    <p>El software AstroTherapy, incluyendo su código fuente, diseño, metodologías, algoritmos, bases de datos de interpretación astrológica, textos terapéuticos, interfaces gráficas, logotipos y marca, son propiedad exclusiva de la Empresa y están protegidos por la <strong>Ley Federal del Derecho de Autor</strong> y la <strong>Ley de la Propiedad Industrial</strong> de los Estados Unidos Mexicanos, así como por los tratados internacionales de los que México es parte.</p>
+    <p>La contratación del servicio no transfiere al Usuario ningún derecho de propiedad intelectual sobre el software. Queda expresamente prohibido descompilar, realizar ingeniería inversa, copiar, reproducir o distribuir el software o cualquiera de sus componentes.</p>
+    <p>Los datos de clientes que el Usuario introduce en el software son de su exclusiva propiedad. La Empresa no tiene acceso a ellos dado el modelo de instalación local.</p>
+  </div>
+
+  <!-- 9 -->
+  <div class="section" id="s9">
+    <h2><span class="section-num">9</span> Obligaciones del Usuario</h2>
+    <p>El Usuario se obliga a:</p>
+    <ul class="item-list">
+      <li>Usar el software únicamente para los fines lícitos descritos en su objeto y de conformidad con la legislación mexicana aplicable.</li>
+      <li>No compartir sus credenciales de acceso ni su licencia con terceros.</li>
+      <li>Mantener actualizado el software conforme a las versiones que la Empresa publique.</li>
+      <li>Realizar respaldos periódicos de su base de datos local, ya que la Empresa no tiene acceso a esos datos y no puede recuperarlos en caso de pérdida.</li>
+      <li>Tratar los datos personales de sus propios clientes conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP), ya que el Usuario actúa como Responsable de dichos datos.</li>
+      <li>No utilizar el software para actividades que puedan dañar, inutilizar, sobrecargar o deteriorar los sistemas de la Empresa o de terceros.</li>
+      <li>Notificar a la Empresa cualquier uso no autorizado de su cuenta o vulneración de seguridad que tenga conocimiento.</li>
+    </ul>
+  </div>
+
+  <!-- 10 -->
+  <div class="section" id="s10">
+    <h2><span class="section-num">10</span> Disponibilidad, Garantías y Limitación de Responsabilidad</h2>
+    <h3>10.1 Disponibilidad</h3>
+    <p>Dado que AstroTherapy es un software de instalación local, su disponibilidad depende principalmente del equipo del propio Usuario. La Empresa se compromete a mantener disponibles los servidores de activación y actualización con un nivel de servicio razonable, pero no garantiza disponibilidad ininterrumpida del 100%.</p>
+
+    <h3>10.2 Actualizaciones</h3>
+    <p>La Empresa podrá publicar actualizaciones, correcciones y nuevas versiones del software durante la vigencia de la suscripción. Algunas actualizaciones pueden ser obligatorias para continuar usando el servicio.</p>
+
+    <h3>10.3 Limitación de responsabilidad</h3>
+    <p>En la máxima medida permitida por la legislación mexicana, la Empresa no será responsable por:</p>
+    <ul class="item-list">
+      <li>Pérdida de datos del Usuario originada por fallas de su equipo, errores de operación, pérdida de contraseña local o fuerza mayor.</li>
+      <li>Resultados terapéuticos, clínicos o personales derivados del uso del software por parte del terapeuta o de sus clientes.</li>
+      <li>Daños indirectos, lucro cesante, pérdida de clientela o cualquier otro daño consecuencial.</li>
+      <li>Interrupciones del servicio atribuibles a causas fuera del control razonable de la Empresa (fuerza mayor, fallas de infraestructura de terceros, desastres naturales, actos de gobierno).</li>
+    </ul>
+    <p>La responsabilidad total de la Empresa ante el Usuario, por cualquier concepto y en cualquier periodo, no excederá el importe equivalente a <strong>tres meses</strong> de la tarifa del plan contratado.</p>
+  </div>
+
+  <!-- 11 -->
+  <div class="section" id="s11">
+    <h2><span class="section-num">11</span> Privacidad y Datos Personales</h2>
+    <p>El tratamiento de los datos personales del Usuario (nombre, correo, RFC, datos de facturación) se rige por el <strong>Aviso de Privacidad Integral</strong> de la Empresa, disponible en <a href="aviso-privacidad.html">luzholistica.com.mx/aviso-privacidad</a>, conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.</p>
+    <p>Los datos que el Usuario introduce sobre sus propios clientes en el software se almacenan <strong>localmente en los dispositivos del Usuario</strong>. La Empresa no tiene acceso a ellos, no los transfiere a terceros y no los trata. El Usuario actúa como Responsable de esos datos y debe contar con su propio aviso de privacidad para su práctica profesional.</p>
+  </div>
+
+  <!-- 12 -->
+  <div class="section" id="s12">
+    <h2><span class="section-num">12</span> Suspensión y Terminación</h2>
+    <h3>12.1 Suspensión por falta de pago</h3>
+    <p>Ante falla de pago, la Empresa suspenderá el acceso al software hasta regularizar el adeudo. Los datos locales del Usuario no se eliminan durante la suspensión.</p>
+
+    <h3>12.2 Terminación por incumplimiento</h3>
+    <p>La Empresa puede terminar la licencia y cancelar la cuenta de forma inmediata, sin reembolso, si el Usuario:</p>
+    <ul class="item-list">
+      <li>Comparte, revende o sublicencia el acceso a terceros.</li>
+      <li>Realiza ingeniería inversa, copia o distribuye el software.</li>
+      <li>Proporciona información falsa al registrarse o al solicitar factura.</li>
+      <li>Usa el software para actividades ilícitas o contrarias a las buenas costumbres.</li>
+      <li>Incumple reiteradamente cualquier obligación de estos Términos tras haber sido notificado.</li>
+    </ul>
+
+    <h3>12.3 Terminación voluntaria</h3>
+    <p>El Usuario puede terminar el contrato cancelando su suscripción conforme a la cláusula 6.1. La Empresa puede terminar el servicio por motivos comerciales dando aviso al Usuario con al menos <strong>60 días de anticipación</strong>, en cuyo caso reembolsará el proporcional no utilizado de la suscripción anual, si aplica.</p>
+
+    <h3>12.4 Efectos de la terminación</h3>
+    <p>Al término del contrato la licencia de uso queda extinguida. El Usuario conserva los datos almacenados en sus equipos (son suyos), pero el software dejará de funcionar una vez vencida la suscripción.</p>
+  </div>
+
+  <!-- 13 -->
+  <div class="section" id="s13">
+    <h2><span class="section-num">13</span> Modificaciones a los Términos</h2>
+    <p>La Empresa se reserva el derecho de modificar estos Términos del Servicio. Cualquier cambio será notificado al Usuario por correo electrónico y/o mediante aviso visible en el software con al menos <strong>15 días de anticipación</strong> a su entrada en vigor.</p>
+    <p>Si el Usuario continúa utilizando el servicio después de la fecha de entrada en vigor de los nuevos Términos, se entenderá que los acepta. En caso contrario, el Usuario podrá cancelar su suscripción antes de esa fecha sin penalización adicional.</p>
+  </div>
+
+  <!-- 14 -->
+  <div class="section" id="s14">
+    <h2><span class="section-num">14</span> Ley Aplicable y Resolución de Controversias</h2>
+    <p>El presente contrato se rige por las leyes vigentes de los <strong>Estados Unidos Mexicanos</strong>, en particular:</p>
+    <ul class="item-list">
+      <li>Código Civil Federal</li>
+      <li>Ley Federal de Protección al Consumidor (LFPC)</li>
+      <li>Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</li>
+      <li>Ley Federal del Derecho de Autor</li>
+      <li>Código de Comercio</li>
+    </ul>
+    <p>Para la resolución de cualquier controversia derivada de este contrato, las partes se someten a la jurisdicción y competencia de los tribunales competentes de la <strong>Ciudad de México</strong>, renunciando expresamente a cualquier otro fuero que pudiera corresponderles por razón de su domicilio presente o futuro.</p>
+    <p>Antes de acudir a instancias judiciales, las partes se comprometen a intentar una solución amistosa mediante comunicación directa, con un plazo de 30 días naturales para llegar a un acuerdo.</p>
+  </div>
+
+  <!-- 15 -->
+  <div class="section" id="s15">
+    <h2><span class="section-num">15</span> Contacto</h2>
+    <p>Para cualquier duda, aclaración o queja relacionada con estos Términos del Servicio, el Usuario puede contactar a la Empresa a través de:</p>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <span class="icon">✉️</span>
+        <h4>Correo electrónico</h4>
+        <p><a href="mailto:contacto@luzholistica.com.mx">contacto@luzholistica.com.mx</a></p>
+      </div>
+      <div class="contact-card">
+        <span class="icon">📱</span>
+        <h4>WhatsApp / Teléfono</h4>
+        <p>+52 55 5651 8415</p>
+      </div>
+      <div class="contact-card">
+        <span class="icon">📍</span>
+        <h4>Domicilio fiscal</h4>
+        <p>Av. Río Becerra No. 283 B01<br>Col. Nápoles, Alcaldía Benito Juárez<br>C.P. 03810, CDMX</p>
+      </div>
+    </div>
+    <p style="margin-top:20px;">Tiempo de respuesta estimado: <strong>3 días hábiles</strong>.</p>
+  </div>
+
+</div><!-- /doc-body -->
+
+<!-- ══════════════════════════════ FOOTER ══════════════════════════════ -->
+<footer class="doc-footer">
+  <p>© 2026 Astrología Terapéutica e Integración Energética · RFC: RIDM660922IG7 · Ciudad de México</p>
+  <p style="margin-top:8px;">
+    <a href="index.html">Inicio</a> &nbsp;·&nbsp;
+    <a href="aviso-privacidad.html">Aviso de Privacidad</a> &nbsp;·&nbsp;
+    <a href="terminos-servicio.html">Términos del Servicio</a>
+  </p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroTherapy Pro | Software de Astrología para Terapeutas</title>
+    <meta name="description" content="AstroTherapy Pro: carta natal + análisis transgeneracional + tarot. Para astrólogos y terapeutas profesionales en LATAM.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2a2438;
+            background: #fdfcfb;
+        }
+        :root {
+            --primary: #6b4e9e;
+            --primary-dark: #4a3576;
+            --accent: #d4a373;
+            --bg-light: #f9f5f0;
+            --text: #2a2438;
+            --text-light: #6b6477;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* Header */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(253,252,251,0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #ede7df;
+            padding: 16px 0;
+        }
+        .header-inner {
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 16px;
+        }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand img { width: 72px; height: 72px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .brand-text .product { font-size: 1.15rem; font-weight: 700; color: var(--primary-dark); letter-spacing: 0.5px; }
+        .brand-text .tag { font-size: 0.75rem; color: var(--accent); font-weight: 600; }
+        .header-cta {
+            background: var(--primary); color: white;
+            padding: 10px 20px; border-radius: 8px; border: none;
+            font-weight: 600; cursor: pointer; text-decoration: none;
+            transition: background 0.2s;
+        }
+        .header-cta:hover { background: var(--primary-dark); }
+
+        /* Hero */
+        .hero {
+            padding: 80px 0 100px;
+            background: linear-gradient(135deg, #fdfcfb 0%, #f4eee6 100%);
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3.2rem; font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 20px; line-height: 1.15;
+            max-width: 900px; margin-left: auto; margin-right: auto;
+        }
+        .hero .sub {
+            font-size: 1.25rem; color: var(--text-light);
+            max-width: 720px; margin: 0 auto 40px;
+        }
+        .hero-cta {
+            background: var(--primary); color: white;
+            padding: 18px 36px; border-radius: 10px; border: none;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer;
+            text-decoration: none; display: inline-block;
+            box-shadow: 0 6px 20px rgba(107,78,158,0.25);
+            transition: transform 0.15s, box-shadow 0.2s;
+        }
+        .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(107,78,158,0.35); }
+
+        /* Video demo */
+        #demo-video { padding: 60px 0 40px; background: var(--bg-light); }
+        .video-wrap {
+            max-width: 880px; margin: 0 auto;
+            background: #1a1426; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(42,36,56,0.2);
+            position: relative;
+            aspect-ratio: 16/9;
+        }
+        .video-wrap iframe { width: 100%; height: 100%; border: 0; display: block; }
+        .video-placeholder {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.85); text-align: center;
+            background: radial-gradient(circle at center, #2a2438 0%, #0d0a14 100%);
+        }
+        .play-btn {
+            width: 88px; height: 88px; background: var(--primary);
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: white; font-size: 2rem;
+            box-shadow: 0 0 0 12px rgba(107,78,158,0.25);
+            margin-bottom: 20px; transition: transform 0.2s;
+            cursor: pointer; border: none;
+        }
+        .play-btn:hover { transform: scale(1.08); }
+
+        /* WhatsApp CTA */
+        .wa-cta-wrap {
+            display: flex; justify-content: center; align-items: center;
+            gap: 16px; flex-wrap: wrap; margin-top: 32px;
+            padding: 20px; background: white;
+            border-radius: 12px; box-shadow: 0 4px 16px rgba(42,36,56,0.08);
+            max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+        .wa-cta-wrap .label { color: var(--text); font-size: 0.95rem; }
+        .wa-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: #25D366; color: white;
+            padding: 12px 24px; border-radius: 30px;
+            text-decoration: none; font-weight: 600;
+            box-shadow: 0 4px 12px rgba(37,211,102,0.3);
+            transition: transform 0.15s, box-shadow 0.2s;
+        }
+        .wa-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,211,102,0.45); }
+        .wa-btn svg { width: 22px; height: 22px; fill: white; }
+        .wa-faq-note {
+            text-align: center; margin-top: 32px; color: var(--text);
+        }
+        .wa-faq-note a { color: #25D366; font-weight: 600; text-decoration: none; }
+        .video-placeholder .hint { font-size: 0.9rem; opacity: 0.7; margin-top: 12px; }
+        .hero-meta { color: var(--text-light); font-size: 0.95rem; margin-top: 16px; }
+        .hero-trust {
+            margin-top: 40px; display: flex;
+            justify-content: center; gap: 32px;
+            flex-wrap: wrap; font-size: 0.9rem; color: var(--text-light);
+        }
+        .hero-trust span::before { content: "✓ "; color: var(--primary); font-weight: 700; }
+
+        /* Section base */
+        section { padding: 80px 0; }
+        h2.section-title {
+            font-size: 2.4rem; color: var(--primary-dark);
+            text-align: center; margin-bottom: 16px;
+        }
+        .section-sub {
+            text-align: center; color: var(--text-light);
+            font-size: 1.1rem; max-width: 700px; margin: 0 auto 60px;
+        }
+
+        /* Problem */
+        .problem-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .problem-card {
+            background: white; padding: 32px 24px;
+            border-radius: 12px; border: 1px solid #ede7df;
+        }
+        .problem-card .icon {
+            width: 48px; height: 48px; background: #f4eee6;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; margin-bottom: 16px;
+        }
+        .problem-card h3 { color: var(--primary-dark); margin-bottom: 8px; font-size: 1.15rem; }
+
+        /* Solution */
+        #solucion { background: var(--bg-light); }
+        .solution-steps {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+        .step {
+            background: white; padding: 32px; border-radius: 12px;
+            position: relative;
+        }
+        .step-num {
+            width: 40px; height: 40px; background: var(--primary);
+            color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; margin-bottom: 16px;
+        }
+        .step h3 { color: var(--primary-dark); margin-bottom: 12px; }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px; max-width: 800px; margin: 0 auto;
+        }
+        .plan {
+            background: white; padding: 40px 32px;
+            border-radius: 16px; border: 2px solid #ede7df;
+            position: relative;
+        }
+        .plan.featured { border-color: var(--primary); transform: scale(1.02); }
+        .plan-badge {
+            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+            background: var(--primary); color: white;
+            padding: 6px 16px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: 600;
+        }
+        .plan h3 { font-size: 1.5rem; color: var(--primary-dark); margin-bottom: 8px; }
+        .plan-price { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin: 16px 0; }
+        .plan-price span { font-size: 1rem; color: var(--text-light); font-weight: 400; }
+        .plan-price-year { color: var(--text-light); margin-bottom: 24px; font-size: 0.95rem; }
+        .plan ul { list-style: none; margin-bottom: 32px; }
+        .plan ul li {
+            padding: 8px 0; padding-left: 24px;
+            position: relative; font-size: 0.95rem;
+        }
+        .plan ul li::before {
+            content: "✓"; position: absolute; left: 0;
+            color: var(--primary); font-weight: 700;
+        }
+        .plan-cta {
+            display: block; width: 100%; padding: 14px;
+            background: var(--primary); color: white;
+            border: none; border-radius: 8px; font-weight: 600;
+            cursor: pointer; text-decoration: none; text-align: center;
+        }
+        .plan-cta.outline { background: white; color: var(--primary); border: 2px solid var(--primary); }
+
+        /* Compare table */
+        .compare-wrap { max-width: 900px; margin: 0 auto; overflow-x: auto; }
+        .compare-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
+        .compare-table th, .compare-table td { padding: 14px 18px; text-align: left; border-bottom: 1px solid #ede7df; }
+        .compare-table th { background: var(--primary); color: white; }
+        .compare-table td:first-child { font-weight: 600; }
+        .check { color: var(--primary); font-weight: 700; }
+        .dash { color: var(--text-light); }
+
+        /* Testimonials */
+        #testimonios { background: var(--bg-light); }
+        .testi-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .testi {
+            background: white; padding: 32px; border-radius: 12px;
+            border-left: 4px solid var(--accent);
+        }
+        .testi p { font-style: italic; margin-bottom: 16px; color: var(--text); }
+        .testi cite { color: var(--text-light); font-size: 0.9rem; font-style: normal; }
+
+        /* FAQ */
+        .faq-list { max-width: 800px; margin: 0 auto; }
+        .faq-item {
+            background: white; margin-bottom: 12px; border-radius: 8px;
+            border: 1px solid #ede7df; overflow: hidden;
+        }
+        .faq-q {
+            padding: 20px 24px; cursor: pointer; font-weight: 600;
+            color: var(--primary-dark); display: flex;
+            justify-content: space-between; align-items: center;
+        }
+        .faq-q::after { content: "+"; font-size: 1.5rem; color: var(--primary); }
+        .faq-item.open .faq-q::after { content: "−"; }
+        .faq-a {
+            padding: 0 24px; max-height: 0; overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s; color: var(--text-light);
+        }
+        .faq-item.open .faq-a { padding: 0 24px 20px; max-height: 300px; }
+
+        /* Final CTA */
+        .final-cta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white; text-align: center; padding: 80px 0;
+        }
+        .final-cta h2 { color: white; margin-bottom: 16px; }
+        .final-cta .sub { opacity: 0.9; margin-bottom: 32px; }
+        .final-cta button {
+            background: var(--accent); color: var(--primary-dark);
+            padding: 18px 36px; border-radius: 10px; border: none;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer;
+        }
+
+        /* Footer */
+        footer {
+            background: #2a2438; color: rgba(255,255,255,0.7);
+            padding: 40px 0; text-align: center; font-size: 0.9rem;
+        }
+        footer a { color: var(--accent); text-decoration: none; margin: 0 12px; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            h2.section-title { font-size: 1.8rem; }
+            section { padding: 60px 0; }
+            .brand img { width: 52px; height: 52px; }
+            .brand-text .product { font-size: 0.95rem; }
+            .brand-text .tag { font-size: 0.65rem; }
+            .header-cta { padding: 8px 14px; font-size: 0.85rem; }
+            .play-btn { width: 64px; height: 64px; font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+    <div class="container header-inner">
+        <div class="brand">
+            <img src="logo.jpeg" alt="Astrología Terapéutica e Integración Energética">
+            <div class="brand-text">
+                <span class="product">AstroTherapy Pro</span>
+                <span class="tag">Astrología Terapéutica e Integración Energética</span>
+            </div>
+        </div>
+        <a href="#planes" class="header-cta">Acceder al software</a>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <h1>Deja de entrar a ciegas a cada sesión.</h1>
+        <p class="sub">AstroTherapy Pro integra carta natal, análisis transgeneracional y tarot — todo en uno, antes de que tu cliente cruce la puerta.</p>
+        <a href="#planes" class="hero-cta">Comenzar mi suscripción — $29 USD/mes</a>
+        <p class="hero-meta">Garantía de satisfacción de 30 días · Cancela cuando quieras</p>
+        <div class="hero-trust">
+            <span>Diseñado para terapeutas</span>
+            <span>100% en español</span>
+            <span>Enfoque LATAM</span>
+        </div>
+    </div>
+</section>
+
+<section id="demo-video">
+    <div class="container">
+        <h2 class="section-title">Mira cómo funciona en 2 minutos</h2>
+        <p class="section-sub">Un recorrido visual por AstroTherapy Pro: lo que ven tus clientes, lo que te entrega el software y cómo trabajas con él.</p>
+        <div class="video-wrap">
+            <div class="video-placeholder" id="videoPlaceholder">
+                <button class="play-btn" id="playBtn" aria-label="Reproducir video">▶</button>
+                <div>Demostración de AstroTherapy Pro</div>
+                <div class="hint">Click para reproducir · Duración 2:30 min</div>
+            </div>
+        </div>
+        <p class="section-sub" style="margin-top:24px;font-size:0.9rem;">¿Quieres que preparemos el video de demo? Cuando lo tengas, solo reemplaza el bloque <code>video-placeholder</code> con un <code>&lt;iframe&gt;</code> de YouTube/Vimeo o un <code>&lt;video&gt;</code> con tu archivo local.</p>
+
+        <div class="wa-cta-wrap">
+            <span class="label">¿Dudas técnicas o de tu caso específico?</span>
+            <a href="https://wa.me/524420000000?text=Hola%2C%20vi%20AstroTherapy%20Pro%20y%20tengo%20una%20duda" class="wa-btn" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                Escríbenos por WhatsApp
+            </a>
+        </div>
+        <p style="text-align:center;font-size:0.85rem;color:var(--text-light);margin-top:12px;">Respondemos de lunes a viernes, 9am a 6pm (hora CDMX)</p>
+    </div>
+</section>
+
+<section id="problema">
+    <div class="container">
+        <h2 class="section-title">¿Te suena familiar?</h2>
+        <p class="section-sub">El día a día del astrólogo y terapeuta holístico que trabaja sin un sistema integrado.</p>
+        <div class="problem-grid">
+            <div class="problem-card">
+                <div class="icon">🔍</div>
+                <h3>Llego a la sesión sin conocer realmente a mi cliente</h3>
+                <p>Pierdo los primeros 20 minutos solo recopilando contexto básico.</p>
+            </div>
+            <div class="problem-card">
+                <div class="icon">📚</div>
+                <h3>Tengo que buscar manualmente cada técnica</h3>
+                <p>Entre Solar Fire, mis notas y tarot — trabajo triple.</p>
+            </div>
+            <div class="problem-card">
+                <div class="icon">⏱️</div>
+                <h3>Mis sesiones se sienten reactivas</h3>
+                <p>Respondo en lugar de guiar con claridad estratégica.</p>
+            </div>
+            <div class="problem-card">
+                <div class="icon">💭</div>
+                <h3>No tengo cómo documentar patrones</h3>
+                <p>Pierdo información valiosa entre sesiones.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="solucion">
+    <div class="container">
+        <h2 class="section-title">Tu mapa completo antes de cada sesión.</h2>
+        <p class="section-sub">En 3 pasos, tienes el mapa terapéutico de tu consultante listo.</p>
+        <div class="solution-steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <h3>Captura los datos</h3>
+                <p>Ingresa nombre, fecha, hora y lugar de nacimiento. El motor calcula carta natal, nodos lunares, Quirón y más.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <h3>Recibe tu informe</h3>
+                <p>El software genera un reporte con patrones emocionales, lealtades transgeneracionales, heridas y fortalezas.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <h3>Consulta con claridad</h3>
+                <p>Entra a la sesión sabiendo los patrones del consultante y las preguntas correctas que hacer.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="planes">
+    <div class="container">
+        <h2 class="section-title">Elige tu plan — diseñado para tu práctica</h2>
+        <p class="section-sub">Empieza con Pro y actualiza a Premium cuando necesites análisis profundo.</p>
+        <div class="pricing-grid">
+            <div class="plan">
+                <h3>Pro</h3>
+                <div class="plan-price">$29 <span>USD/mes</span></div>
+                <p class="plan-price-year">o $290 USD/año (ahorra $58)</p>
+                <ul>
+                    <li>Carta natal completa</li>
+                    <li>Interpretación de personalidad</li>
+                    <li>Necesidades emocionales</li>
+                    <li>Heridas emocionales</li>
+                    <li>Patrones repetitivos</li>
+                    <li>Miedos inconscientes</li>
+                    <li>Fortalezas</li>
+                </ul>
+                <a href="#" class="plan-cta outline">Acceder al software — Pro</a>
+            </div>
+            <div class="plan featured">
+                <div class="plan-badge">Recomendado</div>
+                <h3>Premium</h3>
+                <div class="plan-price">$39 <span>USD/mes</span></div>
+                <p class="plan-price-year">o $390 USD/año (ahorra $78)</p>
+                <ul>
+                    <li>Todo lo del plan Pro</li>
+                    <li>Interpretaciones específicas por IA</li>
+                    <li>Aspectos planetarios importantes</li>
+                    <li>Análisis kármico transgeneracional</li>
+                    <li>Tensiones planetarias</li>
+                    <li>Informes personalizados por IA</li>
+                    <li>Notas del terapeuta por sesiones</li>
+                </ul>
+                <a href="#" class="plan-cta">Acceder al software — Premium</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="comparativa">
+    <div class="container">
+        <h2 class="section-title">Comparativa de planes</h2>
+        <p class="section-sub">Lo que incluye cada plan, lado a lado.</p>
+        <div class="compare-wrap">
+            <table class="compare-table">
+                <thead>
+                    <tr><th>Característica</th><th>Pro</th><th>Premium</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Carta natal completa</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>Interpretación de personalidad</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>Necesidades emocionales</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>Heridas emocionales</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>Patrones repetitivos</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>Miedos inconscientes</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>Fortalezas</td><td class="check">✓</td><td class="check">✓</td></tr>
+                    <tr><td>Interpretaciones específicas por IA</td><td class="dash">—</td><td class="check">✓</td></tr>
+                    <tr><td>Aspectos planetarios importantes</td><td class="dash">—</td><td class="check">✓</td></tr>
+                    <tr><td>Análisis kármico transgeneracional</td><td class="dash">—</td><td class="check">✓</td></tr>
+                    <tr><td>Tensiones planetarias</td><td class="dash">—</td><td class="check">✓</td></tr>
+                    <tr><td>Informes personalizados por IA</td><td class="dash">—</td><td class="check">✓</td></tr>
+                    <tr><td>Notas del terapeuta por sesiones</td><td class="dash">—</td><td class="check">✓</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section id="testimonios">
+    <div class="container">
+        <h2 class="section-title">Lo que dicen los primeros usuarios</h2>
+        <p class="section-sub">Astrólogos y terapeutas que ya usan AstroTherapy Pro.</p>
+        <div class="testi-grid">
+            <div class="testi">
+                <p>"Llevo 12 años como astrólogo y siempre usé Solar Fire. AstroTherapy Pro me dio lo que me faltaba: el análisis transgeneracional integrado. Mis sesiones tienen una profundidad que mis clientes notan."</p>
+                <cite>— Carlos M., Astrólogo profesional, CDMX</cite>
+            </div>
+            <div class="testi">
+                <p>"Trabajo con constelaciones familiares y con AstroTherapy Pro Premium tengo un nivel de precisión que no creía posible. El análisis kármico transgeneracional me ahorra 30 minutos por sesión."</p>
+                <cite>— Ana G., Terapeuta integrativa, Guadalajara</cite>
+            </div>
+            <div class="testi">
+                <p>"Yo no era astróloga, pero AstroTherapy Pro me enseñó a leer la carta natal de forma intuitiva. Ahora integro tarot y astrología sin años de estudio."</p>
+                <cite>— María R., Tarotista y coach, Monterrey</cite>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="faq">
+    <div class="container">
+        <h2 class="section-title">¿Tienes preguntas?</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <div class="faq-q">¿Necesito experiencia previa en astrología?</div>
+                <div class="faq-a"><p>No. El software está diseñado para ser intuitivo, y los reportes están escritos en español accesible. Si eres terapeuta, la interpretación viene sola.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">¿Mis datos están seguros?</div>
+                <div class="faq-a"><p>Sí. Cumplimos con la LFPDPPP (México). Tus datos y los de tus clientes nunca se comparten.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">¿Puedo cancelar en cualquier momento?</div>
+                <div class="faq-a"><p>Sí. Sin compromisos. Cancelas cuando quieras desde tu panel.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">¿Funciona en móvil?</div>
+                <div class="faq-a"><p>Por ahora es web/desktop. Estamos desarrollando app móvil para 2026.</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">¿Hay descuento anual?</div>
+                <div class="faq-a"><p>Sí. Pro anual: $290 USD (ahorras $58). Premium anual: $390 USD (ahorras $78).</p></div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-q">¿Puedo importar mis clientes existentes?</div>
+                <div class="faq-a"><p>Sí. Puedes importar desde CSV o conectarlo con tu CRM.</p></div>
+            </div>
+        </div>
+        <p class="wa-faq-note">
+            ¿Tienes una duda específica que no encuentras aquí? <a href="https://wa.me/524420000000?text=Hola%2C%20tengo%20una%20duda%20espec%C3%ADfica%20sobre%20AstroTherapy%20Pro" target="_blank" rel="noopener">Escríbenos por WhatsApp →</a>
+        </p>
+    </div>
+</section>
+
+<section class="final-cta">
+    <div class="container">
+        <h2>Tu próxima sesión no tiene que ser a ciegas.</h2>
+        <p class="sub">Únete a los astrólogos y terapeutas que ya profesionalizaron su práctica.</p>
+        <a href="#planes" style="text-decoration:none;"><button>Acceder al software — Desde $29 USD/mes</button></a>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div style="margin-bottom:16px;"><strong style="color:white;">Astrología Terapéutica e Integración Energética · AstroTherapy Pro</strong></div>
+        <div>
+            <a href="#">Aviso de privacidad</a>
+            <a href="#">Términos de servicio</a>
+            <a href="#">Contacto</a>
+        </div>
+        <div style="margin-top:16px;">luzholistica.com.mx · © 2026 Astrología Terapéutica e Integración Energética. Todos los derechos reservados.</div>
+    </div>
+</footer>
+
+<script>
+document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+        q.parentElement.classList.toggle('open');
+    });
+});
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        e.preventDefault();
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+</script>
+
+</body>
+</html>

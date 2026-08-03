@@ -1,0 +1,78 @@
+# ─── Secretos y variables de entorno ─────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+
+# ─── Dependencias ────────────────────────────────────────────────
+node_modules/
+
+# ─── Build (generado por tsc, no se versiona) ────────────────────
+saas-astrologico/crm/dist/
+
+# ─── Logs ────────────────────────────────────────────────────────
+*.log
+logs/
+
+# ─── Bases de datos locales ───────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ─── Media y archivos pesados ────────────────────────────────────
+*.mp4
+*.mp3
+*.mov
+*.avi
+*.mkv
+*.webm
+
+# ─── Archivos binarios que no son código del sitio ───────────────
+*.zip
+*.tar.gz
+*.rar
+*.pdf
+*.docx
+*.xlsx
+*.pptx
+
+# ─── Imágenes que no son assets del sitio web ────────────────────
+saas-astrologico/landings/Video\ para\ landing/
+saas-astrologico/landings/landing-page-proto/*.jpeg
+saas-astrologico/landings/landing-page-proto/*.jpg
+saas-astrologico/landings/landing-page-proto/*.png
+saas-astrologico/landings/landing-v2/*.jpeg
+saas-astrologico/landings/landing-v2/*.jpg
+saas-astrologico/landings/landing-v2/*.png
+
+# ─── CRM legacy (reemplazado por saas-astrologico/crm) ───────────
+crm-luzholistica/
+
+# ─── Documentos de negocio (no código) ───────────────────────────
+Auditoria_Comercial_AstroTherapy_v1.docx
+Estudio_Ampliado_AstroTherapy_Pro.docx
+Acciones_Inmediatas_AstroTherapy_Gantt.md
+Plan_Comercializacion_AstroTherapy_v2.md
+Plan_Comercializacion_AstroTherapy_v3.md
+saas-astrologico/investigacion/*.docx
+
+# ─── Scripts temporales ───────────────────────────────────────────
+systemeio_check.py
+systemeio_setup.py
+conectar_systemeio.sh
+
+# ─── Archivos desconocidos / temporales ──────────────────────────
+ziZK9IQC
+"saas-astrologico/{investigacion,estructura,landings,crm,creativos}"
+
+# ─── OS ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── Editores ────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.swp
+*.swo

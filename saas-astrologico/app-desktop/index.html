@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AstroTherapy Pro</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ── Sidebar ─────────────────────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon">✦</div>
+      <div class="logo-text">
+        <span class="logo-title">AstroTherapy Pro</span>
+        <span class="logo-sub">Beta 1.0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-search">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Buscar consultante..." />
+    </div>
+  </div>
+
+  <div class="sidebar-section-label" id="clients-count">Consultantes</div>
+
+  <div class="sidebar-clients" id="sidebar-clients">
+    <div style="padding: 20px; text-align:center; color: #9B97B0; font-size: 12px;">Cargando...</div>
+  </div>
+
+  <div class="sidebar-footer">
+    <button class="btn-new" id="btn-new-client">
+      <span>+</span> Nuevo consultante
+    </button>
+  </div>
+</aside>
+
+<!-- ── Área principal ───────────────────────────────────────────────────────── -->
+<main class="main" id="main-area">
+  <!-- Se renderiza dinámicamente -->
+</main>
+
+<!-- ── Modal: Nuevo/Editar cliente ─────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-cliente">
+  <div class="modal">
+    <div class="modal-title" id="modal-cliente-title">Nuevo consultante</div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Nombre completo *</label>
+        <input type="text" id="f-nombre" placeholder="Ej. María González" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="f-email" placeholder="correo@ejemplo.com" />
+      </div>
+      <div class="form-group">
+        <label>Teléfono / WhatsApp</label>
+        <input type="text" id="f-telefono" placeholder="+52 55 1234 5678" />
+      </div>
+      <div class="form-group">
+        <label>Fecha de nacimiento</label>
+        <input type="date" id="f-fecha-nac" />
+      </div>
+      <div class="form-group">
+        <label>Hora de nacimiento</label>
+        <input type="time" id="f-hora-nac" />
+      </div>
+      <div class="form-group full">
+        <label>Lugar de nacimiento</label>
+        <input type="text" id="f-lugar-nac" placeholder="Ciudad, País" />
+      </div>
+      <div class="form-group">
+        <label>Especialidad / Motivo de consulta</label>
+        <select id="f-especialidad">
+          <option value="">— Seleccionar —</option>
+          <option value="astrologia">Astrología</option>
+          <option value="astrologia_vedica">Astrología védica</option>
+          <option value="tarot">Tarot</option>
+          <option value="constelaciones">Constelaciones familiares</option>
+          <option value="reiki">Reiki</option>
+          <option value="coaching">Coaching holístico</option>
+          <option value="numerologia">Numerología</option>
+          <option value="regresion">Regresión</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Género</label>
+        <select id="f-genero">
+          <option value="">— Seleccionar —</option>
+          <option value="femenino">Femenino</option>
+          <option value="masculino">Masculino</option>
+          <option value="no_binario">No binario</option>
+          <option value="prefiero_no_decir">Prefiero no decir</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Notas iniciales</label>
+        <textarea id="f-notas" placeholder="Observaciones, motivo de consulta, contexto relevante..."></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-cancel-cliente">Cancelar</button>
+      <button class="btn-submit" id="btn-submit-cliente">Guardar consultante</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Nueva sesión ──────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-sesion">
+  <div class="modal">
+    <div class="modal-title">Registrar sesión</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Fecha de la sesión *</label>
+        <input type="date" id="s-fecha" />
+      </div>
+      <div class="form-group">
+        <label>Duración (minutos)</label>
+        <input type="number" id="s-duracion" value="60" min="15" step="15" />
+      </div>
+      <div class="form-group">
+        <label>Tipo de sesión</label>
+        <select id="s-tipo">
+          <option value="consulta">Consulta</option>
+          <option value="carta_natal">Carta natal</option>
+          <option value="sinastria">Sinarstía</option>
+          <option value="prediccion">Predicción anual</option>
+          <option value="transgeneracional">Transgeneracional</option>
+          <option value="tarot">Tirada de tarot</option>
+          <option value="reiki">Sesión de reiki</option>
+          <option value="seguimiento">Seguimiento</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Precio cobrado</label>
+        <input type="number" id="s-precio" value="0" min="0" step="50" placeholder="0" />
+      </div>
+      <div class="form-group full" style="flex-direction:row; align-items:center; gap:10px; padding-top:4px;">
+        <input type="checkbox" id="s-pagado" style="width:auto; margin:0;" />
+        <label for="s-pagado" style="margin:0; cursor:pointer;">Sesión pagada</label>
+      </div>
+      <div class="form-group full">
+        <label>Notas de la sesión</label>
+        <textarea id="s-notas" rows="5" placeholder="Resumen de la sesión, temas tratados, acuerdos, próximos pasos..."></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-cancel-sesion">Cancelar</button>
+      <button class="btn-submit" id="btn-submit-sesion">Guardar sesión</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast ─────────────────────────────────────────────────────────────────── -->
+<div class="toast" id="toast"></div>
+
+<script src="renderer.js"></script>
+</body>
+</html>
