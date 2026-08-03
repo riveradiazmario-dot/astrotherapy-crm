@@ -14,6 +14,8 @@ import automationsRouter from './routes/automations';
 import sequencesRouter from './routes/sequences';
 import calendlyRouter from './routes/calendly';
 import stripeRouter from './routes/stripe';
+import conversacionesRouter from './routes/conversaciones';
+import iaRouter from './routes/ia';
 import authRouter from './routes/auth';
 import pipelineRouter from './routes/oportunidades';
 import { bootstrapAutomations } from './services/automations/bootstrap';
@@ -50,6 +52,8 @@ app.use('/api/automations', automationsRouter);
 app.use('/api/sequences', sequencesRouter);
 app.use('/api/calendly', calendlyRouter);
 app.use('/api/stripe', stripeRouter);
+app.use('/api/conversaciones', conversacionesRouter);
+app.use('/api/ia', iaRouter);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', async (_req, res) => {
@@ -118,10 +122,25 @@ app.get('/', (_req, res) => {
         'POST /api/calendly/sync-manual': 'Sync manual de un booking { event, invitee, eventTypeSlug? }',
         'GET  /api/calendly/event-types': 'Mapeo slugs Calendly → etiquetas CRM',
       },
+      conversaciones: {
+        'GET  /api/conversaciones/:contactoId': 'Listar hilos del contacto',
+        'GET  /api/conversaciones/:contactoId/timeline': 'Timeline unificado de mensajes',
+        'GET  /api/conversaciones/hilo/:conversacionId': 'Mensajes de un hilo',
+        'POST /api/conversaciones/mensaje': 'Registrar mensaje { contactoId, contenido, canal?, direccion?, tipo? }',
+        'POST /api/conversaciones/hilo/:id/cerrar': 'Cerrar hilo',
+      },
       stripe: {
         'POST /api/stripe/webhook': 'Receptor de webhooks Stripe (checkout.session.completed, subscription.deleted)',
         'POST /api/stripe/sync-manual': 'Sync manual de checkout { id, customer_email, ... }',
         'GET  /api/stripe/products': 'Mapeo productos Stripe → etiquetas CRM (14 productos)',
+      },
+      ia: {
+        'GET  /api/ia/:contactoId/score': 'Calcular leadScore (sin guardar) — muestra factores',
+        'POST /api/ia/:contactoId/score/aplicar': 'Calcular y guardar leadScore',
+        'POST /api/ia/scores/recalcular': 'Batch: recalcular scores de todos los contactos',
+        'GET  /api/ia/:contactoId/resumen': 'Resumen ejecutivo del contacto (perfil, riesgo, valor)',
+        'GET  /api/ia/:contactoId/sugerencias': 'Sugerencias de próximo paso con plantillas',
+        'GET  /api/ia/:contactoId/completo': 'Score + resumen + sugerencias en una sola llamada',
       },
       smtpConfig: {
         'GET  /api/smtp-config': 'Listar cuentas SMTP configuradas (sin password)',
