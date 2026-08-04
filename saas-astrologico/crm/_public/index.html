@@ -622,23 +622,118 @@
 </main>
 
 <script>
-const API = 'http://localhost:3000/api';
+const API = '/api';
 
-// ── Auth helpers — Modo LOCAL (sin login) ────────────────────────────────────
-// En modo local no se envía token. El servidor usa LOCAL_DEV=true para bypass.
+// ── Auth helpers — JWT ────────────────────────────────────────────────────────
+let _authToken = localStorage.getItem('crm_token') || null;
+
 function authFetch(url, opts = {}) {
-  return fetch(url, opts);
+  if (_authToken) {
+    opts.headers = { ...(opts.headers || {}), 'Authorization': `Bearer ${_authToken}` };
+  }
+  return fetch(url, opts).then(async res => {
+    if (res.status === 401) { doLogout(); }
+    return res;
+  });
 }
 
 function doLogout() {
-  // En modo local no hay sesión que cerrar
+  localStorage.removeItem('crm_token');
+  localStorage.removeItem('crm_user');
+  _authToken = null;
+  document.getElementById('login-screen').classList.remove('hidden');
 }
 
-// Arrancar directamente sin pantalla de login
-document.getElementById('login-screen').classList.add('hidden');
-document.getElementById('sidebar-user-name').textContent = 'Mario Rivera';
-document.getElementById('sidebar-org-name').textContent = 'Luz Holística (local)';
-loadDashboard();
+function showLoginForm() {
+  document.getElementById('login-form').style.display = '';
+  document.getElementById('reg-form').style.display = 'none';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+function showRegForm() {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('reg-form').style.display = '';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+async function doLogin() {
+  const slug  = document.getElementById('l-slug').value.trim();
+  const email = document.getElementById('l-email').value.trim();
+  const pass  = document.getElementById('l-pass').value;
+  const btn   = document.getElementById('btn-login');
+  const err   = document.getElementById('login-error');
+  err.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Entrando…';
+  try {
+    const r = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass, slugOrg: slug })
+    });
+    const data = await r.json();
+    if (!r.ok || !data.token) throw new Error(data.error || 'Credenciales incorrectas');
+    _authToken = data.token;
+    localStorage.setItem('crm_token', data.token);
+    localStorage.setItem('crm_user', JSON.stringify(data.usuario || {}));
+    const u = data.usuario || {};
+    document.getElementById('sidebar-user-name').textContent = u.nombre || email;
+    document.getElementById('sidebar-org-name').textContent = u.organizacion?.nombre || slug;
+    document.getElementById('login-screen').classList.add('hidden');
+    loadDashboard();
+  } catch (e) {
+    err.textContent = e.message; err.style.display = '';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Entrar';
+  }
+}
+
+async function doRegister() {
+  const org   = document.getElementById('r-org').value.trim();
+  const slug  = document.getElementById('r-slug').value.trim();
+  const name  = document.getElementById('r-nombre').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const pass  = document.getElementById('r-pass').value;
+  const btn   = document.getElementById('btn-register');
+  const err   = document.getElementById('login-error');
+  err.style.display = 'none';
+  btn.disabled = true; btn.textContent = 'Creando…';
+  try {
+    const r = await fetch(`${API}/auth/registro`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombreOrg: org, slugOrg: slug, nombre: name, email, password: pass })
+    });
+    const data = await r.json();
+    if (!r.ok || !data.token) throw new Error(data.error || 'Error al crear organización');
+    _authToken = data.token;
+    localStorage.setItem('crm_token', data.token);
+    localStorage.setItem('crm_user', JSON.stringify(data.usuario || {}));
+    const u = data.usuario || {};
+    document.getElementById('sidebar-user-name').textContent = u.nombre || name;
+    document.getElementById('sidebar-org-name').textContent = org;
+    document.getElementById('login-screen').classList.add('hidden');
+    loadDashboard();
+  } catch (e) {
+    err.textContent = e.message; err.style.display = '';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Crear organización';
+  }
+}
+
+// ── Arranque ──────────────────────────────────────────────────────────────────
+if (_authToken) {
+  // Restaurar datos de usuario del localStorage
+  try {
+    const u = JSON.parse(localStorage.getItem('crm_user') || '{}');
+    document.getElementById('sidebar-user-name').textContent = u.nombre || 'Usuario';
+    document.getElementById('sidebar-org-name').textContent = u.organizacion?.nombre || '';
+  } catch (_) {}
+  document.getElementById('login-screen').classList.add('hidden');
+  loadDashboard();
+} else {
+  // Sin token — mostrar pantalla de login
+  showLoginForm();
+}
 
 // ══════════════════════════════════════════════════════════════════════════════
 // ── PIPELINE KANBAN ──────────────────────────────────────────────────────────
