@@ -37,7 +37,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // ─── Interfaz web estática ────────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', '_public')));
 
 // ─── Log de cada request ──────────────────────────────────────────────────────
 app.use((req, _res, next) => {
