@@ -1,5 +1,6 @@
 // ─── Rutas: Integración Stripe ──────────────────────────────────────────────
 import { Router, Request, Response } from 'express';
+import crypto from 'crypto';
 import {
   syncCheckoutCompleted,
   syncSubscriptionCancelled,
@@ -9,14 +10,44 @@ import {
 
 const router = Router();
 
+// ─── Verificación de firma Stripe ───────────────────────────────────────────
+function verificarFirmaStripe(payload: Buffer, signature: string, secret: string): boolean {
+  try {
+    const parts = signature.split(',').reduce<Record<string, string>>((acc, part) => {
+      const [k, v] = part.split('=');
+      acc[k] = v;
+      return acc;
+    }, {});
+    const timestamp = parts['t'];
+    const sig = parts['v1'];
+    if (!timestamp || !sig) return false;
+    const signed = `${timestamp}.${payload.toString('utf8')}`;
+    const expected = crypto.createHmac('sha256', secret).update(signed).digest('hex');
+    return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(sig));
+  } catch {
+    return false;
+  }
+}
+
 // ─── POST /api/stripe/webhook ───────────────────────────────────────────────
-// Receptor de webhooks de Stripe
-// Configurar en Stripe Dashboard → Webhooks → URL: https://CRM_URL/api/stripe/webhook
-// Eventos a suscribir: checkout.session.completed, customer.subscription.deleted
 router.post('/webhook', async (req: Request, res: Response) => {
-  // Nota: en producción se debe verificar la firma del webhook con STRIPE_WEBHOOK_SECRET
-  // Por ahora, para LOCAL_DEV, procesamos directamente.
-  const event = req.body as { type: string; data: { object: Record<string, unknown> } };
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const signature = req.headers['stripe-signature'] as string;
+
+  // En producción: verificar firma. En LOCAL_DEV: saltar verificación.
+  if (webhookSecret && signature) {
+    const rawBody = req.body as Buffer;
+    if (!Buffer.isBuffer(rawBody)) {
+      return res.status(400).json({ error: 'Raw body requerido para verificación de firma' });
+    }
+    if (!verificarFirmaStripe(rawBody, signature, webhookSecret)) {
+      return res.status(401).json({ error: 'Firma inválida' });
+    }
+  }
+
+  const event = (webhookSecret && signature && Buffer.isBuffer(req.body))
+    ? JSON.parse(req.body.toString('utf8')) as { type: string; data: { object: Record<string, unknown> } }
+    : req.body as { type: string; data: { object: Record<string, unknown> } };
 
   if (!event?.type || !event?.data?.object) {
     return res.status(400).json({ error: 'Payload de Stripe incompleto' });

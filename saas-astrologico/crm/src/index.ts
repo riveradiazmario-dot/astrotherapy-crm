@@ -28,6 +28,11 @@ const PORT = process.env.PORT ?? 3000;
 
 // ─── Middlewares globales ─────────────────────────────────────────────────────
 app.use(cors());
+
+// Stripe webhook necesita raw body para verificar firma
+app.use('/api/stripe/webhook', express.raw({ type: 'application/json' }));
+
+// Resto de rutas usan JSON normal
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
