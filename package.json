@@ -1,0 +1,9 @@
+{
+  "name": "astrotherapy-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd saas-astrologico/crm && npm ci && npm run build && npx prisma generate && npx prisma migrate deploy",
+    "start": "cd saas-astrologico/crm && node dist/index.js"
+  }
+}
