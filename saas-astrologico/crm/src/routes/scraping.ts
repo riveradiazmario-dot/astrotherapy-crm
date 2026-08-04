@@ -8,11 +8,54 @@ import { scrapearCanalTelegram, buscarGruposAstrologia } from '../services/scrap
 import { scrapearPerfilInstagram, scrapearLoteInstagram } from '../services/scraping/instagram.service';
 import { buscarAstrologos } from '../services/scraping/directorios.service';
 import { buscarTikTok, tiktokAContactoCRM } from '../services/scraping/tiktok.service';
+import { importarDesdeDataset, lanzarApifyRun, APIFY_ACTORS, ApifyActorType } from '../services/scraping/apify.service';
 import { requireAuth } from '../middleware/auth';
 
 const router = Router();
 
-// Todas las rutas de scraping/importación requieren autenticación
+// ─── Apify Webhook (NO requiere auth — viene de Apify) ───────────────────────
+
+/**
+ * POST /api/scraping/apify-webhook
+ *
+ * Endpoint receptor del webhook de Apify.
+ * Cuando un job termina en SUCCEEDED, importa el dataset al CRM automáticamente.
+ *
+ * Apify envía: { eventType: "ACTOR.RUN.SUCCEEDED", eventData: { actorRunId, datasetId } }
+ */
+router.post('/apify-webhook', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { eventType, eventData } = req.body as {
+      eventType?: string;
+      eventData?: { actorRunId?: string; datasetId?: string; defaultDatasetId?: string };
+    };
+
+    console.log(`[Apify Webhook] Evento recibido: ${eventType}`);
+
+    // Solo procesar runs exitosos
+    if (eventType !== 'ACTOR.RUN.SUCCEEDED') {
+      res.json({ ok: true, mensaje: `Evento ignorado: ${eventType}` });
+      return;
+    }
+
+    const datasetId = eventData?.datasetId ?? eventData?.defaultDatasetId;
+    if (!datasetId) {
+      res.status(400).json({ ok: false, error: 'datasetId no encontrado en eventData' });
+      return;
+    }
+
+    // Importar en background — responder inmediatamente a Apify (timeout 10s)
+    res.json({ ok: true, mensaje: `Importando dataset ${datasetId}...` });
+
+    // Importar sin bloquear la respuesta
+    importarDesdeDataset(datasetId).catch(err => {
+      console.error(`[Apify Webhook] Error importando ${datasetId}:`, err);
+    });
+
+  } catch (err) { next(err); }
+});
+
+// Todas las demás rutas requieren autenticación
 router.use(requireAuth);
 
 // Multer: guardar archivos en memoria (no en disco)
@@ -365,6 +408,94 @@ router.get('/tiktok/estado', (_req: Request, res: Response) => {
       ? 'Apify conectado. Listo para buscar en TikTok.'
       : 'APIFY_TOKEN no configurado. Agrégalo al .env para usar TikTok.',
   });
+});
+
+// ─── Apify: importar manualmente desde dataset ───────────────────────────────
+
+/**
+ * POST /api/scraping/apify-importar
+ *
+ * Importa contactos desde un dataset Apify ya existente.
+ * Body: { datasetId: string, tipo?: "serp" | "contact_details" | "email_extractor" }
+ */
+router.post('/apify-importar', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { datasetId, tipo } = req.body as { datasetId: string; tipo?: ApifyActorType };
+    if (!datasetId) {
+      res.status(400).json({ ok: false, error: 'datasetId es obligatorio' });
+      return;
+    }
+    const resultado = await importarDesdeDataset(datasetId, tipo);
+    res.json({ ok: true, data: resultado });
+  } catch (err) { next(err); }
+});
+
+/**
+ * POST /api/scraping/apify-lanzar
+ *
+ * Lanza un nuevo job de Apify y retorna runId + datasetId.
+ * El resultado llegará vía webhook cuando termine.
+ *
+ * Body:
+ * {
+ *   actorType: "serp" | "contact_details",
+ *   queries?: string[],    // para serp
+ *   urls?: string[],       // para contact_details
+ *   maxItems?: number      // default 150
+ * }
+ */
+router.post('/apify-lanzar', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { actorType, queries, urls, maxItems = 150 } = req.body as {
+      actorType: 'serp' | 'contact_details';
+      queries?: string[];
+      urls?: string[];
+      maxItems?: number;
+    };
+
+    let actorId: string;
+    let input: Record<string, unknown>;
+
+    if (actorType === 'serp') {
+      if (!queries || queries.length === 0) {
+        res.status(400).json({ ok: false, error: 'queries[] es obligatorio para actorType=serp' });
+        return;
+      }
+      actorId = APIFY_ACTORS.GOOGLE_SERP;
+      input = {
+        queries: queries.join('\n'),
+        maxPagesPerQuery: Math.ceil(maxItems / queries.length / 10),
+        resultsPerPage: 10,
+        languageCode: 'es',
+        countryCode: 'MX',
+        customDataFunction: 'async ({ input, $, request, response, html }) => { return { url: request.url }; }',
+      };
+    } else if (actorType === 'contact_details') {
+      if (!urls || urls.length === 0) {
+        res.status(400).json({ ok: false, error: 'urls[] es obligatorio para actorType=contact_details' });
+        return;
+      }
+      actorId = APIFY_ACTORS.CONTACT_DETAILS;
+      input = {
+        startUrls: urls.map(url => ({ url })),
+        maxDepth: 1,
+        maxRequests: urls.length * 5,
+        proxyConfiguration: { useApifyProxy: true },
+      };
+    } else {
+      res.status(400).json({ ok: false, error: 'actorType debe ser "serp" o "contact_details"' });
+      return;
+    }
+
+    const { runId, datasetId } = await lanzarApifyRun(actorId, input);
+    res.json({
+      ok: true,
+      mensaje: 'Job lanzado. El webhook importará los contactos cuando termine.',
+      runId,
+      datasetId,
+      actor: actorId,
+    });
+  } catch (err) { next(err); }
 });
 
 // ─── Fuentes disponibles ──────────────────────────────────────────────────────
