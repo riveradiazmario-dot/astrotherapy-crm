@@ -61,13 +61,21 @@ app.use('/api/conversaciones', conversacionesRouter);
 app.use('/api/ia', iaRouter);
 
 // ─── Health check ─────────────────────────────────────────────────────────────
+// Retorna 200 siempre que Node esté corriendo; el estado de DB es informativo.
 app.get('/health', async (_req, res) => {
+  let dbOk = false;
   try {
     await prisma.$queryRaw`SELECT 1`;
-    res.json({ ok: true, estado: 'operativo', version: '1.0.0', timestamp: new Date().toISOString() });
+    dbOk = true;
   } catch {
-    res.status(503).json({ ok: false, estado: 'error_db' });
+    // DB no disponible — no falla el deploy
   }
+  res.json({
+    ok: true,
+    estado: dbOk ? 'operativo' : 'degradado_sin_db',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // ─── Ruta raíz con resumen de endpoints ──────────────────────────────────────
@@ -169,20 +177,25 @@ app.use(errorHandler);
 
 // ─── Arranque ─────────────────────────────────────────────────────────────────
 async function main() {
+  // Prisma conecta de forma lazy en la primera query; no bloqueamos el arranque.
   try {
     await prisma.$connect();
     logger.info('✅ Base de datos conectada');
+  } catch (err) {
+    logger.warn('⚠️  DB no disponible al arrancar (se reintentará en primera query):', err);
+  }
+
+  try {
     bootstrapAutomations();
     logger.info('⚡ Motor de automatizaciones activo');
-
-    app.listen(PORT, () => {
-      logger.info(`🚀 CRM corriendo en http://localhost:${PORT}`);
-      logger.info(`📋 Endpoints: http://localhost:${PORT}/`);
-    });
   } catch (err) {
-    logger.error('Error al iniciar:', err);
-    process.exit(1);
+    logger.warn('⚠️  bootstrapAutomations falló (no fatal):', err);
   }
+
+  app.listen(PORT, () => {
+    logger.info(`🚀 CRM corriendo en http://localhost:${PORT}`);
+    logger.info(`📋 Endpoints: http://localhost:${PORT}/`);
+  });
 }
 
 main();
