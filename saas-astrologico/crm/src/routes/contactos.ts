@@ -52,7 +52,7 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
       conConsentimiento: req.query.conConsentimiento === 'true' ? true
         : req.query.conConsentimiento === 'false' ? false : undefined,
       page: req.query.page ? Number(req.query.page) : 1,
-      limit: req.query.limit ? Math.min(Number(req.query.limit), 200) : 50,
+      limit: req.query.limit ? Math.min(Number(req.query.limit), 500) : 50,
       ordenarPor: req.query.ordenarPor as string || 'createdAt',
       orden: (req.query.orden as 'asc' | 'desc') || 'desc',
     };
