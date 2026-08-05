@@ -151,10 +151,9 @@ router.post('/importar', async (req: Request, res: Response, next: NextFunction)
         await crearContacto({
           nombre, email, telefono: telefono || undefined,
           ciudad: ciudad || undefined, pais: pais || 'MX',
-          especialidadPrimaria: especialidad,
+          especialidadPrimaria: especialidad as any,
           webUrl: sitioWeb || undefined,
           fuente: 'scraping_google_maps',
-          estado: 'nuevo',
         }, organizacionId);
         creados++;
       } catch (e: any) {

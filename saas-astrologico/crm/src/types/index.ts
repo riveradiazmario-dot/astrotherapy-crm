@@ -33,7 +33,8 @@ export type FuenteCaptura =
   | 'directorio'
   | 'formulario_web'
   | 'referido'
-  | 'manual';
+  | 'manual'
+  | 'scraping_google_maps';
 
 export type TipoAccion =
   | 'email_enviado'
