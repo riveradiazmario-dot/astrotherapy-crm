@@ -109,6 +109,65 @@ router.delete('/:id', async (req: Request, res: Response, next: NextFunction) =>
   } catch (err) { next(err); }
 });
 
+// POST /api/contactos/importar — Importación masiva desde CSV/JSON
+router.post('/importar', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const organizacionId = req.usuario!.organizacionId;
+    const { leads } = req.body as { leads: Array<Record<string, string>> };
+    if (!Array.isArray(leads) || leads.length === 0) {
+      res.status(400).json({ ok: false, error: 'Se requiere un array de leads' }); return;
+    }
+
+    const ESPECIALIDAD_MAP: Record<string, string> = {
+      'terapeuta de reiki': 'reiki', 'reiki': 'reiki',
+      'astrólogo': 'astrologia', 'astrologia': 'astrologia',
+      'vidente': 'tarot', 'servicios de clarividencia': 'tarot',
+      'coaching center': 'coaching_espiritual', 'life coach': 'coaching_espiritual',
+      'centro de meditación': 'meditacion', 'centro de bienestar social': 'terapia_holistica',
+      'centro de salud y bienestar': 'terapia_holistica', 'psicólogo': 'terapia_holistica',
+      'psicoterapeuta': 'terapia_holistica',
+    };
+
+    let creados = 0, omitidos = 0;
+    const errores: string[] = [];
+
+    for (const lead of leads.slice(0, 500)) {
+      try {
+        const telefono = (lead.telefono || lead.phone || '').trim();
+        const nombre   = (lead.nombre || lead.title || 'Sin nombre').trim();
+        const ciudad   = (lead.ciudad || lead.city || '').trim();
+        const pais     = (lead.pais || lead.countryCode || 'MX').trim();
+        const sitioWeb = (lead.sitio_web || lead.website || '').replace(/^undefined$/, '').trim();
+        const catRaw   = (lead.especialidad || lead.categoryName || '').toLowerCase().trim();
+        const especialidad = ESPECIALIDAD_MAP[catRaw] || 'otro';
+        // Email: placeholder único basado en teléfono si no hay email real
+        const emailRaw = (lead.email || '').trim();
+        const email = emailRaw && emailRaw !== 'undefined'
+          ? emailRaw
+          : `lead-${telefono.replace(/\D/g, '')}@sin-email.pendiente`;
+
+        if (!telefono && !emailRaw) { omitidos++; continue; }
+
+        await crearContacto({
+          nombre, email, telefono: telefono || undefined,
+          ciudad: ciudad || undefined, pais: pais || 'MX',
+          especialidadPrimaria: especialidad,
+          webUrl: sitioWeb || undefined,
+          fuente: 'scraping_google_maps',
+          estado: 'nuevo',
+        }, organizacionId);
+        creados++;
+      } catch (e: any) {
+        // Ignorar duplicados (unique constraint en email)
+        if (e?.code === 'P2002') { omitidos++; }
+        else { errores.push(String(e?.message || e)); }
+      }
+    }
+
+    res.json({ ok: true, creados, omitidos, errores: errores.slice(0, 10) });
+  } catch (err) { next(err); }
+});
+
 // POST /api/contactos/:id/accion — Registrar una acción y actualizar score
 router.post('/:id/accion', async (req: Request, res: Response, next: NextFunction) => {
   try {
