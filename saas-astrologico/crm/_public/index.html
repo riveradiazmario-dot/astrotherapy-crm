@@ -1846,18 +1846,77 @@ async function cargarProveedores() {
     }
     count.textContent = `${lista.length} proveedor(es)`;
     el.innerHTML = lista.map(p => `
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px">
-        <div>
-          <span style="font-weight:600;font-size:13px">${p.nombre}</span>
-          <span class="badge ${p.predeterminado ? 'badge-green' : 'badge-gray'}" style="margin-left:8px">${p.predeterminado ? 'Predeterminado' : 'Secundario'}</span>
-          <span class="badge badge-purple" style="margin-left:4px">${p.tipo || 'smtp'}</span>
-          <div style="font-size:11px;color:var(--muted);margin-top:3px">${p.fromEmail} · ${p.activo ? '✅ Activo' : '⏸ Inactivo'}</div>
+      <div style="border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px">
+          <div>
+            <span style="font-weight:600;font-size:13px">${p.nombre}</span>
+            <span class="badge ${p.predeterminado ? 'badge-green' : 'badge-gray'}" style="margin-left:8px">${p.predeterminado ? 'Predeterminado' : 'Secundario'}</span>
+            <span class="badge badge-purple" style="margin-left:4px">${p.tipo || 'smtp'}</span>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px">${p.fromEmail} · ${p.activo ? '✅ Activo' : '⏸ Inactivo'}</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm btn-ghost" onclick="toggleEditKey('${p.id}','${p.tipo||'smtp'}')" title="Actualizar API key / contraseña">🔑 Editar key</button>
+            ${!p.predeterminado ? `<button class="btn btn-sm btn-ghost" onclick="marcarPredeterminado('${p.id}')">Usar este</button>` : ''}
+            <button class="btn btn-sm btn-ghost" style="color:var(--danger)" onclick="eliminarProveedor('${p.id}','${p.nombre.replace(/'/g,"\'")}')" title="Eliminar">🗑</button>
+          </div>
         </div>
-        ${!p.predeterminado ? `<button class="btn btn-sm btn-ghost" onclick="marcarPredeterminado('${p.id}')">Usar este</button>` : ''}
+        <div id="edit-key-${p.id}" style="display:none;padding:10px 14px 14px;border-top:1px solid var(--border);background:var(--bg)">
+          <div style="font-size:12px;font-weight:600;margin-bottom:8px;color:var(--purple)">${p.tipo==='resend'||p.tipo==='brevo'||p.tipo==='sendgrid' ? 'Nueva API key' : 'Nueva contraseña SMTP'}</div>
+          <div style="display:flex;gap:8px">
+            <input type="password" id="new-key-${p.id}" class="form-input" style="flex:1" placeholder="${p.tipo==='resend' ? 're_xxxxxxxxxxxx' : p.tipo==='brevo' ? 'xkeysib-...' : '••••••••'}">
+            <button class="btn btn-primary btn-sm" onclick="guardarNuevaKey('${p.id}','${p.tipo||'smtp'}')" style="white-space:nowrap">Guardar</button>
+            <button class="btn btn-ghost btn-sm" onclick="document.getElementById('edit-key-${p.id}').style.display='none'">✕</button>
+          </div>
+          <div id="key-err-${p.id}" style="color:var(--danger);font-size:12px;margin-top:6px;display:none"></div>
+        </div>
       </div>`).join('');
   } catch(e) {
     el.innerHTML = '<p style="color:var(--danger);font-size:13px">Error al cargar proveedores</p>';
   }
+}
+
+function toggleEditKey(id, tipo) {
+  const box = document.getElementById('edit-key-' + id);
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  if (box.style.display === 'block') {
+    document.getElementById('new-key-' + id)?.focus();
+  }
+}
+
+async function guardarNuevaKey(id, tipo) {
+  const keyInput = document.getElementById('new-key-' + id);
+  const errEl    = document.getElementById('key-err-' + id);
+  const newKey   = keyInput.value.trim();
+  if (!newKey) { errEl.textContent = 'Ingresa la nueva key'; errEl.style.display = 'block'; return; }
+  errEl.style.display = 'none';
+
+  // Para Resend/Brevo/SendGrid → api_key. Para SMTP → password
+  const campo = (tipo === 'smtp') ? { password: newKey } : { api_key: newKey };
+  try {
+    const r = await authFetch(`${API}/smtp-config/${id}`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(campo),
+    });
+    const d = await r.json();
+    if (d.error) { errEl.textContent = d.error; errEl.style.display = 'block'; return; }
+    keyInput.value = '';
+    document.getElementById('edit-key-' + id).style.display = 'none';
+    await verificarEmailEstado();
+    await cargarProveedores();
+    alert('✅ Key actualizada. Verificando conexión…');
+  } catch(e) {
+    errEl.textContent = 'Error: ' + e.message; errEl.style.display = 'block';
+  }
+}
+
+async function eliminarProveedor(id, nombre) {
+  if (!confirm(`¿Eliminar el proveedor "${nombre}"?`)) return;
+  try {
+    await authFetch(`${API}/smtp-config/${id}`, { method: 'DELETE' });
+    await cargarProveedores();
+    await verificarEmailEstado();
+  } catch(e) { alert('Error: ' + e.message); }
 }
 
 async function marcarPredeterminado(id) {
