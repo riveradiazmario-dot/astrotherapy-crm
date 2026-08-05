@@ -299,6 +299,10 @@
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       Email
     </a>
+    <a onclick="showPage('campanas')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Campañas
+    </a>
   </nav>
   <div class="sidebar-footer" style="padding:0">
     <div class="user-chip">
@@ -795,6 +799,108 @@
     </div>
 
   </div>
+    <!-- ═══ CAMPAÑAS — Módulo C ═══ -->
+    <div id="page-campanas" class="page">
+
+      <!-- Stats rápidas -->
+      <div class="grid-4" id="camp-stats" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-value" id="cs-total">—</div><div class="stat-label">Total campañas</div></div>
+        <div class="stat-card"><div class="stat-value" id="cs-enviados">—</div><div class="stat-label">Emails enviados</div></div>
+        <div class="stat-card"><div class="stat-value" id="cs-apertura">—</div><div class="stat-label">Tasa apertura</div></div>
+        <div class="stat-card"><div class="stat-value" id="cs-clics">—</div><div class="stat-label">Tasa clics</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head" style="display:flex;align-items:center;justify-content:space-between">
+          <h3>📣 Campañas de email</h3>
+          <button class="btn btn-primary btn-sm" onclick="abrirModalCampana()">+ Nueva campaña</button>
+        </div>
+        <div class="panel-body">
+          <div id="campanas-list" style="min-height:100px;color:var(--muted);text-align:center;padding:20px">Cargando…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MODAL CAMPAÑA ═══ -->
+    <div id="modal-campana" class="modal-overlay hidden" onclick="if(event.target.id==='modal-campana')cerrarModalCampana()">
+      <div class="modal" style="max-width:640px">
+        <div class="modal-header">
+          <h3 id="modal-camp-titulo">Nueva campaña</h3>
+          <button class="btn btn-ghost btn-sm" onclick="cerrarModalCampana()">✕</button>
+        </div>
+        <input type="hidden" id="mc-id">
+        <div class="form-grid" style="gap:14px">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input id="mc-nombre" class="form-input" placeholder="Ej: Lanzamiento ATP Premium — Agosto">
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <input id="mc-desc" class="form-input" placeholder="Nota interna sobre esta campaña">
+          </div>
+          <div class="form-group">
+            <label>Asunto del email *</label>
+            <input id="mc-asunto" class="form-input" placeholder="Ej: 🌟 Tu lectura astrológica personalizada te espera">
+          </div>
+
+          <details style="grid-column:1/-1">
+            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--purple);margin-bottom:8px">⚙️ Segmento (opcional — vacío = todos con consentimiento)</summary>
+            <div class="form-grid" style="gap:10px;margin-top:10px">
+              <div class="form-group">
+                <label>Estado del contacto</label>
+                <select id="mc-seg-estado" class="form-input">
+                  <option value="">Todos los estados</option>
+                  <option value="prospecto">Prospecto</option>
+                  <option value="contactado">Contactado</option>
+                  <option value="nurture">Nurture</option>
+                  <option value="cualificado">Cualificado</option>
+                  <option value="cliente">Cliente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Especialidad</label>
+                <select id="mc-seg-esp" class="form-input">
+                  <option value="">Todas las especialidades</option>
+                  <option value="astrologia_tropical">Astrología tropical</option>
+                  <option value="astrologia_vedica">Astrología védica</option>
+                  <option value="tarot">Tarot</option>
+                  <option value="constelaciones_familiares">Constelaciones familiares</option>
+                  <option value="reiki">Reiki</option>
+                  <option value="coaching_holistico">Coaching holístico</option>
+                  <option value="numerologia">Numerología</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>País (código ISO)</label>
+                <input id="mc-seg-pais" class="form-input" placeholder="MX, CO, AR…">
+              </div>
+              <div class="form-group">
+                <label>Etiqueta</label>
+                <input id="mc-seg-etiqueta" class="form-input" placeholder="Ej: vip, trial, webinar">
+              </div>
+            </div>
+          </details>
+
+          <div class="form-group" style="grid-column:1/-1">
+            <label>Cuerpo del email (HTML permitido) *</label>
+            <textarea id="mc-html" class="form-input" rows="10" placeholder="<p>Hola {{nombre}},</p>&#10;<p>Te escribimos desde AstroTherapy Pro…</p>"></textarea>
+          </div>
+        </div>
+
+        <div id="mc-preview-box" style="display:none;margin-top:14px;padding:10px 14px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--muted)"></div>
+        <div id="mc-error" class="error-msg" style="display:none;margin-top:10px"></div>
+
+        <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap">
+          <button class="btn btn-ghost" onclick="cerrarModalCampana()">Cancelar</button>
+          <button class="btn btn-ghost btn-sm" onclick="previewCampana()">👁 Ver destinatarios</button>
+          <button class="btn btn-secondary" onclick="guardarCampana()">💾 Guardar borrador</button>
+          <button class="btn btn-primary" onclick="guardarYLanzarCampana()" id="mc-btn-lanzar">🚀 Guardar y enviar</button>
+        </div>
+      </div>
+    </div>
+
+
 </main>
 
 <script>
@@ -1122,6 +1228,7 @@ function showPage(name) {
   if (name === 'contactos') loadContactos();
   if (name === 'pipeline') loadPipeline();
   if (name === 'email') { verificarEmailEstado(); cargarProveedores(); }
+  if (name === 'campanas') { cargarCampanas(); }
   if (name === 'fuentes') loadFuentes();
 }
 
@@ -1788,6 +1895,228 @@ async function agregarProveedor() {
     errEl.textContent = 'Error de conexión'; errEl.style.display='block';
   }
 }
+
+// ══════════════════════════════════════════════════════════
+// MÓDULO C — CAMPAIGN BUILDER
+// ══════════════════════════════════════════════════════════
+
+async function cargarCampanas() {
+  // Stats
+  try {
+    const rs = await authFetch(`${API}/campanas/stats`);
+    const ds = await rs.json();
+    if (ds.ok) {
+      document.getElementById('cs-total').textContent = ds.total ?? '—';
+      document.getElementById('cs-enviados').textContent = (ds.totales?.enviados ?? 0).toLocaleString();
+      document.getElementById('cs-apertura').textContent = (ds.tasaApertura ?? 0) + '%';
+      document.getElementById('cs-clics').textContent = (ds.tasaClics ?? 0) + '%';
+    }
+  } catch(e) { /* silencio */ }
+
+  // Lista
+  const box = document.getElementById('campanas-list');
+  box.innerHTML = '<span style="color:var(--muted)">Cargando…</span>';
+  try {
+    const r = await authFetch(`${API}/campanas?limit=50`);
+    const d = await r.json();
+    if (!d.ok || !d.campanas?.length) {
+      box.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">No hay campañas todavía.<br><button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="abrirModalCampana()">+ Crear primera campaña</button></div>';
+      return;
+    }
+    box.innerHTML = `
+      <table class="table">
+        <thead><tr>
+          <th>Nombre</th><th>Estado</th><th>Enviados</th><th>Aperturas</th><th>Clics</th><th>Acciones</th>
+        </tr></thead>
+        <tbody>${d.campanas.map(c => campanaFila(c)).join('')}</tbody>
+      </table>`;
+  } catch(e) {
+    box.innerHTML = `<span style="color:var(--danger)">Error: ${e.message}</span>`;
+  }
+}
+
+function campanaFila(c) {
+  const estadoBadge = {
+    borrador:   '<span class="badge badge-default">Borrador</span>',
+    programada: '<span class="badge badge-info">Programada</span>',
+    enviando:   '<span class="badge badge-warning">Enviando…</span>',
+    completada: '<span class="badge badge-success">Completada</span>',
+    pausada:    '<span class="badge badge-danger">Pausada</span>',
+  }[c.estado] ?? `<span class="badge">${c.estado}</span>`;
+
+  const abiertos = c.totalEnviados > 0 ? Math.round((c.totalAbiertos/c.totalEnviados)*100) + '%' : '—';
+  const clics    = c.totalEnviados > 0 ? Math.round((c.totalClics/c.totalEnviados)*100) + '%' : '—';
+
+  const btnEditar  = ['borrador','programada','pausada'].includes(c.estado)
+    ? `<button class="btn btn-ghost btn-sm" onclick='editarCampana(${JSON.stringify(c)})'>✏️</button>` : '';
+  const btnLanzar  = ['borrador','programada','pausada'].includes(c.estado)
+    ? `<button class="btn btn-sm btn-primary" onclick="lanzarCampana('${c.id}','${escHtml(c.nombre)}')">🚀</button>` : '';
+  const btnDup     = `<button class="btn btn-ghost btn-sm" title="Duplicar" onclick="duplicarCampana('${c.id}')">📋</button>`;
+  const btnDel     = ['borrador','pausada'].includes(c.estado)
+    ? `<button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="eliminarCampana('${c.id}','${escHtml(c.nombre)}')">🗑</button>` : '';
+
+  return `<tr>
+    <td><strong>${escHtml(c.nombre)}</strong></td>
+    <td>${estadoBadge}</td>
+    <td>${c.totalEnviados.toLocaleString()}</td>
+    <td>${abiertos}</td>
+    <td>${clics}</td>
+    <td style="display:flex;gap:4px">${btnEditar}${btnLanzar}${btnDup}${btnDel}</td>
+  </tr>`;
+}
+
+function abrirModalCampana() {
+  document.getElementById('mc-id').value = '';
+  document.getElementById('mc-nombre').value = '';
+  document.getElementById('mc-desc').value = '';
+  document.getElementById('mc-asunto').value = '';
+  document.getElementById('mc-html').value = '';
+  document.getElementById('mc-seg-estado').value = '';
+  document.getElementById('mc-seg-esp').value = '';
+  document.getElementById('mc-seg-pais').value = '';
+  document.getElementById('mc-seg-etiqueta').value = '';
+  document.getElementById('mc-error').style.display = 'none';
+  document.getElementById('mc-preview-box').style.display = 'none';
+  document.getElementById('modal-camp-titulo').textContent = 'Nueva campaña';
+  document.getElementById('modal-campana').classList.remove('hidden');
+}
+
+function editarCampana(c) {
+  document.getElementById('mc-id').value = c.id;
+  document.getElementById('mc-nombre').value = c.nombre || '';
+  // Intentar leer asunto/html del campo descripcion (JSON)
+  let meta = {};
+  try { meta = JSON.parse(c.descripcion || '{}'); } catch { meta = { texto: c.descripcion }; }
+  document.getElementById('mc-desc').value = meta.texto || c.descripcion || '';
+  document.getElementById('mc-asunto').value = meta.asunto || '';
+  document.getElementById('mc-html').value = meta.html || '';
+  // Segmento
+  let seg = {};
+  try { seg = JSON.parse(c.segmento || '{}'); } catch {}
+  document.getElementById('mc-seg-estado').value = seg.estado || '';
+  document.getElementById('mc-seg-esp').value = seg.especialidad || '';
+  document.getElementById('mc-seg-pais').value = seg.pais || '';
+  document.getElementById('mc-seg-etiqueta').value = seg.etiqueta || '';
+  document.getElementById('mc-error').style.display = 'none';
+  document.getElementById('mc-preview-box').style.display = 'none';
+  document.getElementById('modal-camp-titulo').textContent = 'Editar campaña';
+  document.getElementById('modal-campana').classList.remove('hidden');
+}
+
+function cerrarModalCampana() {
+  document.getElementById('modal-campana').classList.add('hidden');
+}
+
+function buildPayloadCampana() {
+  return {
+    nombre:      document.getElementById('mc-nombre').value.trim(),
+    descripcion: document.getElementById('mc-desc').value.trim(),
+    asunto:      document.getElementById('mc-asunto').value.trim(),
+    html:        document.getElementById('mc-html').value.trim(),
+    segmento: {
+      estado:       document.getElementById('mc-seg-estado').value || undefined,
+      especialidad: document.getElementById('mc-seg-esp').value || undefined,
+      pais:         document.getElementById('mc-seg-pais').value.trim() || undefined,
+      etiqueta:     document.getElementById('mc-seg-etiqueta').value.trim() || undefined,
+    },
+  };
+}
+
+async function guardarCampana() {
+  const errEl = document.getElementById('mc-error');
+  const payload = buildPayloadCampana();
+  if (!payload.nombre) { errEl.textContent = 'El nombre es requerido'; errEl.style.display = 'block'; return; }
+  if (!payload.asunto) { errEl.textContent = 'El asunto es requerido'; errEl.style.display = 'block'; return; }
+  if (!payload.html)   { errEl.textContent = 'El cuerpo del email es requerido'; errEl.style.display = 'block'; return; }
+  errEl.style.display = 'none';
+
+  const id = document.getElementById('mc-id').value;
+  const r = await authFetch(
+    id ? `${API}/campanas/${id}` : `${API}/campanas`,
+    { method: id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) }
+  );
+  const d = await r.json();
+  if (!d.ok) { errEl.textContent = d.error || 'Error al guardar'; errEl.style.display = 'block'; return; }
+  cerrarModalCampana();
+  await cargarCampanas();
+}
+
+async function guardarYLanzarCampana() {
+  const errEl = document.getElementById('mc-error');
+  const payload = buildPayloadCampana();
+  if (!payload.nombre) { errEl.textContent = 'El nombre es requerido'; errEl.style.display = 'block'; return; }
+  if (!payload.asunto) { errEl.textContent = 'El asunto es requerido'; errEl.style.display = 'block'; return; }
+  if (!payload.html)   { errEl.textContent = 'El cuerpo del email es requerido'; errEl.style.display = 'block'; return; }
+
+  // Guardar primero
+  const id = document.getElementById('mc-id').value;
+  const r = await authFetch(
+    id ? `${API}/campanas/${id}` : `${API}/campanas`,
+    { method: id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) }
+  );
+  const d = await r.json();
+  if (!d.ok) { errEl.textContent = d.error || 'Error al guardar'; errEl.style.display = 'block'; return; }
+
+  cerrarModalCampana();
+  // Lanzar
+  await lanzarCampana(d.campana.id, d.campana.nombre);
+}
+
+async function lanzarCampana(id, nombre) {
+  if (!confirm(`¿Confirmas el envío de la campaña "${nombre}"?\n\nSe enviará a todos los contactos del segmento que tengan consentimiento.`)) return;
+  try {
+    const r = await authFetch(`${API}/campanas/${id}/enviar`, { method: 'POST' });
+    const d = await r.json();
+    if (d.ok) {
+      alert(`✅ ${d.mensaje || 'Campaña lanzada'}`);
+      await cargarCampanas();
+    } else {
+      alert('❌ ' + (d.error || 'Error al lanzar'));
+    }
+  } catch(e) { alert('Error de conexión: ' + e.message); }
+}
+
+async function duplicarCampana(id) {
+  try {
+    const r = await authFetch(`${API}/campanas/${id}/duplicar`, { method: 'POST' });
+    const d = await r.json();
+    if (d.ok) { await cargarCampanas(); }
+    else alert('❌ ' + (d.error || 'Error al duplicar'));
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function eliminarCampana(id, nombre) {
+  if (!confirm(`¿Eliminar la campaña "${nombre}"? Esta acción no se puede deshacer.`)) return;
+  try {
+    const r = await authFetch(`${API}/campanas/${id}`, { method: 'DELETE' });
+    const d = await r.json();
+    if (d.ok) { await cargarCampanas(); }
+    else alert('❌ ' + (d.error || 'Error al eliminar'));
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function previewCampana() {
+  const id = document.getElementById('mc-id').value;
+  const box = document.getElementById('mc-preview-box');
+  if (!id) {
+    box.innerHTML = '💡 Guarda la campaña primero para ver los destinatarios.';
+    box.style.display = 'block';
+    return;
+  }
+  box.innerHTML = 'Calculando…'; box.style.display = 'block';
+  try {
+    const r = await authFetch(`${API}/campanas/${id}/preview`);
+    const d = await r.json();
+    const nombres = d.muestra?.map(c => `${c.nombre||'—'} &lt;${c.email}&gt;`).join('<br>') || '';
+    box.innerHTML = `<strong>👥 ${d.total} contacto(s) recibirán esta campaña</strong>${nombres ? '<br><br>' + nombres : ''}${d.total > 5 ? `<br><em style="color:var(--muted)">…y ${d.total-5} más</em>` : ''}`;
+  } catch(e) { box.innerHTML = 'Error: ' + e.message; }
+}
+
+// Cerrar modal campaña con Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !document.getElementById('modal-campana').classList.contains('hidden')) cerrarModalCampana();
+});
+
 
 </script>
 </body>

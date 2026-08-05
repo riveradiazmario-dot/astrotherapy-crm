@@ -18,6 +18,7 @@ import conversacionesRouter from './routes/conversaciones';
 import iaRouter from './routes/ia';
 import authRouter from './routes/auth';
 import pipelineRouter from './routes/oportunidades';
+import campanasRouter from './routes/campanas';
 import { bootstrapAutomations } from './services/automations/bootstrap';
 import { errorHandler } from './middleware/errorHandler';
 import { logger } from './logger';
@@ -49,6 +50,7 @@ app.use((req, _res, next) => {
 app.use('/api/auth', authRouter);            // Públicas: registro, login
 app.use('/api/contactos', contactosRouter);  // Protegidas por requireAuth
 app.use('/api/pipeline', pipelineRouter);    // Protegidas por requireAuth
+app.use('/api/campanas', campanasRouter);    // Módulo C — Campaign Builder
 app.use('/api/scraping', scrapingRouter);    // Protegidas por requireAuth
 app.use('/api/mailerlite', mailerliteRouter);
 app.use('/api/email', emailRouter);
@@ -162,7 +164,7 @@ app.get('/', (_req, res) => {
         'DELETE /api/smtp-config/:id': 'Eliminar cuenta SMTP',
         'POST /api/smtp-config/:id/predeterminado': 'Marcar como cuenta predeterminada',
       },
-      mailerlite: {
+      campanas: {        'GET  /api/campanas': 'Listar campañas (?estado=&tipo=&page=&limit=)',        'GET  /api/campanas/stats': 'Estadísticas globales de campañas',        'GET  /api/campanas/:id': 'Detalle de una campaña',        'POST /api/campanas': 'Crear campaña { nombre, descripcion?, tipo?, segmento?, asunto?, html? }',        'PUT  /api/campanas/:id': 'Actualizar campaña',        'DELETE /api/campanas/:id': 'Eliminar campaña',        'POST /api/campanas/:id/enviar': 'Lanzar campaña (envío masivo asíncrono)',        'POST /api/campanas/:id/duplicar': 'Clonar campaña como borrador',        'GET  /api/campanas/:id/preview': 'Ver cuántos contactos recibirían la campaña',      },      mailerlite: {
         'POST /api/mailerlite/sincronizar': 'Sincronizar todos los contactos con consentimiento',
         'POST /api/mailerlite/sincronizar/:id': 'Sincronizar un contacto',
         'GET  /api/mailerlite/estadisticas': 'Estadísticas de campañas',
