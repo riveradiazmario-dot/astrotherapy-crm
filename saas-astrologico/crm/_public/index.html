@@ -117,8 +117,7 @@
   .page.active { display: block; }
 
   /* ── Modal ── */
-  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; align-items:center; justify-content:center; }
-  .modal-overlay.open { display:flex; }
+  /* modal-overlay controlled by .hidden class — see second CSS block below */
   .modal { background:#fff; border-radius:14px; padding:28px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.2); }
   .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
   .modal-header h3 { font-size:16px; font-weight:700; }
@@ -349,7 +348,7 @@
     </div>
 
     <!-- ═══ MODAL CONTACTO ═══ -->
-    <div id="modal-contacto" class="modal-overlay" onclick="if(event.target===this)cerrarModal()">
+    <div id="modal-contacto" class="modal-overlay hidden" onclick="if(event.target.id==='modal-contacto')cerrarModal()">
       <div class="modal">
         <div class="modal-header">
           <h3 id="modal-titulo">Nuevo contacto</h3>
@@ -1258,7 +1257,7 @@ function abrirModalNuevo() {
   document.getElementById('m-especialidad').value = '';
   document.getElementById('m-estado').value = 'prospecto';
   document.getElementById('modal-error').style.display = 'none';
-  document.getElementById('modal-contacto').classList.add('open');
+  document.getElementById('modal-contacto').classList.remove('hidden');
 }
 
 function abrirModalEditar(json) {
@@ -1274,12 +1273,15 @@ function abrirModalEditar(json) {
   document.getElementById('m-especialidad').value = c.especialidadPrimaria || c.especialidad || '';
   document.getElementById('m-estado').value = c.estado || 'prospecto';
   document.getElementById('modal-error').style.display = 'none';
-  document.getElementById('modal-contacto').classList.add('open');
+  document.getElementById('modal-contacto').classList.remove('hidden');
 }
 
 function cerrarModal() {
-  document.getElementById('modal-contacto').classList.remove('open');
+  document.getElementById('modal-contacto').classList.add('hidden');
 }
+
+// Cerrar con Escape
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
 
 async function guardarContacto() {
   const id     = document.getElementById('modal-id').value;
