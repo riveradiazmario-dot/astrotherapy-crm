@@ -198,6 +198,145 @@
     margin-left: auto;
   }
   .btn-logout:hover { background: rgba(255,255,255,.22); color: #fff; }
+
+  /* ══ Campaign Builder v2 ══════════════════════════════════════════════════ */
+  .camp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px; }
+  .camp-card { background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; transition:box-shadow .2s; }
+  .camp-card:hover { box-shadow:0 4px 20px rgba(107,91,204,.12); }
+  .camp-card-head { padding:18px 20px 14px; }
+  .camp-card-name { font-size:15px; font-weight:700; margin-bottom:4px; }
+  .camp-card-desc { font-size:12px; color:var(--muted); margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .camp-card-stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; padding:14px 20px; background:#fafafe; border-top:1px solid var(--border); }
+  .camp-card-stat { text-align:center; }
+  .camp-card-stat .sv { font-size:18px; font-weight:700; color:var(--purple); }
+  .camp-card-stat .sl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; }
+  .camp-card-foot { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-top:1px solid var(--border); }
+  .camp-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; text-align:center; }
+  .camp-empty svg { opacity:.25; margin-bottom:16px; }
+  .camp-empty h3 { font-size:17px; font-weight:700; margin-bottom:8px; }
+  .camp-empty p { font-size:13px; color:var(--muted); margin-bottom:20px; }
+
+  /* Wizard overlay */
+  .wz-overlay { position:fixed; inset:0; background:#f4f3ff; z-index:2000; display:flex; flex-direction:column; overflow:hidden; }
+  .wz-overlay.hidden { display:none; }
+  .wz-topbar { display:flex; align-items:center; gap:16px; padding:0 24px; height:56px; background:var(--card); border-bottom:1px solid var(--border); flex-shrink:0; }
+  .wz-title { font-size:14px; font-weight:700; flex:1; }
+  .wz-steps { display:flex; align-items:center; gap:0; flex:2; justify-content:center; }
+  .wz-step { display:flex; align-items:center; gap:0; font-size:11px; color:var(--muted); cursor:pointer; }
+  .wz-step-num { width:24px; height:24px; border-radius:50%; background:var(--border); color:var(--muted); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
+  .wz-step.active .wz-step-num { background:var(--purple); color:#fff; }
+  .wz-step.done .wz-step-num { background:var(--success); color:#fff; }
+  .wz-step-label { font-size:10.5px; margin-left:6px; font-weight:600; display:none; }
+  .wz-step.active .wz-step-label { display:block; color:var(--purple); }
+  .wz-step.done .wz-step-label { display:block; color:var(--success); }
+  .wz-connector { width:28px; height:2px; background:var(--border); margin:0 4px; flex-shrink:0; }
+  .wz-connector.done { background:var(--success); }
+  .wz-body { flex:1; overflow-y:auto; display:flex; }
+  .wz-step-panel { display:none; width:100%; }
+  .wz-step-panel.active { display:flex; flex-direction:column; }
+  .wz-content { flex:1; padding:32px; max-width:820px; margin:0 auto; width:100%; }
+  .wz-footer { flex-shrink:0; background:var(--card); border-top:1px solid var(--border); padding:14px 32px; display:flex; align-items:center; justify-content:space-between; }
+  .wz-step-title { font-size:22px; font-weight:800; margin-bottom:4px; color:var(--text); }
+  .wz-step-sub { font-size:13px; color:var(--muted); margin-bottom:28px; }
+  .wz-field { margin-bottom:18px; }
+  .wz-field label { display:block; font-size:12px; font-weight:700; color:var(--muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:.4px; }
+  .wz-input { width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; background:#fff; color:var(--text); font-family:inherit; transition:border .15s; }
+  .wz-input:focus { outline:none; border-color:var(--purple); }
+  .wz-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .wz-card-opt { border:1.5px solid var(--border); border-radius:12px; padding:16px; cursor:pointer; transition:all .15s; }
+  .wz-card-opt:hover { border-color:var(--purple); background:var(--purple-light); }
+  .wz-card-opt.selected { border-color:var(--purple); background:var(--purple-light); }
+
+  /* Audience step */
+  .aud-counter { background:linear-gradient(135deg,var(--purple) 0%,#9B8BE8 100%); color:#fff; border-radius:14px; padding:20px 24px; display:flex; align-items:center; gap:16px; margin-bottom:24px; }
+  .aud-count-num { font-size:42px; font-weight:900; line-height:1; }
+  .aud-count-label { font-size:13px; opacity:.85; }
+  .aud-filters { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+  .aud-sample { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px; margin-top:16px; font-size:12px; }
+
+  /* Block editor */
+  .editor-wrap { display:flex; height:100%; gap:0; }
+  .editor-sidebar { width:220px; flex-shrink:0; background:var(--card); border-right:1px solid var(--border); overflow-y:auto; padding:12px; }
+  .editor-sidebar h4 { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin:12px 0 8px; }
+  .block-type-btn { display:flex; align-items:center; gap:8px; width:100%; padding:9px 10px; border:1px solid var(--border); border-radius:8px; background:#fff; cursor:pointer; font-size:12px; font-weight:600; color:var(--text); margin-bottom:6px; transition:all .12s; }
+  .block-type-btn:hover { background:var(--purple-light); border-color:var(--purple); color:var(--purple); }
+  .editor-main { flex:1; overflow-y:auto; padding:24px; background:#e8e7f5; }
+  .editor-tabs { display:flex; gap:0; border-bottom:1px solid var(--border); background:var(--card); flex-shrink:0; padding:0 16px; }
+  .editor-tab { padding:11px 18px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2.5px solid transparent; transition:all .15s; }
+  .editor-tab.active { color:var(--purple); border-bottom-color:var(--purple); }
+  .editor-tab-panel { display:none; height:100%; }
+  .editor-tab-panel.active { display:flex; }
+  .email-canvas { min-height:400px; }
+  .email-block-wrap { position:relative; margin-bottom:8px; cursor:pointer; border-radius:8px; overflow:hidden; border:2px solid transparent; transition:border .15s; }
+  .email-block-wrap:hover, .email-block-wrap.selected { border-color:var(--purple); }
+  .email-block-toolbar { display:none; position:absolute; top:4px; right:4px; z-index:10; display:flex; gap:3px; background:var(--purple); border-radius:6px; padding:3px; }
+  .email-block-wrap:hover .email-block-toolbar, .email-block-wrap.selected .email-block-toolbar { display:flex; }
+  .eb-tool { background:transparent; border:none; color:#fff; cursor:pointer; padding:3px 6px; border-radius:4px; font-size:11px; transition:background .1s; }
+  .eb-tool:hover { background:rgba(255,255,255,.2); }
+  .email-block-inner { padding:0; }
+  .block-edit-panel { background:var(--card); border:1.5px solid var(--purple); border-radius:12px; padding:16px; margin-top:8px; margin-bottom:16px; }
+  .block-edit-panel textarea, .block-edit-panel input { width:100%; padding:9px 12px; border:1.5px solid var(--border); border-radius:8px; font-size:13px; background:#fafafa; color:var(--text); font-family:inherit; resize:vertical; }
+  .block-edit-panel textarea:focus, .block-edit-panel input:focus { outline:none; border-color:var(--purple); }
+
+  /* Templates */
+  .tmpl-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; }
+  .tmpl-card { border:2px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; transition:all .15s; }
+  .tmpl-card:hover { border-color:var(--purple); }
+  .tmpl-card.selected { border-color:var(--purple); box-shadow:0 0 0 3px var(--purple-light); }
+  .tmpl-preview { height:140px; background:#f0eeff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px; gap:6px; }
+  .tmpl-preview .t-h { width:80%; height:12px; background:var(--purple); border-radius:3px; opacity:.4; }
+  .tmpl-preview .t-l { width:90%; height:7px; background:var(--border); border-radius:3px; }
+  .tmpl-preview .t-b { width:50%; height:10px; background:var(--teal); border-radius:3px; opacity:.5; margin-top:4px; }
+  .tmpl-name { padding:10px 12px; font-size:12px; font-weight:700; }
+
+  /* Variables panel */
+  .vars-layout { display:grid; grid-template-columns:200px 1fr; gap:20px; height:100%; }
+  .vars-list { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:12px; overflow-y:auto; }
+  .var-chip { display:block; width:100%; text-align:left; padding:8px 12px; border:1px solid var(--border); border-radius:7px; background:#fff; font-size:12px; font-family:monospace; cursor:pointer; margin-bottom:5px; transition:all .12s; color:var(--purple); font-weight:700; }
+  .var-chip:hover { background:var(--purple-light); border-color:var(--purple); }
+  .vars-editor { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; }
+
+  /* AI panel */
+  .ai-layout { display:grid; grid-template-columns:1fr 1fr; gap:20px; height:100%; }
+  .ai-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+  .ai-btn { padding:10px 12px; border:1.5px solid var(--border); border-radius:9px; background:#fff; font-size:12px; font-weight:600; cursor:pointer; text-align:left; transition:all .12s; }
+  .ai-btn:hover { background:var(--purple-light); border-color:var(--purple); color:var(--purple); }
+  .ai-result { background:#f8f7ff; border:1px solid var(--border); border-radius:10px; padding:14px; min-height:200px; font-size:13px; line-height:1.6; white-space:pre-wrap; }
+
+  /* Preview */
+  .preview-toggle { display:flex; gap:0; background:var(--bg); border-radius:8px; padding:3px; margin-bottom:16px; }
+  .preview-toggle-btn { padding:6px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; border:none; background:transparent; color:var(--muted); transition:all .15s; }
+  .preview-toggle-btn.active { background:#fff; color:var(--purple); box-shadow:0 1px 4px rgba(0,0,0,.1); }
+  .preview-iframe-wrap { border-radius:12px; overflow:hidden; border:1px solid var(--border); background:#fff; }
+  .preview-iframe-wrap.mobile { max-width:375px; margin:0 auto; }
+
+  /* Send step */
+  .send-summary { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px; margin-bottom:20px; }
+  .send-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); font-size:13px; }
+  .send-row:last-child { border-bottom:none; }
+  .send-row-label { color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:.4px; }
+  .send-options { display:flex; gap:12px; }
+  .send-opt { flex:1; border:2px solid var(--border); border-radius:12px; padding:18px; cursor:pointer; text-align:center; transition:all .15s; }
+  .send-opt:hover { border-color:var(--purple); }
+  .send-opt.selected { border-color:var(--purple); background:var(--purple-light); }
+  .send-opt-icon { font-size:28px; margin-bottom:8px; }
+  .send-opt-name { font-size:13px; font-weight:700; margin-bottom:4px; }
+  .send-opt-desc { font-size:11px; color:var(--muted); }
+
+  /* Tab view in list */
+  .camp-tabs { display:flex; gap:0; border-bottom:1px solid var(--border); margin-bottom:24px; }
+  .camp-tab { padding:12px 20px; font-size:13px; font-weight:600; color:var(--muted); cursor:pointer; border-bottom:2.5px solid transparent; }
+  .camp-tab.active { color:var(--purple); border-bottom-color:var(--purple); }
+
+  /* mobile responsive */
+  @media(max-width:700px) {
+    .aud-filters { grid-template-columns:1fr; }
+    .wz-grid2 { grid-template-columns:1fr; }
+    .ai-layout, .vars-layout { grid-template-columns:1fr; }
+    .wz-step-label { display:none !important; }
+    .camp-grid { grid-template-columns:1fr; }
+  }
+
 </style>
 </head>
 <body>
@@ -803,53 +942,113 @@
     <div id="page-campanas" class="page">
 
       <!-- Stats rápidas -->
-      <div class="grid-4" id="camp-stats" style="margin-bottom:20px">
-        <div class="stat-card"><div class="stat-value" id="cs-total">—</div><div class="stat-label">Total campañas</div></div>
-        <div class="stat-card"><div class="stat-value" id="cs-enviados">—</div><div class="stat-label">Emails enviados</div></div>
-        <div class="stat-card"><div class="stat-value" id="cs-apertura">—</div><div class="stat-label">Tasa apertura</div></div>
-        <div class="stat-card"><div class="stat-value" id="cs-clics">—</div><div class="stat-label">Tasa clics</div></div>
+      <div class="stats-row" style="margin-bottom:20px">
+        <div class="stat-card"><div class="value" id="cs-total">—</div><div class="label">Campañas</div></div>
+        <div class="stat-card"><div class="value" id="cs-enviados">—</div><div class="label">Emails enviados</div></div>
+        <div class="stat-card"><div class="value" id="cs-apertura">—</div><div class="label">Tasa apertura</div></div>
+        <div class="stat-card"><div class="value" id="cs-clics">—</div><div class="label">Tasa clics</div></div>
       </div>
 
-      <div class="panel">
-        <div class="panel-head" style="display:flex;align-items:center;justify-content:space-between">
-          <h3>📣 Campañas de email</h3>
-          <button class="btn btn-primary btn-sm" onclick="abrirModalCampana()">+ Nueva campaña</button>
+      <!-- Tabs + CTA -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div class="camp-tabs" style="margin-bottom:0">
+          <div class="camp-tab active" onclick="campTab('campanas',this)">📣 Campañas</div>
+          <div class="camp-tab" onclick="campTab('plantillas',this)">📐 Plantillas</div>
         </div>
-        <div class="panel-body">
-          <div id="campanas-list" style="min-height:100px;color:var(--muted);text-align:center;padding:20px">Cargando…</div>
+        <button class="btn btn-primary" onclick="abrirWizard()">+ Nueva campaña</button>
+      </div>
+
+      <!-- Panel: Campañas -->
+      <div id="camp-tab-campanas">
+        <div id="campanas-list" style="min-height:200px">
+          <div style="text-align:center;padding:40px;color:var(--muted)">Cargando…</div>
         </div>
+      </div>
+
+      <!-- Panel: Plantillas -->
+      <div id="camp-tab-plantillas" style="display:none">
+        <div class="tmpl-grid" id="tmpl-list"></div>
       </div>
     </div>
 
-    <!-- ═══ MODAL CAMPAÑA ═══ -->
-    <div id="modal-campana" class="modal-overlay hidden" onclick="if(event.target.id==='modal-campana')cerrarModalCampana()">
-      <div class="modal" style="max-width:640px">
-        <div class="modal-header">
-          <h3 id="modal-camp-titulo">Nueva campaña</h3>
-          <button class="btn btn-ghost btn-sm" onclick="cerrarModalCampana()">✕</button>
-        </div>
-        <input type="hidden" id="mc-id">
-        <div class="form-grid" style="gap:14px">
-          <div class="form-group">
-            <label>Nombre *</label>
-            <input id="mc-nombre" class="form-input" placeholder="Ej: Lanzamiento ATP Premium — Agosto">
-          </div>
-          <div class="form-group">
-            <label>Descripción</label>
-            <input id="mc-desc" class="form-input" placeholder="Nota interna sobre esta campaña">
-          </div>
-          <div class="form-group">
-            <label>Asunto del email *</label>
-            <input id="mc-asunto" class="form-input" placeholder="Ej: 🌟 Tu lectura astrológica personalizada te espera">
-          </div>
+    <!-- ═══ WIZARD CAMPAÑAS (full-screen) ═══ -->
+    <div id="wz-overlay" class="wz-overlay hidden">
 
-          <details style="grid-column:1/-1">
-            <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--purple);margin-bottom:8px">⚙️ Segmento (opcional — vacío = todos con consentimiento)</summary>
-            <div class="form-grid" style="gap:10px;margin-top:10px">
-              <div class="form-group">
+      <!-- Topbar del wizard -->
+      <div class="wz-topbar">
+        <button class="btn btn-ghost btn-sm" onclick="cerrarWizard()" style="padding:6px 10px">✕</button>
+        <div class="wz-title" id="wz-camp-name">Nueva campaña</div>
+        <div class="wz-steps" id="wz-steps-bar">
+          <!-- generado por JS -->
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="guardarBorradorWizard()">💾 Guardar</button>
+      </div>
+
+      <!-- Pasos -->
+      <div class="wz-body">
+
+        <!-- PASO 1: Info general -->
+        <div class="wz-step-panel active" id="wzp-1">
+          <div class="wz-content">
+            <div class="wz-step-title">1 · Información general</div>
+            <div class="wz-step-sub">Define los datos básicos de tu campaña.</div>
+            <div class="wz-grid2">
+              <div class="wz-field" style="grid-column:1/-1">
+                <label>Nombre interno *</label>
+                <input id="wz-nombre" class="wz-input" placeholder="Ej: Lanzamiento ATP Premium — Agosto 2026">
+              </div>
+              <div class="wz-field" style="grid-column:1/-1">
+                <label>Descripción (nota interna)</label>
+                <input id="wz-desc" class="wz-input" placeholder="Ej: Campaña para astrólogos con más de 2 años de experiencia">
+              </div>
+              <div class="wz-field">
+                <label>Remitente</label>
+                <input id="wz-from-nombre" class="wz-input" placeholder="Mario Rivera · AstroTherapy Pro">
+              </div>
+              <div class="wz-field">
+                <label>Cuenta de envío</label>
+                <select id="wz-smtp-id" class="wz-input">
+                  <option value="">Proveedor predeterminado</option>
+                </select>
+              </div>
+              <div class="wz-field" style="grid-column:1/-1">
+                <label>Asunto del email *</label>
+                <input id="wz-asunto" class="wz-input" placeholder="🌟 Tu lectura astrológica personalizada te espera">
+              </div>
+              <div class="wz-field" style="grid-column:1/-1">
+                <label>Preheader (texto de vista previa)</label>
+                <input id="wz-preheader" class="wz-input" placeholder="El texto que aparece después del asunto en la bandeja de entrada…">
+              </div>
+            </div>
+          </div>
+          <div class="wz-footer">
+            <button class="btn btn-ghost" onclick="cerrarWizard()">Cancelar</button>
+            <button class="btn btn-primary" onclick="wzNext(1)">Siguiente: Audiencia →</button>
+          </div>
+        </div>
+
+        <!-- PASO 2: Audiencia -->
+        <div class="wz-step-panel" id="wzp-2">
+          <div class="wz-content">
+            <div class="wz-step-title">2 · Audiencia</div>
+            <div class="wz-step-sub">¿A quién va dirigida esta campaña?</div>
+
+            <div class="aud-counter">
+              <div>
+                <div class="aud-count-num" id="aud-count">—</div>
+                <div class="aud-count-label">contactos recibirán esta campaña</div>
+              </div>
+              <div style="flex:1;font-size:12px;opacity:.8;line-height:1.5" id="aud-detail">
+                Ajusta los filtros para ver el total en tiempo real.
+              </div>
+              <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)" onclick="wzPreviewAud()">👁 Ver muestra</button>
+            </div>
+
+            <div class="aud-filters">
+              <div class="wz-field">
                 <label>Estado del contacto</label>
-                <select id="mc-seg-estado" class="form-input">
-                  <option value="">Todos los estados</option>
+                <select id="wz-seg-estado" class="wz-input" onchange="wzContarAud()">
+                  <option value="">Todos</option>
                   <option value="prospecto">Prospecto</option>
                   <option value="contactado">Contactado</option>
                   <option value="nurture">Nurture</option>
@@ -857,49 +1056,272 @@
                   <option value="cliente">Cliente</option>
                 </select>
               </div>
-              <div class="form-group">
+              <div class="wz-field">
                 <label>Especialidad</label>
-                <select id="mc-seg-esp" class="form-input">
-                  <option value="">Todas las especialidades</option>
+                <select id="wz-seg-esp" class="wz-input" onchange="wzContarAud()">
+                  <option value="">Todas</option>
                   <option value="astrologia_tropical">Astrología tropical</option>
                   <option value="astrologia_vedica">Astrología védica</option>
                   <option value="tarot">Tarot</option>
-                  <option value="constelaciones_familiares">Constelaciones familiares</option>
+                  <option value="constelaciones_familiares">Constelaciones</option>
                   <option value="reiki">Reiki</option>
                   <option value="coaching_holistico">Coaching holístico</option>
                   <option value="numerologia">Numerología</option>
                   <option value="otro">Otro</option>
                 </select>
               </div>
-              <div class="form-group">
-                <label>País (código ISO)</label>
-                <input id="mc-seg-pais" class="form-input" placeholder="MX, CO, AR…">
+              <div class="wz-field">
+                <label>País (ISO)</label>
+                <input id="wz-seg-pais" class="wz-input" placeholder="MX, CO, AR…" oninput="wzContarAudDebounce()">
               </div>
-              <div class="form-group">
+              <div class="wz-field">
                 <label>Etiqueta</label>
-                <input id="mc-seg-etiqueta" class="form-input" placeholder="Ej: vip, trial, webinar">
+                <input id="wz-seg-etiqueta" class="wz-input" placeholder="vip, trial, webinar…" oninput="wzContarAudDebounce()">
+              </div>
+              <div class="wz-field">
+                <label>Lead Score mínimo</label>
+                <input id="wz-seg-score" type="number" class="wz-input" placeholder="0" min="0" max="100" oninput="wzContarAudDebounce()">
+              </div>
+              <div class="wz-field">
+                <label>Solo con consentimiento</label>
+                <select id="wz-seg-consent" class="wz-input" onchange="wzContarAud()">
+                  <option value="true">Sí (recomendado)</option>
+                  <option value="false">No</option>
+                </select>
               </div>
             </div>
-          </details>
 
-          <div class="form-group" style="grid-column:1/-1">
-            <label>Cuerpo del email (HTML permitido) *</label>
-            <textarea id="mc-html" class="form-input" rows="10" placeholder="<p>Hola {{nombre}},</p>&#10;<p>Te escribimos desde AstroTherapy Pro…</p>"></textarea>
+            <div id="aud-sample" class="aud-sample" style="display:none"></div>
+          </div>
+          <div class="wz-footer">
+            <button class="btn btn-ghost" onclick="wzBack(2)">← Atrás</button>
+            <button class="btn btn-primary" onclick="wzNext(2)">Siguiente: Diseño →</button>
           </div>
         </div>
 
-        <div id="mc-preview-box" style="display:none;margin-top:14px;padding:10px 14px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--muted)"></div>
-        <div id="mc-error" class="error-msg" style="display:none;margin-top:10px"></div>
+        <!-- PASO 3: Diseño -->
+        <div class="wz-step-panel" id="wzp-3" style="flex-direction:column">
+          <div style="padding:20px 32px 12px;flex-shrink:0">
+            <div class="wz-step-title" style="margin-bottom:0">3 · Diseño del email</div>
+          </div>
+          <div class="editor-tabs" style="flex-shrink:0">
+            <div class="editor-tab active" onclick="editorTab('visual',this)">🎨 Visual</div>
+            <div class="editor-tab" onclick="editorTab('html',this)">⌨️ HTML</div>
+            <div class="editor-tab" onclick="editorTab('plantillas',this)">📐 Plantillas</div>
+            <div class="editor-tab" onclick="editorTab('preview',this)">👁 Vista previa</div>
+          </div>
 
-        <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap">
-          <button class="btn btn-ghost" onclick="cerrarModalCampana()">Cancelar</button>
-          <button class="btn btn-ghost btn-sm" onclick="previewCampana()">👁 Ver destinatarios</button>
-          <button class="btn btn-secondary" onclick="guardarCampana()">💾 Guardar borrador</button>
-          <button class="btn btn-primary" onclick="guardarYLanzarCampana()" id="mc-btn-lanzar">🚀 Guardar y enviar</button>
+          <!-- Visual editor -->
+          <div class="editor-tab-panel active" id="etab-visual" style="flex:1;overflow:hidden">
+            <div class="editor-wrap" style="height:100%">
+              <div class="editor-sidebar">
+                <h4>Bloques</h4>
+                <button class="block-type-btn" onclick="addBlock('header')">📌 Encabezado</button>
+                <button class="block-type-btn" onclick="addBlock('text')">📝 Texto</button>
+                <button class="block-type-btn" onclick="addBlock('image')">🖼 Imagen</button>
+                <button class="block-type-btn" onclick="addBlock('button')">🔘 Botón CTA</button>
+                <button class="block-type-btn" onclick="addBlock('divider')">— Separador</button>
+                <button class="block-type-btn" onclick="addBlock('twocol')">▌▐ Dos columnas</button>
+                <button class="block-type-btn" onclick="addBlock('social')">🔗 Redes sociales</button>
+                <button class="block-type-btn" onclick="addBlock('footer')">📄 Footer</button>
+                <h4 style="margin-top:16px">Acciones</h4>
+                <button class="block-type-btn" onclick="clearCanvas()" style="color:var(--danger)">🗑 Limpiar todo</button>
+              </div>
+              <div class="editor-main">
+                <div style="max-width:600px;margin:0 auto">
+                  <div id="email-canvas" class="email-canvas">
+                    <!-- blocks render here -->
+                  </div>
+                  <div id="block-edit-zone"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HTML editor -->
+          <div class="editor-tab-panel" id="etab-html" style="flex:1;padding:20px;flex-direction:column">
+            <div style="margin-bottom:10px;font-size:12px;color:var(--muted)">Edita el HTML directamente. Los cambios aquí sobreescriben el editor visual.</div>
+            <textarea id="wz-html" style="flex:1;width:100%;border:1.5px solid var(--border);border-radius:10px;padding:14px;font-family:monospace;font-size:12.5px;resize:none;background:#1e1e2e;color:#cdd6f4;line-height:1.5" placeholder="<p>Hola {{nombre}},</p>
+<p>Escribe tu email aquí…</p>"></textarea>
+            <button class="btn btn-ghost btn-sm" style="margin-top:8px;align-self:flex-start" onclick="syncHtmlToVisual()">↩ Importar al editor visual</button>
+          </div>
+
+          <!-- Plantillas -->
+          <div class="editor-tab-panel" id="etab-plantillas" style="flex:1;padding:20px;flex-direction:column;overflow-y:auto">
+            <div class="wz-step-sub" style="margin-bottom:16px">Elige una plantilla como punto de partida.</div>
+            <div class="tmpl-grid" id="wz-tmpl-picker"></div>
+          </div>
+
+          <!-- Preview -->
+          <div class="editor-tab-panel" id="etab-preview" style="flex:1;padding:20px;flex-direction:column;overflow-y:auto">
+            <div class="preview-toggle">
+              <button class="preview-toggle-btn active" onclick="previewDevice('desktop',this)">🖥 Escritorio</button>
+              <button class="preview-toggle-btn" onclick="previewDevice('mobile',this)">📱 Móvil</button>
+            </div>
+            <div class="preview-iframe-wrap" id="preview-wrap">
+              <iframe id="preview-iframe" style="width:100%;border:none;min-height:500px" sandbox="allow-same-origin"></iframe>
+            </div>
+          </div>
+
+          <div class="wz-footer" style="flex-shrink:0">
+            <button class="btn btn-ghost" onclick="wzBack(3)">← Atrás</button>
+            <button class="btn btn-primary" onclick="wzNext(3)">Siguiente: Variables →</button>
+          </div>
         </div>
-      </div>
-    </div>
 
+        <!-- PASO 4: Variables -->
+        <div class="wz-step-panel" id="wzp-4">
+          <div class="wz-content" style="max-width:960px">
+            <div class="wz-step-title">4 · Personalización</div>
+            <div class="wz-step-sub">Inserta variables dinámicas para personalizar cada email. Haz clic en una variable para copiarla.</div>
+            <div class="vars-layout">
+              <div class="vars-list">
+                <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:10px">Variables disponibles</div>
+                <button class="var-chip" onclick="insertVar('{{nombre}}')">{{nombre}}</button>
+                <button class="var-chip" onclick="insertVar('{{email}}')">{{email}}</button>
+                <button class="var-chip" onclick="insertVar('{{telefono}}')">{{telefono}}</button>
+                <button class="var-chip" onclick="insertVar('{{pais}}')">{{pais}}</button>
+                <button class="var-chip" onclick="insertVar('{{ciudad}}')">{{ciudad}}</button>
+                <button class="var-chip" onclick="insertVar('{{especialidad}}')">{{especialidad}}</button>
+                <button class="var-chip" onclick="insertVar('{{lead_score}}')">{{lead_score}}</button>
+                <button class="var-chip" onclick="insertVar('{{estado}}')">{{estado}}</button>
+                <button class="var-chip" onclick="insertVar('{{fecha_hoy}}')">{{fecha_hoy}}</button>
+                <button class="var-chip" onclick="insertVar('{{unsubscribe_url}}')">{{unsubscribe_url}}</button>
+              </div>
+              <div class="vars-editor">
+                <div style="font-size:12px;color:var(--muted);margin-bottom:10px">HTML del email — edita con las variables insertadas:</div>
+                <textarea id="wz-vars-html" rows="18" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:monospace;font-size:12.5px;resize:vertical;line-height:1.5" oninput="syncVarsToMain()"></textarea>
+                <div style="margin-top:8px;font-size:11px;color:var(--muted)">💡 Las variables se reemplazan en el momento del envío con los datos reales de cada contacto.</div>
+              </div>
+            </div>
+          </div>
+          <div class="wz-footer">
+            <button class="btn btn-ghost" onclick="wzBack(4)">← Atrás</button>
+            <button class="btn btn-primary" onclick="wzNext(4)">Siguiente: IA →</button>
+          </div>
+        </div>
+
+        <!-- PASO 5: IA -->
+        <div class="wz-step-panel" id="wzp-5">
+          <div class="wz-content" style="max-width:960px">
+            <div class="wz-step-title">5 · Asistente IA</div>
+            <div class="wz-step-sub">Mejora tu email con ayuda de inteligencia artificial.</div>
+            <div class="ai-layout">
+              <div>
+                <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:10px">Acciones rápidas</div>
+                <div class="ai-actions">
+                  <button class="ai-btn" onclick="iaAction('write')">✍️ Escribir email completo</button>
+                  <button class="ai-btn" onclick="iaAction('improve')">✨ Mejorar texto</button>
+                  <button class="ai-btn" onclick="iaAction('shorten')">✂️ Acortar</button>
+                  <button class="ai-btn" onclick="iaAction('expand')">📖 Expandir</button>
+                  <button class="ai-btn" onclick="iaAction('formal')">🧳 Tono formal</button>
+                  <button class="ai-btn" onclick="iaAction('friendly')">😊 Tono amigable</button>
+                  <button class="ai-btn" onclick="iaAction('subject')">📧 Generar asunto</button>
+                  <button class="ai-btn" onclick="iaAction('preheader')">👀 Generar preheader</button>
+                  <button class="ai-btn" onclick="iaAction('spam')">🚫 Detectar spam</button>
+                  <button class="ai-btn" onclick="iaAction('spellcheck')">🔤 Revisar ortografía</button>
+                </div>
+                <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px">Prompt personalizado</div>
+                <textarea id="ia-prompt" rows="4" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-size:13px;resize:none" placeholder="Escribe aquí lo que quieres que haga la IA con tu email…"></textarea>
+                <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="iaAction('custom')">Ejecutar →</button>
+              </div>
+              <div>
+                <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:10px">Resultado</div>
+                <div class="ai-result" id="ia-result">Los resultados de la IA aparecerán aquí…</div>
+                <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="iaApply()" id="ia-apply-btn" style="display:none">← Aplicar al email</button>
+              </div>
+            </div>
+          </div>
+          <div class="wz-footer">
+            <button class="btn btn-ghost" onclick="wzBack(5)">← Atrás</button>
+            <button class="btn btn-primary" onclick="wzNext(5)">Siguiente: Pruebas →</button>
+          </div>
+        </div>
+
+        <!-- PASO 6: Pruebas -->
+        <div class="wz-step-panel" id="wzp-6">
+          <div class="wz-content">
+            <div class="wz-step-title">6 · Pruebas</div>
+            <div class="wz-step-sub">Verifica tu campaña antes de enviarla.</div>
+
+            <div class="wz-grid2" style="margin-bottom:24px">
+              <div class="panel">
+                <div class="panel-head"><h3>📩 Email de prueba</h3></div>
+                <div class="panel-body">
+                  <div class="wz-field">
+                    <label>Enviar a</label>
+                    <input id="test-email-to" class="wz-input" placeholder="tu@email.com" type="email">
+                  </div>
+                  <button class="btn btn-primary" style="width:100%" onclick="enviarEmailPrueba()">Enviar prueba</button>
+                  <div id="test-email-result" style="margin-top:10px;font-size:12px;display:none"></div>
+                </div>
+              </div>
+              <div class="panel">
+                <div class="panel-head"><h3>✅ Validaciones</h3></div>
+                <div class="panel-body">
+                  <div id="validaciones-list" style="font-size:13px;line-height:2">
+                    <!-- generado por JS -->
+                  </div>
+                  <button class="btn btn-ghost btn-sm" style="margin-top:12px" onclick="correrValidaciones()">↻ Revisar</button>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:10px">Vista previa</div>
+              <div class="preview-toggle">
+                <button class="preview-toggle-btn active" onclick="previewDevice2('desktop',this)">🖥 Escritorio</button>
+                <button class="preview-toggle-btn" onclick="previewDevice2('mobile',this)">📱 Móvil</button>
+              </div>
+              <div class="preview-iframe-wrap" id="preview-wrap2">
+                <iframe id="preview-iframe2" style="width:100%;border:none;min-height:400px" sandbox="allow-same-origin"></iframe>
+              </div>
+            </div>
+          </div>
+          <div class="wz-footer">
+            <button class="btn btn-ghost" onclick="wzBack(6)">← Atrás</button>
+            <button class="btn btn-primary" onclick="wzNext(6)">Siguiente: Envío →</button>
+          </div>
+        </div>
+
+        <!-- PASO 7: Envío -->
+        <div class="wz-step-panel" id="wzp-7">
+          <div class="wz-content">
+            <div class="wz-step-title">7 · Envío</div>
+            <div class="wz-step-sub">Revisa el resumen y elige cuándo enviar.</div>
+
+            <div class="send-summary" id="send-summary">
+              <!-- generado por JS -->
+            </div>
+
+            <div class="send-options">
+              <div class="send-opt selected" id="send-opt-now" onclick="selectSendOpt('now')">
+                <div class="send-opt-icon">🚀</div>
+                <div class="send-opt-name">Enviar ahora</div>
+                <div class="send-opt-desc">El envío inicia inmediatamente</div>
+              </div>
+              <div class="send-opt" id="send-opt-draft" onclick="selectSendOpt('draft')">
+                <div class="send-opt-icon">💾</div>
+                <div class="send-opt-name">Guardar borrador</div>
+                <div class="send-opt-desc">Continúa editando más tarde</div>
+              </div>
+            </div>
+
+            <div id="schedule-block" style="display:none;margin-top:16px">
+              <div class="wz-field">
+                <label>Fecha y hora de envío</label>
+                <input id="wz-schedule-dt" type="datetime-local" class="wz-input">
+              </div>
+            </div>
+          </div>
+          <div class="wz-footer">
+            <button class="btn btn-ghost" onclick="wzBack(7)">← Atrás</button>
+            <button class="btn btn-primary" id="wz-send-btn" onclick="wzFinalSend()">🚀 Enviar campaña</button>
+          </div>
+        </div>
+
+      </div><!-- /.wz-body -->
+    </div><!-- /.wz-overlay -->
 
 </main>
 
@@ -1955,12 +2377,44 @@ async function agregarProveedor() {
   }
 }
 
+
 // ══════════════════════════════════════════════════════════
-// MÓDULO C — CAMPAIGN BUILDER
+// MÓDULO C v2 — CAMPAIGN BUILDER (Wizard 7 pasos)
 // ══════════════════════════════════════════════════════════
 
+// ── Estado global del wizard ────────────────────────────────────────────────
+const _wz = {
+  id: null,           // ID de campaña en edición (null = nueva)
+  step: 1,
+  totalSteps: 7,
+  blocks: [],         // Array de bloques del editor visual
+  selectedBlockId: null,
+  audCountTimer: null,
+  sendMode: 'now',    // now | draft
+  lastIaResult: '',
+};
+
+const WZ_STEPS = [
+  { n:1, label:'Info' },
+  { n:2, label:'Audiencia' },
+  { n:3, label:'Diseño' },
+  { n:4, label:'Variables' },
+  { n:5, label:'IA' },
+  { n:6, label:'Pruebas' },
+  { n:7, label:'Envío' },
+];
+
+// ── Tabs de la lista de campañas ─────────────────────────────────────────────
+function campTab(tab, el) {
+  document.querySelectorAll('.camp-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('camp-tab-campanas').style.display = tab === 'campanas' ? '' : 'none';
+  document.getElementById('camp-tab-plantillas').style.display = tab === 'plantillas' ? '' : 'none';
+  if (tab === 'plantillas') renderTmplLibrary();
+}
+
+// ── Cargar lista de campañas ─────────────────────────────────────────────────
 async function cargarCampanas() {
-  // Stats
   try {
     const rs = await authFetch(`${API}/campanas/stats`);
     const ds = await rs.json();
@@ -1970,169 +2424,701 @@ async function cargarCampanas() {
       document.getElementById('cs-apertura').textContent = (ds.tasaApertura ?? 0) + '%';
       document.getElementById('cs-clics').textContent = (ds.tasaClics ?? 0) + '%';
     }
-  } catch(e) { /* silencio */ }
+  } catch(e) {}
 
-  // Lista
   const box = document.getElementById('campanas-list');
-  box.innerHTML = '<span style="color:var(--muted)">Cargando…</span>';
+  box.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">Cargando…</div>';
   try {
     const r = await authFetch(`${API}/campanas?limit=50`);
     const d = await r.json();
     if (!d.ok || !d.campanas?.length) {
-      box.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">No hay campañas todavía.<br><button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="abrirModalCampana()">+ Crear primera campaña</button></div>';
+      box.innerHTML = `<div class="camp-empty">
+        <svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M22 2 11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        <h3>Aún no tienes campañas</h3>
+        <p>Crea tu primera campaña y empieza a conectar con tu audiencia.</p>
+        <button class="btn btn-primary" onclick="abrirWizard()">+ Crear primera campaña</button>
+      </div>`;
       return;
     }
-    box.innerHTML = `
-      <table class="table">
-        <thead><tr>
-          <th>Nombre</th><th>Estado</th><th>Enviados</th><th>Aperturas</th><th>Clics</th><th>Acciones</th>
-        </tr></thead>
-        <tbody>${d.campanas.map(c => campanaFila(c)).join('')}</tbody>
-      </table>`;
+    box.innerHTML = '<div class="camp-grid">' + d.campanas.map(c => campCard(c)).join('') + '</div>';
   } catch(e) {
     box.innerHTML = `<span style="color:var(--danger)">Error: ${e.message}</span>`;
   }
 }
 
-function campanaFila(c) {
-  const estadoBadge = {
-    borrador:   '<span class="badge badge-default">Borrador</span>',
-    programada: '<span class="badge badge-info">Programada</span>',
-    enviando:   '<span class="badge badge-warning">Enviando…</span>',
-    completada: '<span class="badge badge-success">Completada</span>',
-    pausada:    '<span class="badge badge-danger">Pausada</span>',
-  }[c.estado] ?? `<span class="badge">${c.estado}</span>`;
-
+function campCard(c) {
+  const BADGES = {
+    borrador:   '<span class="badge badge-gray">Borrador</span>',
+    programada: '<span class="badge badge-teal">Programada</span>',
+    enviando:   '<span class="badge badge-orange">Enviando…</span>',
+    completada: '<span class="badge badge-green">Completada</span>',
+    pausada:    '<span class="badge badge-red">Pausada</span>',
+  };
+  const badge = BADGES[c.estado] || `<span class="badge badge-gray">${c.estado}</span>`;
   const abiertos = c.totalEnviados > 0 ? Math.round((c.totalAbiertos/c.totalEnviados)*100) + '%' : '—';
   const clics    = c.totalEnviados > 0 ? Math.round((c.totalClics/c.totalEnviados)*100) + '%' : '—';
-
-  const btnEditar  = ['borrador','programada','pausada'].includes(c.estado)
-    ? `<button class="btn btn-ghost btn-sm" onclick='editarCampana(${JSON.stringify(c)})'>✏️</button>` : '';
-  const btnLanzar  = ['borrador','programada','pausada'].includes(c.estado)
-    ? `<button class="btn btn-sm btn-primary" onclick="lanzarCampana('${c.id}','${escHtml(c.nombre)}')">🚀</button>` : '';
-  const btnDup     = `<button class="btn btn-ghost btn-sm" title="Duplicar" onclick="duplicarCampana('${c.id}')">📋</button>`;
-  const btnDel     = ['borrador','pausada'].includes(c.estado)
-    ? `<button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="eliminarCampana('${c.id}','${escHtml(c.nombre)}')">🗑</button>` : '';
-
-  return `<tr>
-    <td><strong>${escHtml(c.nombre)}</strong></td>
-    <td>${estadoBadge}</td>
-    <td>${c.totalEnviados.toLocaleString()}</td>
-    <td>${abiertos}</td>
-    <td>${clics}</td>
-    <td style="display:flex;gap:4px">${btnEditar}${btnLanzar}${btnDup}${btnDel}</td>
-  </tr>`;
-}
-
-function abrirModalCampana() {
-  document.getElementById('mc-id').value = '';
-  document.getElementById('mc-nombre').value = '';
-  document.getElementById('mc-desc').value = '';
-  document.getElementById('mc-asunto').value = '';
-  document.getElementById('mc-html').value = '';
-  document.getElementById('mc-seg-estado').value = '';
-  document.getElementById('mc-seg-esp').value = '';
-  document.getElementById('mc-seg-pais').value = '';
-  document.getElementById('mc-seg-etiqueta').value = '';
-  document.getElementById('mc-error').style.display = 'none';
-  document.getElementById('mc-preview-box').style.display = 'none';
-  document.getElementById('modal-camp-titulo').textContent = 'Nueva campaña';
-  document.getElementById('modal-campana').classList.remove('hidden');
-}
-
-function editarCampana(c) {
-  document.getElementById('mc-id').value = c.id;
-  document.getElementById('mc-nombre').value = c.nombre || '';
-  // Intentar leer asunto/html del campo descripcion (JSON)
   let meta = {};
-  try { meta = JSON.parse(c.descripcion || '{}'); } catch { meta = { texto: c.descripcion }; }
-  document.getElementById('mc-desc').value = meta.texto || c.descripcion || '';
-  document.getElementById('mc-asunto').value = meta.asunto || '';
-  document.getElementById('mc-html').value = meta.html || '';
+  try { meta = JSON.parse(c.descripcion || '{}'); } catch {}
+  const asunto = meta.asunto || '';
+  const canEdit = ['borrador','programada','pausada'].includes(c.estado);
+  const canSend = canEdit;
+  const canDel  = ['borrador','pausada'].includes(c.estado);
+
+  return `<div class="camp-card">
+    <div class="camp-card-head">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div>
+          <div class="camp-card-name">${escHtml(c.nombre)}</div>
+          ${asunto ? `<div class="camp-card-desc" title="${escHtml(asunto)}">📧 ${escHtml(asunto)}</div>` : ''}
+        </div>
+        ${badge}
+      </div>
+    </div>
+    <div class="camp-card-stats">
+      <div class="camp-card-stat"><div class="sv">${c.totalEnviados.toLocaleString()}</div><div class="sl">Enviados</div></div>
+      <div class="camp-card-stat"><div class="sv">${abiertos}</div><div class="sl">Apertura</div></div>
+      <div class="camp-card-stat"><div class="sv">${clics}</div><div class="sl">Clics</div></div>
+    </div>
+    <div class="camp-card-foot">
+      <span style="font-size:11px;color:var(--muted)">${new Date(c.createdAt).toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'})}</span>
+      <div style="display:flex;gap:4px">
+        ${canEdit ? `<button class="btn btn-ghost btn-sm" onclick='editarCampanaWizard(${JSON.stringify(c)})'>✏️ Editar</button>` : ''}
+        ${canSend ? `<button class="btn btn-primary btn-sm" onclick="lanzarCampana('${c.id}','${escHtml(c.nombre)}')">🚀</button>` : ''}
+        <button class="btn btn-ghost btn-sm" title="Duplicar" onclick="duplicarCampana('${c.id}')">📋</button>
+        ${canDel ? `<button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="eliminarCampana('${c.id}','${escHtml(c.nombre)}')">🗑</button>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Wizard: abrir / cerrar ────────────────────────────────────────────────────
+function abrirWizard(campana = null) {
+  _wz.id = campana?.id ?? null;
+  _wz.step = 1;
+  _wz.blocks = [];
+  _wz.selectedBlockId = null;
+  _wz.sendMode = 'now';
+
+  // Rellenar campos si edición
+  document.getElementById('wz-nombre').value = campana?.nombre || '';
+  let meta = {};
+  try { meta = JSON.parse(campana?.descripcion || '{}'); } catch {}
+  document.getElementById('wz-desc').value = meta.texto || campana?.descripcion || '';
+  document.getElementById('wz-asunto').value = meta.asunto || '';
+  document.getElementById('wz-preheader').value = meta.preheader || '';
+  document.getElementById('wz-from-nombre').value = meta.fromNombre || 'Mario Rivera · AstroTherapy Pro';
+  const htmlContent = meta.html || '';
+  document.getElementById('wz-html').value = htmlContent;
+  document.getElementById('wz-vars-html').value = htmlContent;
+
   // Segmento
   let seg = {};
-  try { seg = JSON.parse(c.segmento || '{}'); } catch {}
-  document.getElementById('mc-seg-estado').value = seg.estado || '';
-  document.getElementById('mc-seg-esp').value = seg.especialidad || '';
-  document.getElementById('mc-seg-pais').value = seg.pais || '';
-  document.getElementById('mc-seg-etiqueta').value = seg.etiqueta || '';
-  document.getElementById('mc-error').style.display = 'none';
-  document.getElementById('mc-preview-box').style.display = 'none';
-  document.getElementById('modal-camp-titulo').textContent = 'Editar campaña';
-  document.getElementById('modal-campana').classList.remove('hidden');
+  try { seg = JSON.parse(campana?.segmento || '{}'); } catch {}
+  document.getElementById('wz-seg-estado').value = seg.estado || '';
+  document.getElementById('wz-seg-esp').value = seg.especialidad || '';
+  document.getElementById('wz-seg-pais').value = seg.pais || '';
+  document.getElementById('wz-seg-etiqueta').value = seg.etiqueta || '';
+  document.getElementById('wz-seg-score').value = seg.scoreMin || '';
+  document.getElementById('wz-seg-consent').value = seg.consentimiento ?? 'true';
+
+  // Si tiene HTML, importar bloques
+  if (htmlContent) {
+    importHtmlToBlocks(htmlContent);
+  } else {
+    _wz.blocks = [];
+  }
+
+  document.getElementById('wz-camp-name').textContent = campana?.nombre || 'Nueva campaña';
+  cargarProveedoresWizard();
+  buildStepsBar();
+  wzShowStep(1);
+  document.getElementById('wz-overlay').classList.remove('hidden');
+  wzContarAud();
 }
 
-function cerrarModalCampana() {
-  document.getElementById('modal-campana').classList.add('hidden');
+function editarCampanaWizard(c) { abrirWizard(c); }
+
+function cerrarWizard() {
+  document.getElementById('wz-overlay').classList.add('hidden');
+  _wz.id = null;
 }
 
-function buildPayloadCampana() {
+// ── Steps bar ────────────────────────────────────────────────────────────────
+function buildStepsBar() {
+  const bar = document.getElementById('wz-steps-bar');
+  bar.innerHTML = WZ_STEPS.map((s, i) => {
+    const conn = i < WZ_STEPS.length - 1
+      ? `<div class="wz-connector" id="wz-conn-${s.n}"></div>` : '';
+    return `<div class="wz-step" id="wz-step-${s.n}" onclick="wzGoTo(${s.n})">
+      <div class="wz-step-num">${s.n}</div>
+      <div class="wz-step-label">${s.label}</div>
+    </div>${conn}`;
+  }).join('');
+  updateStepsBar();
+}
+
+function updateStepsBar() {
+  WZ_STEPS.forEach(s => {
+    const el = document.getElementById(`wz-step-${s.n}`);
+    if (!el) return;
+    el.className = 'wz-step' + (s.n === _wz.step ? ' active' : s.n < _wz.step ? ' done' : '');
+    const conn = document.getElementById(`wz-conn-${s.n}`);
+    if (conn) conn.className = 'wz-connector' + (s.n < _wz.step ? ' done' : '');
+  });
+}
+
+function wzShowStep(n) {
+  document.querySelectorAll('.wz-step-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(`wzp-${n}`);
+  if (panel) panel.classList.add('active');
+  _wz.step = n;
+  updateStepsBar();
+
+  // Acciones al entrar a cada paso
+  if (n === 3) { renderEmailCanvas(); renderTmplPicker(); }
+  if (n === 4) { syncHtmlFromBlocks(); }
+  if (n === 5) { correrValidacionesIA(); }
+  if (n === 6) { renderPreview2(); correrValidaciones(); }
+  if (n === 7) { renderSendSummary(); selectSendOpt(_wz.sendMode); }
+}
+
+function wzNext(n) {
+  if (n === 1 && !document.getElementById('wz-nombre').value.trim()) {
+    alert('El nombre de la campaña es requerido.');
+    return;
+  }
+  if (n === 1) {
+    document.getElementById('wz-camp-name').textContent = document.getElementById('wz-nombre').value.trim();
+  }
+  if (n === 3) { syncBlocksToHtml(); }
+  if (n === 4) { syncVarsToMain(); }
+  wzShowStep(n + 1);
+}
+
+function wzBack(n) { wzShowStep(n - 1); }
+
+function wzGoTo(n) {
+  if (n > _wz.step) return; // solo navegar hacia atrás
+  wzShowStep(n);
+}
+
+// ── Proveedores SMTP en wizard ───────────────────────────────────────────────
+async function cargarProveedoresWizard() {
+  try {
+    const r = await authFetch(`${API}/smtp-config`);
+    const lista = await r.json();
+    const sel = document.getElementById('wz-smtp-id');
+    sel.innerHTML = '<option value="">Proveedor predeterminado</option>' +
+      (Array.isArray(lista) ? lista.map(p => `<option value="${p.id}">${p.nombre} (${p.tipo})</option>`).join('') : '');
+  } catch(e) {}
+}
+
+// ── Audiencia ────────────────────────────────────────────────────────────────
+let _audTimer = null;
+function wzContarAudDebounce() {
+  clearTimeout(_audTimer);
+  _audTimer = setTimeout(wzContarAud, 600);
+}
+
+async function wzContarAud() {
+  const seg = buildSegmento();
+  // Llamamos al preview de la campaña si ya tiene ID, sino estimamos
+  if (_wz.id) {
+    try {
+      const r = await authFetch(`${API}/campanas/${_wz.id}/preview`);
+      const d = await r.json();
+      document.getElementById('aud-count').textContent = d.total ?? '—';
+      document.getElementById('aud-detail').textContent = `Contactos con consentimiento que cumplen el segmento seleccionado.`;
+    } catch {}
+  } else {
+    document.getElementById('aud-count').textContent = '—';
+    document.getElementById('aud-detail').textContent = 'Guarda primero para calcular el total exacto.';
+  }
+}
+
+async function wzPreviewAud() {
+  const box = document.getElementById('aud-sample');
+  if (!_wz.id) {
+    box.innerHTML = '💡 Guarda un borrador primero para ver la muestra de destinatarios.';
+    box.style.display = 'block'; return;
+  }
+  box.innerHTML = 'Cargando…'; box.style.display = 'block';
+  try {
+    const r = await authFetch(`${API}/campanas/${_wz.id}/preview`);
+    const d = await r.json();
+    const names = d.muestra?.map(c => `<strong>${c.nombre||'—'}</strong> &lt;${c.email}&gt; · ${c.especialidadPrimaria||''} · ${c.pais||''}`).join('<br>') || '';
+    box.innerHTML = `<strong>👥 ${d.total} destinatarios</strong><br><br>${names}${d.total > 5 ? `<br><em style="color:var(--muted)">…y ${d.total-5} más</em>` : ''}`;
+  } catch(e) { box.innerHTML = 'Error: ' + e.message; }
+}
+
+function buildSegmento() {
   return {
-    nombre:      document.getElementById('mc-nombre').value.trim(),
-    descripcion: document.getElementById('mc-desc').value.trim(),
-    asunto:      document.getElementById('mc-asunto').value.trim(),
-    html:        document.getElementById('mc-html').value.trim(),
-    segmento: {
-      estado:       document.getElementById('mc-seg-estado').value || undefined,
-      especialidad: document.getElementById('mc-seg-esp').value || undefined,
-      pais:         document.getElementById('mc-seg-pais').value.trim() || undefined,
-      etiqueta:     document.getElementById('mc-seg-etiqueta').value.trim() || undefined,
-    },
+    estado:       document.getElementById('wz-seg-estado').value || undefined,
+    especialidad: document.getElementById('wz-seg-esp').value || undefined,
+    pais:         document.getElementById('wz-seg-pais').value.trim() || undefined,
+    etiqueta:     document.getElementById('wz-seg-etiqueta').value.trim() || undefined,
+    scoreMin:     document.getElementById('wz-seg-score').value || undefined,
+    consentimiento: document.getElementById('wz-seg-consent').value,
   };
 }
 
-async function guardarCampana() {
-  const errEl = document.getElementById('mc-error');
-  const payload = buildPayloadCampana();
-  if (!payload.nombre) { errEl.textContent = 'El nombre es requerido'; errEl.style.display = 'block'; return; }
-  if (!payload.asunto) { errEl.textContent = 'El asunto es requerido'; errEl.style.display = 'block'; return; }
-  if (!payload.html)   { errEl.textContent = 'El cuerpo del email es requerido'; errEl.style.display = 'block'; return; }
-  errEl.style.display = 'none';
+// ── Bloque editor ─────────────────────────────────────────────────────────────
+const BLOCK_DEFAULTS = {
+  header: { html: '<div style="background:#6B5BCC;padding:28px 32px;text-align:center"><h1 style="color:#fff;font-size:24px;margin:0;font-family:sans-serif">AstroTherapy Pro</h1><p style="color:rgba(255,255,255,.8);margin:8px 0 0;font-size:14px">Tu herramienta de transformación astrológica</p></div>' },
+  text:   { html: '<div style="padding:24px 32px;font-family:sans-serif;font-size:15px;color:#333;line-height:1.7"><p>Hola {{nombre}},</p><p>Escribe aquí el contenido de tu email…</p></div>' },
+  image:  { html: '<div style="padding:16px 32px;text-align:center"><div style="background:#e8e7f5;border:2px dashed #6B5BCC;border-radius:10px;padding:40px;color:#6B5BCC;font-family:sans-serif;font-size:13px;font-weight:600">📷 Imagen (reemplaza este bloque con la URL de tu imagen)</div></div>' },
+  button: { html: '<div style="padding:16px 32px;text-align:center"><a href="https://astrotherapy.pro" style="display:inline-block;background:#6B5BCC;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-family:sans-serif;font-size:15px;font-weight:700">Empieza ahora →</a></div>' },
+  divider:{ html: '<div style="padding:8px 32px"><hr style="border:none;border-top:1px solid #e2e0f5;margin:0"></div>' },
+  twocol: { html: '<div style="padding:16px 32px;display:flex;gap:16px;font-family:sans-serif;font-size:14px;color:#333"><div style="flex:1;background:#f4f3ff;padding:16px;border-radius:8px"><strong>Columna 1</strong><p style="margin:8px 0 0">Contenido izquierda…</p></div><div style="flex:1;background:#f4f3ff;padding:16px;border-radius:8px"><strong>Columna 2</strong><p style="margin:8px 0 0">Contenido derecha…</p></div></div>' },
+  social: { html: '<div style="padding:16px 32px;text-align:center"><a href="#" style="margin:0 6px;font-family:sans-serif;font-size:13px;color:#6B5BCC;text-decoration:none">Instagram</a><a href="#" style="margin:0 6px;font-family:sans-serif;font-size:13px;color:#6B5BCC;text-decoration:none">Facebook</a><a href="#" style="margin:0 6px;font-family:sans-serif;font-size:13px;color:#6B5BCC;text-decoration:none">YouTube</a></div>' },
+  footer: { html: '<div style="background:#f4f3ff;padding:20px 32px;text-align:center;font-family:sans-serif;font-size:12px;color:#7b7b9a"><p>AstroTherapy Pro · contacto@luzholistica.com.mx</p><p style="margin:4px 0 0"><a href="{{unsubscribe_url}}" style="color:#6B5BCC">Cancelar suscripción</a></p></div>' },
+};
 
-  const id = document.getElementById('mc-id').value;
-  const r = await authFetch(
-    id ? `${API}/campanas/${id}` : `${API}/campanas`,
-    { method: id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) }
-  );
-  const d = await r.json();
-  if (!d.ok) { errEl.textContent = d.error || 'Error al guardar'; errEl.style.display = 'block'; return; }
-  cerrarModalCampana();
-  await cargarCampanas();
+let _blockIdCounter = 1;
+
+function addBlock(type) {
+  const def = BLOCK_DEFAULTS[type];
+  if (!def) return;
+  const id = 'blk-' + (_blockIdCounter++);
+  _wz.blocks.push({ id, type, html: def.html });
+  renderEmailCanvas();
+  // Auto-scroll al último bloque
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 50);
 }
 
-async function guardarYLanzarCampana() {
-  const errEl = document.getElementById('mc-error');
-  const payload = buildPayloadCampana();
-  if (!payload.nombre) { errEl.textContent = 'El nombre es requerido'; errEl.style.display = 'block'; return; }
-  if (!payload.asunto) { errEl.textContent = 'El asunto es requerido'; errEl.style.display = 'block'; return; }
-  if (!payload.html)   { errEl.textContent = 'El cuerpo del email es requerido'; errEl.style.display = 'block'; return; }
-
-  // Guardar primero
-  const id = document.getElementById('mc-id').value;
-  const r = await authFetch(
-    id ? `${API}/campanas/${id}` : `${API}/campanas`,
-    { method: id ? 'PUT' : 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) }
-  );
-  const d = await r.json();
-  if (!d.ok) { errEl.textContent = d.error || 'Error al guardar'; errEl.style.display = 'block'; return; }
-
-  cerrarModalCampana();
-  // Lanzar
-  await lanzarCampana(d.campana.id, d.campana.nombre);
+function renderEmailCanvas() {
+  const canvas = document.getElementById('email-canvas');
+  if (!canvas) return;
+  if (!_wz.blocks.length) {
+    canvas.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#7b7b9a;font-size:13px;border:2px dashed #e2e0f5;border-radius:12px">← Añade bloques desde el panel izquierdo</div>';
+    return;
+  }
+  canvas.innerHTML = _wz.blocks.map((b, i) => `
+    <div class="email-block-wrap${b.id === _wz.selectedBlockId ? ' selected' : ''}" id="${b.id}" onclick="selectBlock('${b.id}')">
+      <div class="email-block-toolbar">
+        ${i > 0 ? `<button class="eb-tool" onclick="moveBlock('${b.id}',-1);event.stopPropagation()">↑</button>` : ''}
+        ${i < _wz.blocks.length-1 ? `<button class="eb-tool" onclick="moveBlock('${b.id}',1);event.stopPropagation()">↓</button>` : ''}
+        <button class="eb-tool" onclick="editBlock('${b.id}');event.stopPropagation()">✏️</button>
+        <button class="eb-tool" onclick="deleteBlock('${b.id}');event.stopPropagation()">🗑</button>
+      </div>
+      <div class="email-block-inner">${b.html}</div>
+    </div>`).join('');
+  renderEditZone();
 }
 
+function selectBlock(id) {
+  _wz.selectedBlockId = id;
+  renderEmailCanvas();
+}
+
+function editBlock(id) {
+  _wz.selectedBlockId = id;
+  renderEmailCanvas();
+  renderEditZone();
+}
+
+function renderEditZone() {
+  const zone = document.getElementById('block-edit-zone');
+  if (!zone) return;
+  const b = _wz.blocks.find(x => x.id === _wz.selectedBlockId);
+  if (!b) { zone.innerHTML = ''; return; }
+  zone.innerHTML = `<div class="block-edit-panel">
+    <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:8px">✏️ Editando bloque: ${b.type}</div>
+    <textarea rows="6" id="bedit-html" oninput="updateBlockHtml('${b.id}',this.value)">${b.html.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn btn-primary btn-sm" onclick="applyBlockEdit('${b.id}')">✓ Aplicar</button>
+      <button class="btn btn-ghost btn-sm" onclick="_wz.selectedBlockId=null;renderEmailCanvas()">Cerrar</button>
+    </div>
+  </div>`;
+}
+
+function updateBlockHtml(id, val) {
+  const b = _wz.blocks.find(x => x.id === id);
+  if (b) b.html = val.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+}
+
+function applyBlockEdit(id) {
+  const ta = document.getElementById('bedit-html');
+  if (!ta) return;
+  const b = _wz.blocks.find(x => x.id === id);
+  if (b) b.html = ta.value;
+  renderEmailCanvas();
+}
+
+function moveBlock(id, dir) {
+  const idx = _wz.blocks.findIndex(x => x.id === id);
+  if (idx < 0) return;
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= _wz.blocks.length) return;
+  [_wz.blocks[idx], _wz.blocks[newIdx]] = [_wz.blocks[newIdx], _wz.blocks[idx]];
+  renderEmailCanvas();
+}
+
+function deleteBlock(id) {
+  _wz.blocks = _wz.blocks.filter(x => x.id !== id);
+  if (_wz.selectedBlockId === id) _wz.selectedBlockId = null;
+  renderEmailCanvas();
+}
+
+function clearCanvas() {
+  if (!confirm('¿Limpiar todos los bloques?')) return;
+  _wz.blocks = [];
+  _wz.selectedBlockId = null;
+  renderEmailCanvas();
+}
+
+// Convierte bloques a HTML completo
+function syncBlocksToHtml() {
+  const body = _wz.blocks.map(b => b.html).join('\n');
+  const full = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#f4f3ff"><div style="max-width:600px;margin:0 auto;background:#fff">${body}</div></body></html>`;
+  document.getElementById('wz-html').value = full;
+  document.getElementById('wz-vars-html').value = full;
+}
+
+function syncHtmlToVisual() {
+  const val = document.getElementById('wz-html').value.trim();
+  if (!val) return;
+  importHtmlToBlocks(val);
+  renderEmailCanvas();
+  alert('✅ HTML importado al editor visual como bloque de texto.');
+}
+
+function importHtmlToBlocks(htmlStr) {
+  _wz.blocks = [{
+    id: 'blk-' + (_blockIdCounter++),
+    type: 'html',
+    html: htmlStr,
+  }];
+}
+
+// Sync del paso Variables al HTML principal
+function syncVarsToMain() {
+  const val = document.getElementById('wz-vars-html').value.trim();
+  if (val) {
+    document.getElementById('wz-html').value = val;
+    importHtmlToBlocks(val);
+  }
+}
+
+function syncHtmlFromBlocks() {
+  syncBlocksToHtml();
+  document.getElementById('wz-vars-html').value = document.getElementById('wz-html').value;
+}
+
+// ── Editor tabs ───────────────────────────────────────────────────────────────
+function editorTab(tab, el) {
+  document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.editor-tab-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(`etab-${tab}`);
+  if (panel) panel.classList.add('active');
+  if (tab === 'preview') { syncBlocksToHtml(); renderPreview(); }
+  if (tab === 'html') { syncBlocksToHtml(); }
+  if (tab === 'plantillas') renderTmplPicker();
+}
+
+// ── Templates ─────────────────────────────────────────────────────────────────
+const TEMPLATES = [
+  { id:'blank',     name:'En blanco',     desc:'Empieza desde cero', blocks:[] },
+  { id:'welcome',   name:'Bienvenida',    desc:'Email de bienvenida', blocks:['header','text','button','divider','footer'] },
+  { id:'promo',     name:'Promoción',     desc:'Oferta o lanzamiento', blocks:['header','image','text','button','footer'] },
+  { id:'newsletter',name:'Newsletter',    desc:'Actualizaciones y noticias', blocks:['header','text','divider','twocol','divider','footer'] },
+];
+
+function renderTmplPicker() {
+  const el = document.getElementById('wz-tmpl-picker');
+  if (!el) return;
+  el.innerHTML = TEMPLATES.map(t => `
+    <div class="tmpl-card" onclick="aplicarTemplate('${t.id}')">
+      <div class="tmpl-preview">
+        ${t.blocks.length === 0 ? '<div style="color:#7b7b9a;font-size:12px">Lienzo vacío</div>' : t.blocks.slice(0,4).map(b => b === 'header' ? '<div class="t-h"></div>' : b === 'divider' ? '<div class="t-l" style="opacity:.3"></div>' : b === 'button' ? '<div class="t-b"></div>' : '<div class="t-l"></div>').join('')}
+      </div>
+      <div class="tmpl-name">${t.name}<div style="font-size:11px;color:var(--muted);font-weight:400">${t.desc}</div></div>
+    </div>`).join('');
+}
+
+function renderTmplLibrary() {
+  const el = document.getElementById('tmpl-list');
+  if (!el) return;
+  el.innerHTML = TEMPLATES.map(t => `
+    <div class="tmpl-card" onclick="abrirWizard();aplicarTemplate('${t.id}')">
+      <div class="tmpl-preview">
+        ${t.blocks.length === 0 ? '<div style="color:#7b7b9a;font-size:12px">Lienzo vacío</div>' : t.blocks.slice(0,4).map(b => b === 'header' ? '<div class="t-h"></div>' : b === 'divider' ? '<div class="t-l" style="opacity:.3"></div>' : b === 'button' ? '<div class="t-b"></div>' : '<div class="t-l"></div>').join('')}
+      </div>
+      <div class="tmpl-name">${t.name}<div style="font-size:11px;color:var(--muted);font-weight:400">${t.desc}</div></div>
+    </div>`).join('');
+}
+
+function aplicarTemplate(id) {
+  const t = TEMPLATES.find(x => x.id === id);
+  if (!t) return;
+  _wz.blocks = t.blocks.map(type => ({
+    id: 'blk-' + (_blockIdCounter++),
+    type,
+    html: BLOCK_DEFAULTS[type]?.html || '',
+  }));
+  _wz.selectedBlockId = null;
+  renderEmailCanvas();
+  // Cambiar al tab visual si estamos en plantillas
+  const visTab = document.querySelector('.editor-tab');
+  if (visTab) editorTab('visual', visTab);
+}
+
+// ── Variables ─────────────────────────────────────────────────────────────────
+function insertVar(v) {
+  const ta = document.getElementById('wz-vars-html');
+  const start = ta.selectionStart;
+  const end = ta.selectionEnd;
+  ta.value = ta.value.substring(0,start) + v + ta.value.substring(end);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = start + v.length;
+  // Toast
+  const toast = document.createElement('div');
+  toast.textContent = `✅ ${v} copiada al editor`;
+  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;z-index:9999;pointer-events:none';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 1500);
+}
+
+// ── IA ────────────────────────────────────────────────────────────────────────
+function correrValidacionesIA() {
+  const html = document.getElementById('wz-html').value;
+  const result = document.getElementById('ia-result');
+  if (!html.trim()) {
+    result.textContent = 'El email está vacío. Ve al paso 3 para diseñarlo primero.';
+    return;
+  }
+  const wordCount = html.replace(/<[^>]+>/g,'').split(/\s+/).filter(Boolean).length;
+  result.textContent = `📊 Análisis previo:\n• Palabras: ~${wordCount}\n• Variables detectadas: ${(html.match(/\{\{[a-z_]+\}\}/g)||[]).join(', ') || 'ninguna'}\n\nUsa los botones de la izquierda para mejorar el contenido.`;
+}
+
+async function iaAction(action) {
+  const html = document.getElementById('wz-html').value;
+  const prompt = document.getElementById('ia-prompt').value;
+  const result = document.getElementById('ia-result');
+  const texto = html.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().substring(0, 2000);
+
+  result.textContent = '⏳ Procesando con IA…';
+
+  const acciones = {
+    write:      `Escribe un email de marketing en español para una plataforma de astrología llamada AstroTherapy Pro. Asunto: ${document.getElementById('wz-asunto').value || 'email de la campaña'}. Hazlo profesional, cálido y motivador. Devuelve solo el HTML del cuerpo del email.`,
+    improve:    `Mejora la redacción del siguiente texto de email. Hazlo más claro, atractivo y profesional. Mantén el mismo idioma (español). Texto:\n\n${texto}`,
+    shorten:    `Acorta el siguiente texto de email conservando el mensaje principal. Español. Texto:\n\n${texto}`,
+    expand:     `Expande y enriquece el siguiente texto de email con más detalles y emoción. Español. Texto:\n\n${texto}`,
+    formal:     `Reescribe el siguiente email en tono formal y profesional. Español. Texto:\n\n${texto}`,
+    friendly:   `Reescribe el siguiente email en tono amigable, cercano y motivador. Español. Texto:\n\n${texto}`,
+    subject:    `Genera 5 opciones de asunto para este email de marketing. Hazlos atractivos con emoji y máximo 60 caracteres cada uno. Texto del email:\n\n${texto}`,
+    preheader:  `Genera 3 opciones de preheader (texto de vista previa) para este email. Máximo 90 caracteres cada uno. Texto:\n\n${texto}`,
+    spam:       `Analiza el siguiente texto de email y detecta palabras o frases que podrían activar filtros de spam. Lista los problemas encontrados. Texto:\n\n${texto}`,
+    spellcheck: `Revisa ortografía y gramática en español del siguiente texto. Lista los errores encontrados. Texto:\n\n${texto}`,
+    custom:     prompt || 'Mejora este email',
+  };
+
+  const promptText = acciones[action] || acciones.improve;
+
+  // Intentar llamar al endpoint de IA del CRM
+  // (el endpoint /api/ia usa IA de scoring, no tiene endpoint de texto libre)
+  // Usamos una simulación educada informando que se necesita conectar OpenAI
+  try {
+    // Si hay un endpoint de texto libre en el futuro, iría aquí
+    // Por ahora mostramos el prompt listo para copiar
+    result.innerHTML = `<strong>Prompt generado:</strong>\n\n${promptText}\n\n<hr style="border:none;border-top:1px solid #e2e0f5;margin:12px 0"><em style="color:var(--muted);font-size:12px">💡 Para activar la IA, conecta un endpoint de generación de texto en /api/ia/texto. El prompt de arriba está listo para usar con ChatGPT, Claude u otro modelo.</em>`;
+    _wz.lastIaResult = promptText;
+    document.getElementById('ia-apply-btn').style.display = 'inline-flex';
+  } catch(e) {
+    result.textContent = 'Error: ' + e.message;
+  }
+}
+
+function iaApply() {
+  if (!_wz.lastIaResult) return;
+  const ta = document.getElementById('wz-vars-html');
+  if (confirm('¿Aplicar el resultado de IA al editor? Se sobreescribirá el contenido actual.')) {
+    ta.value = _wz.lastIaResult;
+    syncVarsToMain();
+    alert('✅ Aplicado. Revisa el paso 3 para ver los cambios.');
+  }
+}
+
+// ── Preview ───────────────────────────────────────────────────────────────────
+function renderPreview() {
+  const html = document.getElementById('wz-html').value || buildHtmlFromBlocks();
+  const iframe = document.getElementById('preview-iframe');
+  if (!iframe) return;
+  iframe.srcdoc = html;
+}
+
+function renderPreview2() {
+  const html = document.getElementById('wz-html').value || buildHtmlFromBlocks();
+  const iframe = document.getElementById('preview-iframe2');
+  if (!iframe) return;
+  iframe.srcdoc = html;
+}
+
+function buildHtmlFromBlocks() {
+  const body = _wz.blocks.map(b => b.html).join('\n');
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;background:#f4f3ff"><div style="max-width:600px;margin:0 auto;background:#fff">${body}</div></body></html>`;
+}
+
+function previewDevice(device, el) {
+  document.querySelectorAll('.preview-toggle-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const wrap = document.getElementById('preview-wrap');
+  if (device === 'mobile') wrap.classList.add('mobile');
+  else wrap.classList.remove('mobile');
+  renderPreview();
+}
+
+function previewDevice2(device, el) {
+  const btns = el.closest('.preview-toggle').querySelectorAll('.preview-toggle-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const wrap = document.getElementById('preview-wrap2');
+  if (device === 'mobile') wrap.classList.add('mobile');
+  else wrap.classList.remove('mobile');
+  renderPreview2();
+}
+
+// ── Validaciones ──────────────────────────────────────────────────────────────
+function correrValidaciones() {
+  const html = document.getElementById('wz-html').value;
+  const asunto = document.getElementById('wz-asunto').value;
+  const nombre = document.getElementById('wz-nombre').value;
+  const checks = [
+    { ok: !!nombre.trim(),  label: 'Nombre de campaña' },
+    { ok: !!asunto.trim(),  label: 'Asunto del email' },
+    { ok: !!html.trim(),    label: 'Contenido del email' },
+    { ok: html.includes('{{unsubscribe_url}}') || !html.includes('<a'), label: 'Link de cancelación ({{unsubscribe_url}})' },
+    { ok: !html.toLowerCase().includes('gratis') || !html.toLowerCase().includes('haga clic aquí'), label: 'Sin palabras de spam comunes' },
+  ];
+  const box = document.getElementById('validaciones-list');
+  box.innerHTML = checks.map(c => `<div>${c.ok ? '✅' : '⚠️'} ${c.label}</div>`).join('');
+}
+
+async function enviarEmailPrueba() {
+  const to = document.getElementById('test-email-to').value.trim();
+  const res = document.getElementById('test-email-result');
+  if (!to) { res.textContent = '⚠️ Ingresa un email de destino'; res.style.display = 'block'; return; }
+  res.textContent = 'Enviando…'; res.style.display = 'block'; res.style.color = 'var(--muted)';
+  try {
+    const r = await authFetch(`${API}/email/prueba`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        para: to,
+        asunto: `[PRUEBA] ${document.getElementById('wz-asunto').value || 'Email de prueba'}`,
+        html: document.getElementById('wz-html').value || buildHtmlFromBlocks(),
+      }),
+    });
+    const d = await r.json();
+    if (d.ok) { res.textContent = '✅ Email de prueba enviado'; res.style.color = 'var(--success)'; }
+    else { res.textContent = '❌ ' + (d.error || 'Error al enviar'); res.style.color = 'var(--danger)'; }
+  } catch(e) { res.textContent = 'Error: ' + e.message; res.style.color = 'var(--danger)'; }
+}
+
+// ── Resumen de envío ──────────────────────────────────────────────────────────
+function renderSendSummary() {
+  const seg = buildSegmento();
+  const segDesc = Object.entries(seg).filter(([k,v]) => v && k !== 'consentimiento').map(([k,v]) => `${k}: ${v}`).join(', ') || 'Todos con consentimiento';
+  document.getElementById('send-summary').innerHTML = `
+    <div class="send-row"><span class="send-row-label">Campaña</span><strong>${escHtml(document.getElementById('wz-nombre').value)}</strong></div>
+    <div class="send-row"><span class="send-row-label">Asunto</span><span>${escHtml(document.getElementById('wz-asunto').value)}</span></div>
+    <div class="send-row"><span class="send-row-label">Segmento</span><span>${segDesc}</span></div>
+    <div class="send-row"><span class="send-row-label">Cuenta de envío</span><span>${document.getElementById('wz-smtp-id').options[document.getElementById('wz-smtp-id').selectedIndex]?.text || 'Predeterminada'}</span></div>
+  `;
+}
+
+function selectSendOpt(mode) {
+  _wz.sendMode = mode;
+  document.querySelectorAll('.send-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`send-opt-${mode}`)?.classList.add('selected');
+  document.getElementById('schedule-block').style.display = mode === 'schedule' ? 'block' : 'none';
+  const btn = document.getElementById('wz-send-btn');
+  if (mode === 'draft') btn.textContent = '💾 Guardar borrador';
+  else btn.textContent = '🚀 Enviar campaña';
+}
+
+// ── Guardar borrador desde wizard ─────────────────────────────────────────────
+async function guardarBorradorWizard() {
+  syncBlocksToHtml();
+  const payload = buildPayloadWizard();
+  const id = _wz.id;
+  try {
+    const r = await authFetch(
+      id ? `${API}/campanas/${id}` : `${API}/campanas`,
+      { method: id?'PUT':'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) }
+    );
+    const d = await r.json();
+    if (d.ok) {
+      _wz.id = d.campana.id;
+      document.getElementById('wz-camp-name').textContent = d.campana.nombre;
+      const toast = document.createElement('div');
+      toast.textContent = '💾 Borrador guardado';
+      toast.style.cssText = 'position:fixed;bottom:80px;right:32px;background:#333;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;z-index:9999';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+      // Actualizar contador de audiencia
+      wzContarAud();
+    } else alert('Error al guardar: ' + d.error);
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+function buildPayloadWizard() {
+  const htmlContent = document.getElementById('wz-html').value || buildHtmlFromBlocks();
+  return {
+    nombre: document.getElementById('wz-nombre').value.trim(),
+    descripcion: JSON.stringify({
+      texto:      document.getElementById('wz-desc').value.trim(),
+      asunto:     document.getElementById('wz-asunto').value.trim(),
+      preheader:  document.getElementById('wz-preheader').value.trim(),
+      fromNombre: document.getElementById('wz-from-nombre').value.trim(),
+      html:       htmlContent,
+    }),
+    asunto: document.getElementById('wz-asunto').value.trim(),
+    html: htmlContent,
+    segmento: buildSegmento(),
+  };
+}
+
+// ── Envío final ────────────────────────────────────────────────────────────────
+async function wzFinalSend() {
+  // Siempre guardar primero
+  await guardarBorradorWizard();
+  if (!_wz.id) { alert('Error: no se pudo guardar la campaña.'); return; }
+
+  if (_wz.sendMode === 'draft') {
+    cerrarWizard();
+    await cargarCampanas();
+    return;
+  }
+
+  if (!confirm(`¿Enviar la campaña "${document.getElementById('wz-nombre').value}" ahora?\n\nSe enviará a todos los contactos del segmento seleccionado que tengan consentimiento.`)) return;
+
+  try {
+    const r = await authFetch(`${API}/campanas/${_wz.id}/enviar`, { method: 'POST' });
+    const d = await r.json();
+    if (d.ok) {
+      alert(`✅ ${d.mensaje || `Enviando a ${d.totalContactos} contactos en segundo plano.`}`);
+      cerrarWizard();
+      await cargarCampanas();
+    } else {
+      alert('❌ ' + (d.error || 'Error al enviar'));
+    }
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+// ── Acciones desde cards ──────────────────────────────────────────────────────
 async function lanzarCampana(id, nombre) {
-  if (!confirm(`¿Confirmas el envío de la campaña "${nombre}"?\n\nSe enviará a todos los contactos del segmento que tengan consentimiento.`)) return;
+  if (!confirm(`¿Enviar ahora la campaña "${nombre}"?`)) return;
   try {
     const r = await authFetch(`${API}/campanas/${id}/enviar`, { method: 'POST' });
     const d = await r.json();
-    if (d.ok) {
-      alert(`✅ ${d.mensaje || 'Campaña lanzada'}`);
-      await cargarCampanas();
-    } else {
-      alert('❌ ' + (d.error || 'Error al lanzar'));
-    }
-  } catch(e) { alert('Error de conexión: ' + e.message); }
+    if (d.ok) { alert(`✅ ${d.mensaje}`); await cargarCampanas(); }
+    else alert('❌ ' + (d.error || 'Error'));
+  } catch(e) { alert('Error: ' + e.message); }
 }
 
 async function duplicarCampana(id) {
@@ -2145,35 +3131,20 @@ async function duplicarCampana(id) {
 }
 
 async function eliminarCampana(id, nombre) {
-  if (!confirm(`¿Eliminar la campaña "${nombre}"? Esta acción no se puede deshacer.`)) return;
+  if (!confirm(`¿Eliminar la campaña "${nombre}"?`)) return;
   try {
     const r = await authFetch(`${API}/campanas/${id}`, { method: 'DELETE' });
     const d = await r.json();
     if (d.ok) { await cargarCampanas(); }
-    else alert('❌ ' + (d.error || 'Error al eliminar'));
+    else alert('❌ ' + (d.error || 'Error'));
   } catch(e) { alert('Error: ' + e.message); }
 }
 
-async function previewCampana() {
-  const id = document.getElementById('mc-id').value;
-  const box = document.getElementById('mc-preview-box');
-  if (!id) {
-    box.innerHTML = '💡 Guarda la campaña primero para ver los destinatarios.';
-    box.style.display = 'block';
-    return;
-  }
-  box.innerHTML = 'Calculando…'; box.style.display = 'block';
-  try {
-    const r = await authFetch(`${API}/campanas/${id}/preview`);
-    const d = await r.json();
-    const nombres = d.muestra?.map(c => `${c.nombre||'—'} &lt;${c.email}&gt;`).join('<br>') || '';
-    box.innerHTML = `<strong>👥 ${d.total} contacto(s) recibirán esta campaña</strong>${nombres ? '<br><br>' + nombres : ''}${d.total > 5 ? `<br><em style="color:var(--muted)">…y ${d.total-5} más</em>` : ''}`;
-  } catch(e) { box.innerHTML = 'Error: ' + e.message; }
-}
-
-// Cerrar modal campaña con Escape
+// Escape cierra el wizard
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && !document.getElementById('modal-campana').classList.contains('hidden')) cerrarModalCampana();
+  if (e.key === 'Escape' && !document.getElementById('wz-overlay').classList.contains('hidden')) {
+    if (confirm('¿Cerrar el editor? Los cambios no guardados se perderán.')) cerrarWizard();
+  }
 });
 
 
