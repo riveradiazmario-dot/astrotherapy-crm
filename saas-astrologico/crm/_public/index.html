@@ -349,16 +349,17 @@
               <thead>
                 <tr>
                   <th>Nombre</th>
+                  <th>Teléfono</th>
                   <th>Email</th>
+                  <th>Web</th>
                   <th>Especialidad</th>
                   <th>País</th>
                   <th>Score</th>
-                  <th>Nivel</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody id="contactos-tbody">
-                <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Cargando contactos...</td></tr>
+                <tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">Cargando contactos...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1015,7 +1016,7 @@ async function loadContactos() {
     allContactos = data.data || [];
     renderContactos(allContactos);
   } catch(e) {
-    document.getElementById('contactos-tbody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--danger)">Error conectando con el servidor</td></tr>';
+    document.getElementById('contactos-tbody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--danger)">Error conectando con el servidor</td></tr>';
   }
 }
 
@@ -1024,7 +1025,9 @@ function buscarContactos() {
   const filtered = allContactos.filter(c =>
     (c.nombre||'').toLowerCase().includes(q) ||
     (c.email||'').toLowerCase().includes(q) ||
-    (c.especialidad||'').toLowerCase().includes(q)
+    (c.telefono||'').toLowerCase().includes(q) ||
+    (c.ciudad||'').toLowerCase().includes(q) ||
+    (c.especialidadPrimaria||c.especialidad||'').toLowerCase().includes(q)
   );
   renderContactos(filtered);
 }
@@ -1033,26 +1036,34 @@ const NIVEL_BADGE = { frio:'badge-gray', tibio:'badge-orange', caliente:'badge-r
 function renderContactos(lista) {
   const tbody = document.getElementById('contactos-tbody');
   if (!lista.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Sin resultados</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">Sin resultados</td></tr>';
     return;
   }
-  tbody.innerHTML = lista.map(c => `
+  tbody.innerHTML = lista.map(c => {
+    const esp = c.especialidadPrimaria || c.especialidad || '';
+    const score = c.leadScore ?? c.score ?? 0;
+    const emailReal = c.email && !c.email.includes('@sin-email') ? c.email : null;
+    const web = c.webUrl || c.sitioWeb || '';
+    const webDomain = web ? (() => { try { return new URL(web).hostname.replace('www.',''); } catch(e){ return web.slice(0,20); } })() : '';
+    return `
     <tr id="row-${c.id}">
-      <td><strong>${c.nombre || '—'}</strong></td>
-      <td style="color:var(--muted);font-size:12px">${c.email || '—'}</td>
-      <td>${c.especialidad ? `<span class="badge badge-purple" style="font-size:11px">${c.especialidad.replace(/_/g,' ')}</span>` : '—'}</td>
+      <td><strong>${c.nombre || '—'}</strong><br><span style="font-size:11px;color:var(--muted)">${c.ciudad||''}</span></td>
+      <td style="font-size:12px">${c.telefono ? `<a href="https://wa.me/${c.telefono.replace(/\D/g,'')}" target="_blank" style="color:var(--teal);text-decoration:none">📱 ${c.telefono}</a>` : '—'}</td>
+      <td style="font-size:12px">${emailReal ? `<a href="mailto:${emailReal}" style="color:var(--purple)">${emailReal}</a>` : '<span style="color:var(--muted);font-size:11px">sin email</span>'}</td>
+      <td style="font-size:12px">${web ? `<a href="${web}" target="_blank" style="color:var(--teal);text-decoration:none" title="${web}">🌐 ${webDomain}</a>` : '—'}</td>
+      <td>${esp ? `<span class="badge badge-purple" style="font-size:11px">${esp.replace(/_/g,' ')}</span>` : '—'}</td>
       <td>${c.pais || '—'}</td>
       <td>
         <div class="score-bar">
-          <div class="bar-bg" style="width:60px"><div class="bar-fill" style="width:${c.score||0}%;background:${(c.score||0)>60?'var(--teal)':'var(--purple)'}"></div></div>
-          <span style="font-size:12px;color:var(--muted)">${c.score||0}</span>
+          <div class="bar-bg" style="width:50px"><div class="bar-fill" style="width:${score}%;background:${score>60?'var(--teal)':'var(--purple)'}"></div></div>
+          <span style="font-size:12px;color:var(--muted)">${score}</span>
         </div>
       </td>
-      <td><span class="badge ${NIVEL_BADGE[c.nivel]||'badge-gray'}">${c.nivel||'frio'}</span></td>
       <td>
-        <button class="btn btn-sm" onclick="borrarContacto('${c.id}')" style="background:transparent;border:1px solid var(--border);color:var(--danger);padding:4px 10px;font-size:12px" title="Eliminar contacto">✕</button>
+        <button class="btn btn-sm" onclick="borrarContacto('${c.id}')" style="background:transparent;border:1px solid var(--border);color:var(--danger);padding:4px 10px;font-size:12px" title="Eliminar">✕</button>
       </td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
 }
 
 // ── Extractor de texto ───────────────────────────────────────────────────────
