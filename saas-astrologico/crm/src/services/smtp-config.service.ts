@@ -16,11 +16,13 @@ function getSupabase(): SupabaseClient {
 export interface SmtpConfig {
   id: string;
   nombre: string;
-  host: string;
-  port: number;
-  secure: boolean;
-  usuario: string;
-  password: string;
+  tipo?: 'resend' | 'smtp' | 'brevo' | 'sendgrid';
+  api_key?: string;
+  host?: string;
+  port?: number;
+  secure?: boolean;
+  usuario?: string;
+  password?: string;
   fromEmail: string;
   fromNombre: string;
   activo: boolean;

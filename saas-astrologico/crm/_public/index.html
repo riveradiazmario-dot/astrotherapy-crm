@@ -296,6 +296,10 @@
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
       Fuentes
     </a>
+    <a onclick="showPage('email')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Email
+    </a>
   </nav>
   <div class="sidebar-footer" style="padding:0">
     <div class="user-chip">
@@ -713,6 +717,84 @@
       </div>
     </div>
 
+    <!-- ═══ EMAIL SETTINGS ═══ -->
+    <div id="page-email" class="page">
+      <div class="grid-2">
+
+        <!-- Estado del proveedor -->
+        <div class="panel">
+          <div class="panel-head"><h3>🔌 Proveedor activo</h3></div>
+          <div class="panel-body">
+            <div id="email-estado-box" style="text-align:center;padding:10px;color:var(--muted)">Verificando...</div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:12px;width:100%" onclick="verificarEmailEstado()">↻ Verificar conexión</button>
+          </div>
+        </div>
+
+        <!-- Enviar email de prueba -->
+        <div class="panel">
+          <div class="panel-head"><h3>✉ Enviar email de prueba</h3></div>
+          <div class="panel-body">
+            <div class="field">
+              <label>Destinatario</label>
+              <input type="email" id="test-para" placeholder="tu@email.com" value="rivera.diaz.mario@gmail.com">
+            </div>
+            <div class="field">
+              <label>Asunto</label>
+              <input type="text" id="test-asunto" value="Prueba Resend — AstroTherapy Pro">
+            </div>
+            <div id="test-email-result"></div>
+            <button class="btn btn-primary" style="width:100%;margin-top:4px" onclick="enviarEmailPrueba()">Enviar prueba</button>
+          </div>
+        </div>
+
+        <!-- Configurar Resend -->
+        <div class="panel grid-full">
+          <div class="panel-head">
+            <h3>⚙ Configurar proveedor de email</h3>
+            <span id="proveedores-count" style="font-size:12px;color:var(--muted)"></span>
+          </div>
+          <div class="panel-body">
+            <div id="proveedores-lista" style="margin-bottom:20px"></div>
+            <details style="margin-top:8px">
+              <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--purple);padding:8px 0">+ Agregar proveedor Resend</summary>
+              <div style="margin-top:16px">
+                <div class="field-row">
+                  <div class="field">
+                    <label>Nombre (referencia)</label>
+                    <input type="text" id="np-nombre" value="Resend — contacto@luzholistica.com.mx">
+                  </div>
+                  <div class="field">
+                    <label>Tipo</label>
+                    <select id="np-tipo">
+                      <option value="resend">Resend</option>
+                      <option value="smtp">SMTP</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field">
+                  <label>Resend API Key</label>
+                  <input type="password" id="np-apikey" placeholder="re_xxxxxxxxxxxxxxxx">
+                </div>
+                <div class="field-row">
+                  <div class="field">
+                    <label>From Email</label>
+                    <input type="email" id="np-fromEmail" value="contacto@luzholistica.com.mx">
+                  </div>
+                  <div class="field">
+                    <label>From Nombre</label>
+                    <input type="text" id="np-fromNombre" value="Mario Rivera · AstroTherapy Pro">
+                  </div>
+                </div>
+                <div id="np-error" style="color:var(--danger);font-size:13px;display:none"></div>
+                <button class="btn btn-primary" style="margin-top:8px" onclick="agregarProveedor()">Guardar proveedor</button>
+              </div>
+            </details>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </main>
 
@@ -1033,11 +1115,14 @@ function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  document.querySelectorAll('nav a')[['dashboard','contactos','pipeline','scraping','fuentes'].indexOf(name)].classList.add('active');
-  const titles = { dashboard: 'Dashboard', contactos: 'Contactos', pipeline: 'Pipeline de Ventas', scraping: 'Herramientas de Scraping', fuentes: 'Fuentes disponibles' };
-  document.getElementById('page-title').textContent = titles[name];
+  const navPages = ['dashboard','contactos','pipeline','scraping','fuentes','email'];
+  const idx = navPages.indexOf(name);
+  if (idx >= 0) document.querySelectorAll('nav a')[idx]?.classList.add('active');
+  const titles = { dashboard: 'Dashboard', contactos: 'Contactos', pipeline: 'Pipeline de Ventas', scraping: 'Herramientas de Scraping', fuentes: 'Fuentes disponibles', email: 'Configuración de Email' };
+  document.getElementById('page-title').textContent = titles[name] || name;
   if (name === 'contactos') loadContactos();
   if (name === 'pipeline') loadPipeline();
+  if (name === 'email') { verificarEmailEstado(); cargarProveedores(); }
   if (name === 'fuentes') loadFuentes();
 }
 
@@ -1590,6 +1675,117 @@ async function loadFuentes() {
   }
 }
 
+
+
+// ── Email Settings ────────────────────────────────────────────────────────────
+async function verificarEmailEstado() {
+  const el = document.getElementById('email-estado-box');
+  el.innerHTML = '<span style="color:var(--muted)">⏳ Verificando...</span>';
+  try {
+    const r = await authFetch(`${API}/email/estado`);
+    const d = await r.json();
+    if (d.ok) {
+      el.innerHTML = `
+        <div style="background:#e6faea;border:1px solid #b6e8c4;border-radius:10px;padding:16px">
+          <div style="font-size:22px;margin-bottom:6px">✅</div>
+          <div style="font-weight:700;color:#1a5e2e">${d.proveedor?.toUpperCase() || 'Resend'} conectado</div>
+          <div style="font-size:12px;color:#2d6a4f;margin-top:4px">${d.mensaje || 'Listo para enviar'}</div>
+        </div>`;
+    } else {
+      el.innerHTML = `
+        <div style="background:#ffe5e7;border:1px solid #f5b8bc;border-radius:10px;padding:16px">
+          <div style="font-size:22px;margin-bottom:6px">❌</div>
+          <div style="font-weight:700;color:#8b0000">Error de conexión</div>
+          <div style="font-size:12px;color:#8b0000;margin-top:4px">${d.mensaje || 'Verifica la API key'}</div>
+        </div>`;
+    }
+  } catch(e) {
+    el.innerHTML = '<span style="color:var(--danger)">Error al conectar con el servidor</span>';
+  }
+}
+
+async function enviarEmailPrueba() {
+  const para   = document.getElementById('test-para').value.trim();
+  const asunto = document.getElementById('test-asunto').value.trim();
+  const el     = document.getElementById('test-email-result');
+  if (!para) { el.innerHTML = '<div class="alert alert-error">Ingresa un destinatario</div>'; return; }
+  el.innerHTML = '<div style="color:var(--muted);font-size:13px">⏳ Enviando...</div>';
+  try {
+    const r = await authFetch(`${API}/email/prueba`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ para, asunto, html: `<p>Este es un email de prueba desde <strong>AstroTherapy Pro CRM</strong>.</p><p>Si lo recibes, Resend está funcionando correctamente ✅</p>` })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      el.innerHTML = `<div class="alert alert-success">✅ Enviado a ${para} · ID: ${d.messageId || '—'}</div>`;
+    } else {
+      el.innerHTML = `<div class="alert alert-error">❌ ${d.error || 'Error al enviar'}</div>`;
+    }
+  } catch(e) {
+    el.innerHTML = '<div class="alert alert-error">Error de conexión</div>';
+  }
+}
+
+async function cargarProveedores() {
+  const el    = document.getElementById('proveedores-lista');
+  const count = document.getElementById('proveedores-count');
+  try {
+    const r = await authFetch(`${API}/smtp-config`);
+    const lista = await r.json();
+    if (!Array.isArray(lista) || !lista.length) {
+      el.innerHTML = '<p style="color:var(--muted);font-size:13px">Sin proveedores configurados.</p>'; return;
+    }
+    count.textContent = `${lista.length} proveedor(es)`;
+    el.innerHTML = lista.map(p => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px">
+        <div>
+          <span style="font-weight:600;font-size:13px">${p.nombre}</span>
+          <span class="badge ${p.predeterminado ? 'badge-green' : 'badge-gray'}" style="margin-left:8px">${p.predeterminado ? 'Predeterminado' : 'Secundario'}</span>
+          <span class="badge badge-purple" style="margin-left:4px">${p.tipo || 'smtp'}</span>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px">${p.fromEmail} · ${p.activo ? '✅ Activo' : '⏸ Inactivo'}</div>
+        </div>
+        ${!p.predeterminado ? `<button class="btn btn-sm btn-ghost" onclick="marcarPredeterminado('${p.id}')">Usar este</button>` : ''}
+      </div>`).join('');
+  } catch(e) {
+    el.innerHTML = '<p style="color:var(--danger);font-size:13px">Error al cargar proveedores</p>';
+  }
+}
+
+async function marcarPredeterminado(id) {
+  try {
+    await authFetch(`${API}/smtp-config/${id}/predeterminado`, { method:'POST' });
+    cargarProveedores();
+    verificarEmailEstado();
+  } catch(e) { alert('Error'); }
+}
+
+async function agregarProveedor() {
+  const tipo     = document.getElementById('np-tipo').value;
+  const nombre   = document.getElementById('np-nombre').value.trim();
+  const api_key  = document.getElementById('np-apikey').value.trim();
+  const fromEmail   = document.getElementById('np-fromEmail').value.trim();
+  const fromNombre  = document.getElementById('np-fromNombre').value.trim();
+  const errEl    = document.getElementById('np-error');
+  errEl.style.display = 'none';
+
+  if (!nombre || !fromEmail) { errEl.textContent='Nombre y From Email son obligatorios'; errEl.style.display='block'; return; }
+  if (tipo === 'resend' && !api_key) { errEl.textContent='Ingresa la API Key de Resend'; errEl.style.display='block'; return; }
+
+  try {
+    const r = await authFetch(`${API}/smtp-config`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ nombre, tipo, api_key, fromEmail, fromNombre, predeterminado: true })
+    });
+    const d = await r.json();
+    if (d.error) { errEl.textContent = d.error; errEl.style.display='block'; return; }
+    document.getElementById('np-apikey').value = '';
+    await cargarProveedores();
+    await verificarEmailEstado();
+    alert('✅ Proveedor guardado y marcado como predeterminado');
+  } catch(e) {
+    errEl.textContent = 'Error de conexión'; errEl.style.display='block';
+  }
+}
 
 </script>
 </body>

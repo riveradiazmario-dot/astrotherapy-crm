@@ -22,20 +22,28 @@ router.get('/', async (_req: Request, res: Response) => {
 
 // ─── POST /api/smtp-config — crear nueva config ───────────────────────────────
 router.post('/', async (req: Request, res: Response) => {
-  const { nombre, host, port, secure, usuario, password, fromEmail, fromNombre, activo, predeterminado } = req.body;
+  const { nombre, tipo, api_key, host, port, secure, usuario, password, fromEmail, fromNombre, activo, predeterminado } = req.body;
 
-  if (!nombre || !host || !usuario || !password || !fromEmail) {
-    return res.status(400).json({ error: 'Faltan campos: nombre, host, usuario, password, fromEmail' });
+  if (!nombre || !fromEmail) {
+    return res.status(400).json({ error: 'Faltan campos: nombre, fromEmail' });
+  }
+  if (tipo === 'resend' && !api_key) {
+    return res.status(400).json({ error: 'Resend requiere api_key' });
+  }
+  if ((!tipo || tipo === 'smtp') && (!host || !usuario || !password)) {
+    return res.status(400).json({ error: 'SMTP requiere host, usuario, password' });
   }
 
   try {
     const config = await crearSmtpConfig({
       nombre,
-      host,
+      tipo: tipo ?? 'smtp',
+      api_key: api_key ?? undefined,
+      host: host ?? undefined,
       port: port ?? 465,
       secure: secure ?? true,
-      usuario,
-      password,
+      usuario: usuario ?? undefined,
+      password: password ?? undefined,
       fromEmail,
       fromNombre: fromNombre ?? 'AstroTherapy Pro',
       activo: activo ?? true,
