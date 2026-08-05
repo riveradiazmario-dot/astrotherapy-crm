@@ -116,6 +116,16 @@
   .page { display: none; }
   .page.active { display: block; }
 
+  /* ── Modal ── */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:#fff; border-radius:14px; padding:28px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.2); }
+  .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .modal-header h3 { font-size:16px; font-weight:700; }
+  .modal-close { background:none; border:none; font-size:20px; cursor:pointer; color:var(--muted); line-height:1; padding:4px; }
+  .modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; padding-top:16px; border-top:1px solid var(--border); }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
   /* ── Sources grid ── */
   .sources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
   .source-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
@@ -334,13 +344,97 @@
       </div>
     </div>
 
+    <!-- ═══ MODAL CONTACTO ═══ -->
+    <div id="modal-contacto" class="modal-overlay" onclick="if(event.target===this)cerrarModal()">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="modal-titulo">Nuevo contacto</h3>
+          <button class="modal-close" onclick="cerrarModal()">✕</button>
+        </div>
+        <input type="hidden" id="modal-id">
+        <div class="field-row">
+          <div class="field">
+            <label>Nombre *</label>
+            <input type="text" id="m-nombre" placeholder="Nombre completo">
+          </div>
+          <div class="field">
+            <label>Teléfono</label>
+            <input type="text" id="m-telefono" placeholder="+52 55 1234 5678">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Email</label>
+            <input type="email" id="m-email" placeholder="contacto@ejemplo.com">
+          </div>
+          <div class="field">
+            <label>Sitio web</label>
+            <input type="url" id="m-webUrl" placeholder="https://...">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Ciudad</label>
+            <input type="text" id="m-ciudad" placeholder="Ciudad de México">
+          </div>
+          <div class="field">
+            <label>País</label>
+            <select id="m-pais">
+              <option value="MX">México</option>
+              <option value="ES">España</option>
+              <option value="CO">Colombia</option>
+              <option value="AR">Argentina</option>
+              <option value="CL">Chile</option>
+              <option value="PE">Perú</option>
+              <option value="VE">Venezuela</option>
+              <option value="US">Estados Unidos</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Especialidad</label>
+            <select id="m-especialidad">
+              <option value="">— Sin especificar —</option>
+              <option value="astrologia">Astrología</option>
+              <option value="tarot">Tarot</option>
+              <option value="reiki">Reiki</option>
+              <option value="meditacion">Meditación</option>
+              <option value="terapia_holistica">Terapia Holística</option>
+              <option value="coaching_espiritual">Coaching Espiritual</option>
+              <option value="numerologia">Numerología</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Estado</label>
+            <select id="m-estado">
+              <option value="prospecto">Prospecto</option>
+              <option value="contactado">Contactado</option>
+              <option value="nurture">Nurture</option>
+              <option value="cualificado">Cualificado</option>
+              <option value="cliente">Cliente</option>
+              <option value="no_interesado">No interesado</option>
+            </select>
+          </div>
+        </div>
+        <div id="modal-error" style="color:var(--danger);font-size:13px;margin-top:8px;display:none"></div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="cerrarModal()">Cancelar</button>
+          <button class="btn btn-primary" id="modal-guardar-btn" onclick="guardarContacto()">Guardar</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══ CONTACTOS ═══ -->
     <div id="page-contactos" class="page">
       <div class="panel">
         <div class="panel-head">
-          <h3>Todos los contactos</h3>
+          <h3>Todos los contactos <span id="contactos-count" style="font-weight:400;color:var(--muted);font-size:13px"></span></h3>
           <div style="display:flex;gap:8px">
-            <input id="search-q" type="text" placeholder="Buscar nombre, email..." style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;width:220px" oninput="buscarContactos()">
+            <input id="search-q" type="text" placeholder="Buscar nombre, email, teléfono..." style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;width:220px" oninput="buscarContactos()">
+            <button class="btn btn-primary btn-sm" onclick="abrirModalNuevo()">+ Nuevo</button>
           </div>
         </div>
         <div class="panel-body" style="padding:0">
@@ -1035,6 +1129,8 @@ function buscarContactos() {
 const NIVEL_BADGE = { frio:'badge-gray', tibio:'badge-orange', caliente:'badge-red', cliente:'badge-green' };
 function renderContactos(lista) {
   const tbody = document.getElementById('contactos-tbody');
+  const countEl = document.getElementById('contactos-count');
+  if (countEl) countEl.textContent = `(${lista.length})`;
   if (!lista.length) {
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">Sin resultados</td></tr>';
     return;
@@ -1045,6 +1141,7 @@ function renderContactos(lista) {
     const emailReal = c.email && !c.email.includes('@sin-email') ? c.email : null;
     const web = c.webUrl || c.sitioWeb || '';
     const webDomain = web ? (() => { try { return new URL(web).hostname.replace('www.',''); } catch(e){ return web.slice(0,20); } })() : '';
+    const cJson = encodeURIComponent(JSON.stringify(c));
     return `
     <tr id="row-${c.id}">
       <td><strong>${c.nombre || '—'}</strong><br><span style="font-size:11px;color:var(--muted)">${c.ciudad||''}</span></td>
@@ -1059,11 +1156,96 @@ function renderContactos(lista) {
           <span style="font-size:12px;color:var(--muted)">${score}</span>
         </div>
       </td>
-      <td>
-        <button class="btn btn-sm" onclick="borrarContacto('${c.id}')" style="background:transparent;border:1px solid var(--border);color:var(--danger);padding:4px 10px;font-size:12px" title="Eliminar">✕</button>
+      <td style="white-space:nowrap">
+        <button class="btn btn-sm" onclick="abrirModalEditar(decodeURIComponent('${cJson}'))" style="background:var(--purple-light);border:none;color:var(--purple);padding:4px 10px;font-size:12px;margin-right:4px" title="Editar">✏</button>
+        <button class="btn btn-sm" onclick="borrarContacto('${c.id}','${(c.nombre||'').replace(/'/g,'')}')" style="background:transparent;border:1px solid var(--border);color:var(--danger);padding:4px 10px;font-size:12px" title="Eliminar">✕</button>
       </td>
     </tr>`;
   }).join('');
+}
+
+// ── Modal CRUD ────────────────────────────────────────────────────────────────
+function abrirModalNuevo() {
+  document.getElementById('modal-titulo').textContent = 'Nuevo contacto';
+  document.getElementById('modal-id').value = '';
+  ['nombre','telefono','email','webUrl','ciudad'].forEach(f => document.getElementById('m-'+f).value = '');
+  document.getElementById('m-pais').value = 'MX';
+  document.getElementById('m-especialidad').value = '';
+  document.getElementById('m-estado').value = 'prospecto';
+  document.getElementById('modal-error').style.display = 'none';
+  document.getElementById('modal-contacto').classList.add('open');
+}
+
+function abrirModalEditar(json) {
+  const c = JSON.parse(json);
+  document.getElementById('modal-titulo').textContent = 'Editar contacto';
+  document.getElementById('modal-id').value = c.id;
+  document.getElementById('m-nombre').value = c.nombre || '';
+  document.getElementById('m-telefono').value = c.telefono || '';
+  document.getElementById('m-email').value = (c.email && !c.email.includes('@sin-email')) ? c.email : '';
+  document.getElementById('m-webUrl').value = c.webUrl || c.sitioWeb || '';
+  document.getElementById('m-ciudad').value = c.ciudad || '';
+  document.getElementById('m-pais').value = c.pais || 'MX';
+  document.getElementById('m-especialidad').value = c.especialidadPrimaria || c.especialidad || '';
+  document.getElementById('m-estado').value = c.estado || 'prospecto';
+  document.getElementById('modal-error').style.display = 'none';
+  document.getElementById('modal-contacto').classList.add('open');
+}
+
+function cerrarModal() {
+  document.getElementById('modal-contacto').classList.remove('open');
+}
+
+async function guardarContacto() {
+  const id     = document.getElementById('modal-id').value;
+  const nombre = document.getElementById('m-nombre').value.trim();
+  const email  = document.getElementById('m-email').value.trim();
+  const errEl  = document.getElementById('modal-error');
+
+  if (!nombre) { errEl.textContent='El nombre es obligatorio'; errEl.style.display='block'; return; }
+
+  const payload = {
+    nombre,
+    telefono:          document.getElementById('m-telefono').value.trim() || undefined,
+    email:             email || undefined,
+    webUrl:            document.getElementById('m-webUrl').value.trim() || undefined,
+    ciudad:            document.getElementById('m-ciudad').value.trim() || undefined,
+    pais:              document.getElementById('m-pais').value || 'MX',
+    especialidadPrimaria: document.getElementById('m-especialidad').value || undefined,
+    estado:            document.getElementById('m-estado').value,
+  };
+
+  const btn = document.getElementById('modal-guardar-btn');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  errEl.style.display = 'none';
+
+  try {
+    const url    = id ? `${API}/contactos/${id}` : `${API}/contactos`;
+    const method = id ? 'PUT' : 'POST';
+    const r = await authFetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const data = await r.json();
+    if (!data.ok) { errEl.textContent = data.error || data.errores?.[0]?.msg || 'Error al guardar'; errEl.style.display='block'; return; }
+    cerrarModal();
+    await loadContactos();
+  } catch(e) {
+    errEl.textContent = 'Error de conexión'; errEl.style.display='block';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Guardar';
+  }
+}
+
+async function borrarContacto(id, nombre) {
+  if (!confirm(`¿Eliminar el contacto "${nombre || id}"? Esta acción no se puede deshacer.`)) return;
+  try {
+    const r = await authFetch(`${API}/contactos/${id}`, { method:'DELETE' });
+    const data = await r.json();
+    if (data.ok) {
+      document.getElementById('row-'+id)?.remove();
+      allContactos = allContactos.filter(c => c.id !== id);
+      const countEl = document.getElementById('contactos-count');
+      if (countEl) countEl.textContent = `(${allContactos.length})`;
+    }
+  } catch(e) { alert('Error al eliminar'); }
 }
 
 // ── Extractor de texto ───────────────────────────────────────────────────────
@@ -1408,27 +1590,6 @@ async function loadFuentes() {
   }
 }
 
-// ── Borrar contacto ──────────────────────────────────────────────────────────
-async function borrarContacto(id) {
-  if (!confirm('¿Eliminar este contacto? Esta acción no se puede deshacer.')) return;
-  try {
-    const r = await authFetch(`${API}/contactos/${id}`, { method: 'DELETE' });
-    const data = await r.json();
-    if (data.ok) {
-      // Remover la fila visualmente sin recargar toda la tabla
-      const row = document.getElementById('row-' + id);
-      if (row) {
-        row.style.transition = 'opacity .3s';
-        row.style.opacity = '0';
-        setTimeout(() => { row.remove(); allContactos = allContactos.filter(c => c.id !== id); }, 300);
-      }
-    } else {
-      alert('Error al eliminar: ' + (data.error || 'desconocido'));
-    }
-  } catch(e) {
-    alert('Error de conexión: ' + e.message);
-  }
-}
 
 </script>
 </body>
