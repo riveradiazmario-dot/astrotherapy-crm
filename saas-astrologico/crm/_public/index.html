@@ -1211,9 +1211,17 @@
                 <button class="var-chip" onclick="insertVar('{{fecha_hoy}}')">{{fecha_hoy}}</button>
                 <button class="var-chip" onclick="insertVar('{{unsubscribe_url}}')">{{unsubscribe_url}}</button>
               </div>
-              <div class="vars-editor">
-                <div style="font-size:12px;color:var(--muted);margin-bottom:10px">HTML del email — edita con las variables insertadas:</div>
-                <textarea id="wz-vars-html" rows="18" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px;font-family:monospace;font-size:12.5px;resize:vertical;line-height:1.5" oninput="syncVarsToMain()"></textarea>
+              <div class="vars-editor" style="display:flex;flex-direction:column">
+                <div style="font-size:12px;color:var(--muted);margin-bottom:8px">📧 Haz clic dentro del email para posicionar el cursor, luego selecciona la variable:</div>
+                <div id="wz-vars-editor"
+                  contenteditable="true"
+                  spellcheck="false"
+                  style="border:1.5px solid var(--border);border-radius:10px;overflow-y:auto;min-height:380px;max-height:500px;background:#f4f3ff;cursor:text;outline:none;transition:border .15s;padding:8px"
+                  onfocus="this.style.borderColor='var(--purple)'"
+                  onblur="this.style.borderColor='var(--border)'">
+                </div>
+                <!-- Campo oculto para compatibilidad con IA y buildPayload -->
+                <textarea id="wz-vars-html" style="display:none"></textarea>
                 <div style="margin-top:8px;font-size:11px;color:var(--muted)">💡 Las variables se reemplazan en el momento del envío con los datos reales de cada contacto.</div>
               </div>
             </div>
@@ -3061,18 +3069,36 @@ function importHtmlToBlocks(htmlStr) {
   }];
 }
 
-// Sync del paso Variables al HTML principal
+// Sincroniza el contenteditable del paso 4 → wz-html y bloques
 function syncVarsToMain() {
-  const val = document.getElementById('wz-vars-html').value.trim();
-  if (val) {
-    document.getElementById('wz-html').value = val;
-    importHtmlToBlocks(val);
+  const editor = document.getElementById('wz-vars-editor');
+  if (editor && editor.innerHTML.trim()) {
+    const inner = editor.innerHTML;
+    const full = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;padding:0;background:#f4f3ff">${inner}</body></html>`;
+    document.getElementById('wz-html').value = full;
+    document.getElementById('wz-vars-html').value = full;
+    importHtmlToBlocks(full);
   }
+}
+
+// Rellena el contenteditable del paso 4 con el HTML actual
+function initVarsEditor() {
+  const editor = document.getElementById('wz-vars-editor');
+  if (!editor) return;
+  const fullHtml = document.getElementById('wz-html').value;
+  if (!fullHtml.trim()) {
+    editor.innerHTML = '<div style="max-width:600px;margin:0 auto;background:#fff;padding:40px 24px;font-family:sans-serif;color:#7b7b9a;font-size:13px;text-align:center">📧 El email está vacío.<br>Ve al paso 3 para diseñar el contenido primero.</div>';
+    return;
+  }
+  // Extrae solo el contenido del <body>
+  const bodyMatch = fullHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  editor.innerHTML = bodyMatch ? bodyMatch[1] : fullHtml;
 }
 
 function syncHtmlFromBlocks() {
   syncBlocksToHtml();
   document.getElementById('wz-vars-html').value = document.getElementById('wz-html').value;
+  initVarsEditor();
 }
 
 // ── Editor tabs ───────────────────────────────────────────────────────────────
@@ -3136,16 +3162,24 @@ function aplicarTemplate(id) {
 
 // ── Variables ─────────────────────────────────────────────────────────────────
 function insertVar(v) {
-  const ta = document.getElementById('wz-vars-html');
-  const start = ta.selectionStart;
-  const end = ta.selectionEnd;
-  ta.value = ta.value.substring(0,start) + v + ta.value.substring(end);
-  ta.focus();
-  ta.selectionStart = ta.selectionEnd = start + v.length;
-  // Toast
+  const editor = document.getElementById('wz-vars-editor');
+  if (editor) {
+    editor.focus();
+    const sel = window.getSelection();
+    // Si el cursor está dentro del editor, insertar ahí; si no, al final
+    if (!sel || sel.rangeCount === 0 || !editor.contains(sel.anchorNode)) {
+      const range = document.createRange();
+      range.selectNodeContents(editor);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    document.execCommand('insertText', false, v);
+  }
+  // Toast feedback
   const toast = document.createElement('div');
-  toast.textContent = `✅ ${v} copiada al editor`;
-  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;z-index:9999;pointer-events:none';
+  toast.textContent = `✅ ${v} insertada`;
+  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#2DC653;color:#fff;padding:8px 18px;border-radius:8px;font-size:13px;z-index:9999;pointer-events:none;font-weight:600';
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 1500);
 }
@@ -3202,11 +3236,10 @@ async function iaAction(action) {
 
 function iaApply() {
   if (!_wz.lastIaResult) return;
-  const ta = document.getElementById('wz-vars-html');
   if (confirm('¿Aplicar el resultado de IA al editor? Se sobreescribirá el contenido actual.')) {
-    ta.value = _wz.lastIaResult;
-    syncVarsToMain();
-    alert('✅ Aplicado. Revisa el paso 3 para ver los cambios.');
+    document.getElementById('wz-html').value = _wz.lastIaResult;
+    initVarsEditor();
+    alert('✅ Aplicado. Puedes ver los cambios en el editor de abajo.');
   }
 }
 
