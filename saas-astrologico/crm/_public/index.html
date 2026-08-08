@@ -2869,31 +2869,149 @@ function editBlock(id) {
   renderEditZone();
 }
 
+function _beditParse() {
+  // Helper: parse current block's outer wrapper
+  const b = _wz.blocks.find(x => x.id === _wz.selectedBlockId);
+  if (!b) return { b: null, outer: null, outerStyle: '', innerHtml: '' };
+  const tmp = document.createElement('div');
+  tmp.innerHTML = b.html;
+  const outer = tmp.firstElementChild;
+  return {
+    b,
+    outer,
+    outerStyle: outer ? (outer.getAttribute('style') || '') : '',
+    innerHtml:  outer ? outer.innerHTML : b.html,
+  };
+}
+
 function renderEditZone() {
   const zone = document.getElementById('block-edit-zone');
   if (!zone) return;
-  const b = _wz.blocks.find(x => x.id === _wz.selectedBlockId);
+  const { b, outer, outerStyle, innerHtml } = _beditParse();
   if (!b) { zone.innerHTML = ''; return; }
+
+  // ── BOTÓN: campos específicos ──────────────────────────────────────
+  if (b.type === 'button') {
+    const linkEl = outer ? outer.querySelector('a') : null;
+    const btnText  = linkEl ? linkEl.textContent  : 'Empieza ahora →';
+    const btnHref  = linkEl ? (linkEl.getAttribute('href') || '#') : 'https://astrotherapy.pro';
+    zone.innerHTML = `<div class="block-edit-panel">
+      <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:12px">✏️ Editar botón</div>
+      <div class="wz-field" style="margin-bottom:10px">
+        <label>Texto del botón</label>
+        <input id="bedit-btn-text" class="wz-input" value="${escHtml(btnText)}" placeholder="Empieza ahora →">
+      </div>
+      <div class="wz-field" style="margin-bottom:10px">
+        <label>URL de destino</label>
+        <input id="bedit-btn-href" class="wz-input" value="${escHtml(btnHref)}" placeholder="https://astrotherapy.pro">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary btn-sm" onclick="applyButtonEdit()">✓ Aplicar</button>
+        <button class="btn btn-ghost btn-sm" onclick="_wz.selectedBlockId=null;renderEmailCanvas()">Cerrar</button>
+      </div>
+    </div>`;
+    return;
+  }
+
+  // ── IMAGEN: campo URL ─────────────────────────────────────────────
+  if (b.type === 'image') {
+    const imgEl = outer ? outer.querySelector('img') : null;
+    const imgSrc = imgEl ? (imgEl.getAttribute('src') || '') : '';
+    zone.innerHTML = `<div class="block-edit-panel">
+      <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:12px">✏️ Editar imagen</div>
+      <div class="wz-field" style="margin-bottom:10px">
+        <label>URL de la imagen</label>
+        <input id="bedit-img-src" class="wz-input" value="${escHtml(imgSrc)}" placeholder="https://ejemplo.com/imagen.jpg">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary btn-sm" onclick="applyImageEdit()">✓ Aplicar</button>
+        <button class="btn btn-ghost btn-sm" onclick="_wz.selectedBlockId=null;renderEmailCanvas()">Cerrar</button>
+      </div>
+    </div>`;
+    return;
+  }
+
+  // ── TEXTO / ENCABEZADO / OTROS: editor visual contenteditable ─────
   zone.innerHTML = `<div class="block-edit-panel">
-    <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:8px">✏️ Editando bloque: ${b.type}</div>
-    <textarea rows="6" id="bedit-html" oninput="updateBlockHtml('${b.id}',this.value)">${b.html.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn btn-primary btn-sm" onclick="applyBlockEdit('${b.id}')">✓ Aplicar</button>
+    <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:8px">✏️ Editar contenido</div>
+    <div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;border:1px solid var(--border);border-radius:8px;padding:5px 8px;background:#fafafa;align-items:center">
+      <button class="btn btn-ghost btn-sm" style="padding:3px 8px;font-weight:900;min-width:28px" title="Negrita"
+        onclick="document.execCommand('bold');document.getElementById('bedit-content').focus()">B</button>
+      <button class="btn btn-ghost btn-sm" style="padding:3px 8px;font-style:italic;min-width:28px" title="Cursiva"
+        onclick="document.execCommand('italic');document.getElementById('bedit-content').focus()">I</button>
+      <button class="btn btn-ghost btn-sm" style="padding:3px 8px;text-decoration:underline;min-width:28px" title="Subrayado"
+        onclick="document.execCommand('underline');document.getElementById('bedit-content').focus()">U</button>
+      <div style="width:1px;height:18px;background:var(--border);margin:0 2px;flex-shrink:0"></div>
+      <button class="btn btn-ghost btn-sm" style="padding:3px 8px" title="Insertar enlace"
+        onclick="(function(){const u=prompt('URL del enlace:','https://');if(u){document.getElementById('bedit-content').focus();document.execCommand('createLink',false,u);}})()">🔗</button>
+      <button class="btn btn-ghost btn-sm" style="padding:3px 8px" title="Lista con viñetas"
+        onclick="document.execCommand('insertUnorderedList');document.getElementById('bedit-content').focus()">• Lista</button>
+      <div style="width:1px;height:18px;background:var(--border);margin:0 2px;flex-shrink:0"></div>
+      <button class="btn btn-ghost btn-sm" style="padding:3px 8px;font-size:11px" title="Alinear izquierda"
+        onclick="document.execCommand('justifyLeft');document.getElementById('bedit-content').focus()">⬅</button>
+      <button class="btn btn-ghost btn-sm" style="padding:3px 8px;font-size:11px" title="Centrar"
+        onclick="document.execCommand('justifyCenter');document.getElementById('bedit-content').focus()">↔</button>
+    </div>
+    <div id="bedit-content"
+      contenteditable="true"
+      data-block-id="${b.id}"
+      data-outer-style="${outerStyle.replace(/"/g,'&quot;')}"
+      style="${outerStyle};border:1.5px solid var(--border);border-radius:8px;padding:14px;min-height:80px;outline:none;background:#fff;cursor:text;transition:border .15s"
+      onfocus="this.style.borderColor='var(--purple)'"
+      onblur="this.style.borderColor='var(--border)'"
+    >${innerHtml}</div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button class="btn btn-primary btn-sm" onclick="applyBlockEditRich()">✓ Aplicar</button>
       <button class="btn btn-ghost btn-sm" onclick="_wz.selectedBlockId=null;renderEmailCanvas()">Cerrar</button>
     </div>
   </div>`;
+
+  // Cursor al final del contenido editable
+  setTimeout(() => {
+    const el = document.getElementById('bedit-content');
+    if (!el) return;
+    el.focus();
+    const range = document.createRange();
+    const sel   = window.getSelection();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }, 30);
 }
 
-function updateBlockHtml(id, val) {
-  const b = _wz.blocks.find(x => x.id === id);
-  if (b) b.html = val.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+function applyBlockEditRich() {
+  const el = document.getElementById('bedit-content');
+  if (!el) return;
+  const b = _wz.blocks.find(x => x.id === _wz.selectedBlockId);
+  if (!b) return;
+  const os = el.dataset.outerStyle || '';
+  b.html = os ? `<div style="${os}">${el.innerHTML}</div>` : el.innerHTML;
+  _wz.selectedBlockId = null;
+  renderEmailCanvas();
 }
 
-function applyBlockEdit(id) {
-  const ta = document.getElementById('bedit-html');
-  if (!ta) return;
-  const b = _wz.blocks.find(x => x.id === id);
-  if (b) b.html = ta.value;
+function applyButtonEdit() {
+  const { b, outer, outerStyle } = _beditParse();
+  if (!b) return;
+  const text = document.getElementById('bedit-btn-text')?.value || 'Empieza ahora →';
+  const href = document.getElementById('bedit-btn-href')?.value || '#';
+  const linkEl  = outer ? outer.querySelector('a') : null;
+  const btnStyle = linkEl ? (linkEl.getAttribute('style') || '') : 'display:inline-block;background:#6B5BCC;color:#fff;padding:14px 32px;border-radius:8px;text-decoration:none;font-family:sans-serif;font-size:15px;font-weight:700';
+  const os = outerStyle || 'padding:16px 32px;text-align:center';
+  b.html = `<div style="${os}"><a href="${href.replace(/"/g,'&quot;')}" style="${btnStyle}">${escHtml(text)}</a></div>`;
+  _wz.selectedBlockId = null;
+  renderEmailCanvas();
+}
+
+function applyImageEdit() {
+  const { b, outer, outerStyle } = _beditParse();
+  if (!b) return;
+  const src = document.getElementById('bedit-img-src')?.value?.trim() || '';
+  if (!src) return;
+  const os = outerStyle || 'padding:16px 32px;text-align:center';
+  b.html = `<div style="${os}"><img src="${src.replace(/"/g,'&quot;')}" alt="" style="max-width:100%;height:auto;display:block;margin:0 auto;border-radius:6px"></div>`;
+  _wz.selectedBlockId = null;
   renderEmailCanvas();
 }
 
