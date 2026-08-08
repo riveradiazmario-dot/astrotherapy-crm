@@ -39,7 +39,7 @@
   .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
   .topbar h2 { font-size: 17px; font-weight: 600; }
   .topbar-actions { display: flex; gap: 10px; }
-  .content { flex: 1; overflow-y: auto; padding: 24px 28px; }
+  .content { flex: 1; overflow-y: auto; padding: 16px 24px; }
 
   /* ── Cards ── */
   .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
@@ -955,7 +955,7 @@
     <div id="page-campanas" class="page">
 
       <!-- Stats rápidas -->
-      <div class="stats-row" style="margin-bottom:20px">
+      <div class="stats-row" style="margin-bottom:14px">
         <div class="stat-card"><div class="value" id="cs-total">—</div><div class="label">Campañas</div></div>
         <div class="stat-card"><div class="value" id="cs-enviados">—</div><div class="label">Emails enviados</div></div>
         <div class="stat-card"><div class="value" id="cs-apertura">—</div><div class="label">Tasa apertura</div></div>
@@ -2410,6 +2410,9 @@ function escHtml(s) {
 }
 // ══════════════════════════════════════════════════════════
 
+// ── Caché de campañas por ID (evita embeber JSON en onclick) ─────────────────
+const _campCache = {};
+
 // ── Estado global del wizard ────────────────────────────────────────────────
 const _wz = {
   id: null,               // ID de campaña en edición (null = nueva)
@@ -2470,6 +2473,7 @@ async function cargarCampanas() {
       </div>`;
       return;
     }
+    d.campanas.forEach(c => { _campCache[c.id] = c; }); // cachear para onclick seguro
     box.innerHTML = '<div class="camp-grid">' + d.campanas.map(c => campCard(c)).join('') + '</div>';
   } catch(e) {
     box.innerHTML = `<span style="color:var(--danger)">Error: ${e.message}</span>`;
@@ -2512,7 +2516,7 @@ function campCard(c) {
     <div class="camp-card-foot">
       <span style="font-size:11px;color:var(--muted)">${new Date(c.createdAt).toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'})}</span>
       <div style="display:flex;gap:4px">
-        ${canEdit ? `<button class="btn btn-ghost btn-sm" onclick='editarCampanaWizard(${JSON.stringify(c)})'>✏️ Editar</button>` : ''}
+        ${canEdit ? `<button class="btn btn-ghost btn-sm" onclick="editarCampanaWizard('${c.id}')">✏️ Editar</button>` : ''}
         ${canSend ? `<button class="btn btn-primary btn-sm" onclick="lanzarCampana('${c.id}','${escHtml(c.nombre)}')">🚀</button>` : ''}
         <button class="btn btn-ghost btn-sm" title="Duplicar" onclick="duplicarCampana('${c.id}')">📋</button>
         ${canDel ? `<button class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="eliminarCampana('${c.id}','${escHtml(c.nombre)}')">🗑</button>` : ''}
@@ -2574,7 +2578,12 @@ function abrirWizard(campana = null) {
   wzContarAud();
 }
 
-function editarCampanaWizard(c) { abrirWizard(c); }
+function editarCampanaWizard(idOrObj) {
+  // Si recibe string (ID), busca en el caché; si ya es objeto, lo usa directo
+  const campana = typeof idOrObj === 'string' ? (_campCache[idOrObj] ?? null) : idOrObj;
+  if (!campana) { alert('No se encontró la campaña. Recarga la página.'); return; }
+  abrirWizard(campana);
+}
 
 function cerrarWizard() {
   document.getElementById('wz-overlay').classList.add('hidden');
