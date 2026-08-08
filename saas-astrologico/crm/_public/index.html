@@ -950,7 +950,6 @@
       </div>
     </div>
 
-  </div>
     <!-- ═══ CAMPAÑAS — Módulo C ═══ -->
     <div id="page-campanas" class="page">
 
@@ -1347,6 +1346,7 @@
       </div><!-- /.wz-body -->
     </div><!-- /.wz-overlay -->
 
+  </div><!-- /.content -->
 </main>
 
 <script>
@@ -2546,10 +2546,10 @@ function abrirWizard(campana = null) {
   } catch {}
   // Si parseó como objeto → usar meta.texto (aunque sea ''); si no → mostrar texto plano
   document.getElementById('wz-desc').value = meta !== null ? (meta.texto ?? '') : _rawDesc;
-  document.getElementById('wz-asunto').value = meta.asunto || '';
-  document.getElementById('wz-preheader').value = meta.preheader || '';
-  document.getElementById('wz-from-nombre').value = meta.fromNombre || 'Mario Rivera · AstroTherapy Pro';
-  const htmlContent = meta.html || '';
+  document.getElementById('wz-asunto').value = meta?.asunto || '';
+  document.getElementById('wz-preheader').value = meta?.preheader || '';
+  document.getElementById('wz-from-nombre').value = meta?.fromNombre || 'Mario Rivera · AstroTherapy Pro';
+  const htmlContent = meta?.html || '';
   document.getElementById('wz-html').value = htmlContent;
   document.getElementById('wz-vars-html').value = htmlContent;
 
@@ -2575,7 +2575,6 @@ function abrirWizard(campana = null) {
   buildStepsBar();
   wzShowStep(1);
   document.getElementById('wz-overlay').classList.remove('hidden');
-  wzContarAud();
 }
 
 function editarCampanaWizard(idOrObj) {
