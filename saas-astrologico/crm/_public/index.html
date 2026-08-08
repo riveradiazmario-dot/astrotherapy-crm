@@ -248,11 +248,24 @@
   .wz-card-opt.selected { border-color:var(--purple); background:var(--purple-light); }
 
   /* Audience step */
-  .aud-counter { background:linear-gradient(135deg,var(--purple) 0%,#9B8BE8 100%); color:#fff; border-radius:14px; padding:20px 24px; display:flex; align-items:center; gap:16px; margin-bottom:24px; }
-  .aud-count-num { font-size:42px; font-weight:900; line-height:1; }
+  .aud-counter { background:linear-gradient(135deg,var(--purple) 0%,#9B8BE8 100%); color:#fff; border-radius:14px; padding:18px 24px; display:flex; align-items:center; gap:16px; margin-bottom:20px; }
+  .aud-count-num { font-size:38px; font-weight:900; line-height:1; }
   .aud-count-label { font-size:13px; opacity:.85; }
-  .aud-filters { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
-  .aud-sample { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px; margin-top:16px; font-size:12px; }
+  .aud-filters { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px; }
+  .aud-list-header { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--card); border:1px solid var(--border); border-radius:10px 10px 0 0; border-bottom:none; font-size:13px; font-weight:600; }
+  .aud-list-header label { display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none; }
+  .aud-list-header .aud-sel-count { margin-left:auto; color:var(--purple); font-weight:700; font-size:12px; }
+  .aud-list { border:1px solid var(--border); border-radius:0 0 10px 10px; max-height:300px; overflow-y:auto; background:var(--card); }
+  .aud-list-item { display:flex; align-items:center; gap:10px; padding:9px 14px; border-bottom:1px solid var(--border); font-size:13px; cursor:pointer; transition:background .15s; }
+  .aud-list-item:last-child { border-bottom:none; }
+  .aud-list-item:hover { background:var(--purple-light); }
+  .aud-list-item.selected { background:var(--purple-light); }
+  .aud-list-item input[type=checkbox] { accent-color:var(--purple); width:15px; height:15px; cursor:pointer; flex-shrink:0; }
+  .aud-list-item .aud-ci-name { font-weight:600; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .aud-list-item .aud-ci-email { color:var(--muted); font-size:11px; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .aud-list-item .aud-ci-badge { font-size:10px; padding:2px 7px; border-radius:20px; background:var(--purple-light); color:var(--purple); flex-shrink:0; }
+  .aud-empty { padding:32px; text-align:center; color:var(--muted); font-size:13px; border:1px solid var(--border); border-radius:10px; }
+  .aud-loading { padding:20px; text-align:center; color:var(--muted); font-size:13px; }
 
   /* Block editor */
   .editor-wrap { display:flex; height:100%; gap:0; }
@@ -1031,24 +1044,25 @@
         <div class="wz-step-panel" id="wzp-2">
           <div class="wz-content">
             <div class="wz-step-title">2 · Audiencia</div>
-            <div class="wz-step-sub">¿A quién va dirigida esta campaña?</div>
+            <div class="wz-step-sub">Filtra y selecciona quiénes recibirán esta campaña</div>
 
+            <!-- Contador de seleccionados -->
             <div class="aud-counter">
               <div>
-                <div class="aud-count-num" id="aud-count">—</div>
-                <div class="aud-count-label">contactos recibirán esta campaña</div>
+                <div class="aud-count-num" id="aud-count">0</div>
+                <div class="aud-count-label">contactos seleccionados</div>
               </div>
-              <div style="flex:1;font-size:12px;opacity:.8;line-height:1.5" id="aud-detail">
-                Ajusta los filtros para ver el total en tiempo real.
+              <div style="flex:1;font-size:12px;opacity:.85;line-height:1.6" id="aud-detail">
+                Usa los filtros para encontrar contactos, luego selecciónalos individualmente o todos a la vez.
               </div>
-              <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)" onclick="wzPreviewAud()">👁 Ver muestra</button>
             </div>
 
+            <!-- Filtros -->
             <div class="aud-filters">
               <div class="wz-field">
-                <label>Estado del contacto</label>
-                <select id="wz-seg-estado" class="wz-input" onchange="wzContarAud()">
-                  <option value="">Todos</option>
+                <label>Estado</label>
+                <select id="wz-seg-estado" class="wz-input" onchange="audCargar()">
+                  <option value="">Todos los estados</option>
                   <option value="prospecto">Prospecto</option>
                   <option value="contactado">Contactado</option>
                   <option value="nurture">Nurture</option>
@@ -1058,7 +1072,7 @@
               </div>
               <div class="wz-field">
                 <label>Especialidad</label>
-                <select id="wz-seg-esp" class="wz-input" onchange="wzContarAud()">
+                <select id="wz-seg-esp" class="wz-input" onchange="audCargar()">
                   <option value="">Todas</option>
                   <option value="astrologia_tropical">Astrología tropical</option>
                   <option value="astrologia_vedica">Astrología védica</option>
@@ -1071,27 +1085,37 @@
                 </select>
               </div>
               <div class="wz-field">
+                <label>Solo con consentimiento</label>
+                <select id="wz-seg-consent" class="wz-input" onchange="audCargar()">
+                  <option value="true">Sí (recomendado)</option>
+                  <option value="">Todos</option>
+                </select>
+              </div>
+              <div class="wz-field">
                 <label>País (ISO)</label>
-                <input id="wz-seg-pais" class="wz-input" placeholder="MX, CO, AR…" oninput="wzContarAudDebounce()">
+                <input id="wz-seg-pais" class="wz-input" placeholder="MX, CO, AR…" oninput="audCargarDebounce()">
               </div>
               <div class="wz-field">
                 <label>Etiqueta</label>
-                <input id="wz-seg-etiqueta" class="wz-input" placeholder="vip, trial, webinar…" oninput="wzContarAudDebounce()">
+                <input id="wz-seg-etiqueta" class="wz-input" placeholder="vip, trial, webinar…" oninput="audCargarDebounce()">
               </div>
               <div class="wz-field">
-                <label>Lead Score mínimo</label>
-                <input id="wz-seg-score" type="number" class="wz-input" placeholder="0" min="0" max="100" oninput="wzContarAudDebounce()">
-              </div>
-              <div class="wz-field">
-                <label>Solo con consentimiento</label>
-                <select id="wz-seg-consent" class="wz-input" onchange="wzContarAud()">
-                  <option value="true">Sí (recomendado)</option>
-                  <option value="false">No</option>
-                </select>
+                <label>Score mínimo</label>
+                <input id="wz-seg-score" type="number" class="wz-input" placeholder="0" min="0" max="100" oninput="audCargarDebounce()">
               </div>
             </div>
 
-            <div id="aud-sample" class="aud-sample" style="display:none"></div>
+            <!-- Encabezado lista -->
+            <div class="aud-list-header" id="aud-list-header" style="display:none">
+              <label>
+                <input type="checkbox" id="aud-chk-all" onchange="audToggleAll(this.checked)">
+                <span id="aud-visible-label">Seleccionar todos los visibles</span>
+              </label>
+              <span class="aud-sel-count" id="aud-sel-count"></span>
+            </div>
+
+            <!-- Lista de contactos -->
+            <div id="aud-list"></div>
           </div>
           <div class="wz-footer">
             <button class="btn btn-ghost" onclick="wzBack(2)">← Atrás</button>
@@ -2384,14 +2408,16 @@ async function agregarProveedor() {
 
 // ── Estado global del wizard ────────────────────────────────────────────────
 const _wz = {
-  id: null,           // ID de campaña en edición (null = nueva)
+  id: null,               // ID de campaña en edición (null = nueva)
   step: 1,
   totalSteps: 7,
-  blocks: [],         // Array de bloques del editor visual
+  blocks: [],             // Array de bloques del editor visual
   selectedBlockId: null,
   audCountTimer: null,
-  sendMode: 'now',    // now | draft
+  sendMode: 'now',        // now | draft
   lastIaResult: '',
+  selectedContactIds: new Set(),  // IDs de contactos seleccionados (persiste entre filtros)
+  visibleContacts: [],            // Contactos actualmente visibles en la lista
 };
 
 const WZ_STEPS = [
@@ -2498,6 +2524,8 @@ function abrirWizard(campana = null) {
   _wz.blocks = [];
   _wz.selectedBlockId = null;
   _wz.sendMode = 'now';
+  _wz.selectedContactIds = new Set();
+  _wz.visibleContacts = [];
 
   // Rellenar campos si edición
   document.getElementById('wz-nombre').value = campana?.nombre || '';
@@ -2575,6 +2603,7 @@ function wzShowStep(n) {
   updateStepsBar();
 
   // Acciones al entrar a cada paso
+  if (n === 2) { audCargar(); }  // carga lista de contactos al entrar a Audiencia
   if (n === 3) { renderEmailCanvas(); renderTmplPicker(); }
   if (n === 4) { syncHtmlFromBlocks(); }
   if (n === 5) { correrValidacionesIA(); }
@@ -2613,87 +2642,154 @@ async function cargarProveedoresWizard() {
   } catch(e) {}
 }
 
-// ── Audiencia ────────────────────────────────────────────────────────────────
+// ── Audiencia — filtrado + selección ─────────────────────────────────────────
+// _wz.selectedContactIds : Set<string>  — IDs seleccionados (persiste entre filtros)
+// _wz.visibleContacts    : Array        — contactos actualmente visibles en lista
+
 let _audTimer = null;
-function wzContarAudDebounce() {
+
+function audCargarDebounce() {
   clearTimeout(_audTimer);
-  _audTimer = setTimeout(wzContarAud, 600);
+  _audTimer = setTimeout(audCargar, 500);
 }
 
-async function wzContarAud() {
-  const seg = buildSegmento();
-  // Llamamos al preview de la campaña si ya tiene ID, sino estimamos
-  if (_wz.id) {
-    try {
-      const r = await authFetch(`${API}/campanas/${_wz.id}/preview`);
-      const d = await r.json();
-      document.getElementById('aud-count').textContent = d.total ?? '—';
-      document.getElementById('aud-detail').textContent = `Contactos con consentimiento que cumplen el segmento seleccionado.`;
-    } catch {}
-  } else {
-    document.getElementById('aud-count').textContent = '—';
-    document.getElementById('aud-detail').textContent = 'Guarda primero para calcular el total exacto.';
-  }
-}
+async function audCargar() {
+  const list   = document.getElementById('aud-list');
+  const header = document.getElementById('aud-list-header');
+  list.innerHTML = '<div class="aud-loading">Cargando contactos…</div>';
+  header.style.display = 'none';
 
-async function wzPreviewAud() {
-  const box = document.getElementById('aud-sample');
-  if (!_wz.id) {
-    // Auto-guardar borrador y luego mostrar muestra
-    const _t = Object.assign(document.createElement('div'), {textContent:'💾 Guardando borrador…'}); _t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;z-index:9999'; document.body.appendChild(_t); setTimeout(()=>_t.remove(),2000);
-    const ok = await wzAutoGuardar();
-    if (!ok) {
-      box.innerHTML = '⚠️ Completa el nombre de la campaña (Paso 1) antes de ver la muestra.';
-      box.style.display = 'block';
-      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      return;
-    }
-  }
-  box.innerHTML = '<em>Cargando muestra…</em>'; box.style.display = 'block';
-  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Construir query string
+  const params = new URLSearchParams({ limit: '500', ordenarPor: 'nombre', orden: 'asc' });
+  const estado   = document.getElementById('wz-seg-estado')?.value;
+  const esp      = document.getElementById('wz-seg-esp')?.value;
+  const pais     = document.getElementById('wz-seg-pais')?.value?.trim();
+  const etiqueta = document.getElementById('wz-seg-etiqueta')?.value?.trim();
+  const score    = document.getElementById('wz-seg-score')?.value;
+  const consent  = document.getElementById('wz-seg-consent')?.value;
+  if (estado)   params.set('estado', estado);
+  if (esp)      params.set('especialidad', esp);
+  if (pais)     params.set('pais', pais);
+  if (etiqueta) params.set('etiqueta', etiqueta);
+  if (score)    params.set('minScore', score);
+  if (consent)  params.set('conConsentimiento', consent);
+
   try {
-    const r = await authFetch(`${API}/campanas/${_wz.id}/preview`);
+    const r = await authFetch(`${API}/contactos?${params}`);
     const d = await r.json();
-    if (!d.ok) { box.innerHTML = '⚠️ ' + (d.error || 'Error al cargar'); return; }
-    if (d.total === 0) { box.innerHTML = '⚠️ Ningún contacto cumple los filtros o tiene consentimiento de email.'; return; }
-    const names = d.muestra?.map(c => `<strong>${c.nombre||'—'}</strong> &lt;${c.email}&gt;${c.especialidadPrimaria ? ' · '+c.especialidadPrimaria : ''}${c.pais ? ' · '+c.pais : ''}`).join('<br>') || '';
-    box.innerHTML = `<strong>👥 ${d.total} destinatarios</strong><br><br>${names}${d.total > 5 ? `<br><em style="color:var(--muted)">…y ${d.total-5} más</em>` : ''}`;
-  } catch(e) { box.innerHTML = '❌ Error: ' + e.message; }
+    const contactos = d.contactos ?? d.data ?? [];
+    _wz.visibleContacts = contactos;
+    audRenderLista(contactos);
+  } catch (e) {
+    list.innerHTML = `<div class="aud-empty">❌ Error al cargar contactos: ${e.message}</div>`;
+  }
 }
 
-async function wzAutoGuardar() {
-  const nombre = document.getElementById('wz-nombre')?.value?.trim();
-  if (!nombre) return false;
-  try {
-    if (_wz.id) {
-      // ya existe, actualizar segmento
-      await authFetch(`${API}/campanas/${_wz.id}`, {
-        method: 'PUT',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ segmento: JSON.stringify(buildSegmento()) }),
-      });
-    } else {
-      const r = await authFetch(`${API}/campanas`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ nombre, tipo: _wz.tipo || 'email', segmento: JSON.stringify(buildSegmento()) }),
-      });
-      const d = await r.json();
-      if (d.ok && d.campana?.id) _wz.id = d.campana.id;
-      else return false;
+function audRenderLista(contactos) {
+  const list   = document.getElementById('aud-list');
+  const header = document.getElementById('aud-list-header');
+  const label  = document.getElementById('aud-visible-label');
+
+  if (!contactos.length) {
+    list.innerHTML = '<div class="aud-empty">No hay contactos con los filtros seleccionados.</div>';
+    header.style.display = 'none';
+    audActualizarContador();
+    return;
+  }
+
+  header.style.display = 'flex';
+  label.textContent = `Seleccionar todos (${contactos.length})`;
+
+  // Estado del checkbox "todos": marcado si todos los visibles están seleccionados
+  const chkAll = document.getElementById('aud-chk-all');
+  const todosSeleccionados = contactos.every(c => _wz.selectedContactIds.has(c.id));
+  chkAll.checked = todosSeleccionados;
+  chkAll.indeterminate = !todosSeleccionados && contactos.some(c => _wz.selectedContactIds.has(c.id));
+
+  const estadoBadge = { prospecto:'#e0d9ff', contactado:'#d0f0e8', nurture:'#fff3cd', cualificado:'#d1ecf1', cliente:'#d4edda' };
+  const estadoColor = { prospecto:'#6B5BCC', contactado:'#0a8f5e', nurture:'#856404', cualificado:'#0c5460', cliente:'#155724' };
+
+  list.innerHTML = contactos.map(c => {
+    const sel = _wz.selectedContactIds.has(c.id);
+    const bg  = estadoBadge[c.estado] || '#f0f0f0';
+    const fg  = estadoColor[c.estado] || '#555';
+    return `<div class="aud-list-item${sel ? ' selected' : ''}" onclick="audToggleContact('${c.id}',event)">
+      <input type="checkbox" ${sel ? 'checked' : ''} onchange="audToggleContact('${c.id}',event)" onclick="event.stopPropagation()">
+      <span class="aud-ci-name">${c.nombre || '—'}</span>
+      <span class="aud-ci-email">${c.email || ''}</span>
+      ${c.estado ? `<span class="aud-ci-badge" style="background:${bg};color:${fg}">${c.estado}</span>` : ''}
+    </div>`;
+  }).join('');
+
+  audActualizarContador();
+}
+
+function audToggleContact(id, event) {
+  if (event?.target?.tagName === 'INPUT') {
+    // clic directo en checkbox — dejar que el evento fluya
+  }
+  if (_wz.selectedContactIds.has(id)) {
+    _wz.selectedContactIds.delete(id);
+  } else {
+    _wz.selectedContactIds.add(id);
+  }
+  // Actualizar visual del item
+  const items = document.querySelectorAll('#aud-list .aud-list-item');
+  const visible = _wz.visibleContacts ?? [];
+  visible.forEach((c, i) => {
+    if (c.id === id && items[i]) {
+      const sel = _wz.selectedContactIds.has(id);
+      items[i].classList.toggle('selected', sel);
+      const chk = items[i].querySelector('input[type=checkbox]');
+      if (chk) chk.checked = sel;
     }
-    return true;
-  } catch { return false; }
+  });
+  // Actualizar checkbox "todos"
+  const chkAll = document.getElementById('aud-chk-all');
+  if (chkAll && visible.length) {
+    const todosSeleccionados = visible.every(c => _wz.selectedContactIds.has(c.id));
+    chkAll.checked = todosSeleccionados;
+    chkAll.indeterminate = !todosSeleccionados && visible.some(c => _wz.selectedContactIds.has(c.id));
+  }
+  audActualizarContador();
+}
+
+function audToggleAll(checked) {
+  const visible = _wz.visibleContacts ?? [];
+  visible.forEach(c => {
+    if (checked) _wz.selectedContactIds.add(c.id);
+    else _wz.selectedContactIds.delete(c.id);
+  });
+  audRenderLista(visible); // re-render con estados actualizados
+}
+
+function audActualizarContador() {
+  const total = _wz.selectedContactIds.size;
+  document.getElementById('aud-count').textContent = total;
+  const selCount = document.getElementById('aud-sel-count');
+  if (selCount) selCount.textContent = total > 0 ? `${total} seleccionado${total !== 1 ? 's' : ''}` : '';
+  const detail = document.getElementById('aud-detail');
+  if (detail) {
+    if (total === 0) {
+      detail.textContent = 'Usa los filtros para encontrar contactos, luego selecciónalos.';
+    } else {
+      const visible = _wz.visibleContacts?.length ?? 0;
+      const fueraDeVista = [..._wz.selectedContactIds].filter(id => !(_wz.visibleContacts ?? []).find(c => c.id === id)).length;
+      detail.textContent = fueraDeVista > 0
+        ? `${total} seleccionados en total (${fueraDeVista} fuera de la vista actual).`
+        : `${total} contactos recibirán esta campaña.`;
+    }
+  }
 }
 
 function buildSegmento() {
   return {
-    estado:       document.getElementById('wz-seg-estado').value || undefined,
-    especialidad: document.getElementById('wz-seg-esp').value || undefined,
-    pais:         document.getElementById('wz-seg-pais').value.trim() || undefined,
-    etiqueta:     document.getElementById('wz-seg-etiqueta').value.trim() || undefined,
-    scoreMin:     document.getElementById('wz-seg-score').value || undefined,
-    consentimiento: document.getElementById('wz-seg-consent').value,
+    estado:       document.getElementById('wz-seg-estado')?.value || undefined,
+    especialidad: document.getElementById('wz-seg-esp')?.value || undefined,
+    pais:         document.getElementById('wz-seg-pais')?.value?.trim() || undefined,
+    etiqueta:     document.getElementById('wz-seg-etiqueta')?.value?.trim() || undefined,
+    scoreMin:     document.getElementById('wz-seg-score')?.value || undefined,
+    consentimiento: document.getElementById('wz-seg-consent')?.value,
   };
 }
 
@@ -3056,13 +3152,14 @@ async function wzEnviarEmailPrueba() {
 
 // ── Resumen de envío ──────────────────────────────────────────────────────────
 function renderSendSummary() {
-  const seg = buildSegmento();
-  const segDesc = Object.entries(seg).filter(([k,v]) => v && k !== 'consentimiento').map(([k,v]) => `${k}: ${v}`).join(', ') || 'Todos con consentimiento';
+  const totalSel = _wz.selectedContactIds.size;
+  const cuentaLabel = document.getElementById('wz-smtp-id').options[document.getElementById('wz-smtp-id').selectedIndex]?.text || 'Predeterminada';
+  const alertSel = totalSel === 0 ? '<div style="color:var(--danger);font-size:12px;margin-top:6px">⚠️ No hay contactos seleccionados. Vuelve al Paso 2 para seleccionarlos.</div>' : '';
   document.getElementById('send-summary').innerHTML = `
     <div class="send-row"><span class="send-row-label">Campaña</span><strong>${escHtml(document.getElementById('wz-nombre').value)}</strong></div>
     <div class="send-row"><span class="send-row-label">Asunto</span><span>${escHtml(document.getElementById('wz-asunto').value)}</span></div>
-    <div class="send-row"><span class="send-row-label">Segmento</span><span>${segDesc}</span></div>
-    <div class="send-row"><span class="send-row-label">Cuenta de envío</span><span>${document.getElementById('wz-smtp-id').options[document.getElementById('wz-smtp-id').selectedIndex]?.text || 'Predeterminada'}</span></div>
+    <div class="send-row"><span class="send-row-label">Destinatarios</span><strong style="color:var(--purple)">${totalSel} contactos seleccionados</strong>${alertSel}</div>
+    <div class="send-row"><span class="send-row-label">Cuenta de envío</span><span>${cuentaLabel}</span></div>
   `;
 }
 
