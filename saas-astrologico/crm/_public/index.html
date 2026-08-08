@@ -2404,6 +2404,10 @@ async function agregarProveedor() {
 
 // ══════════════════════════════════════════════════════════
 // MÓDULO C v2 — CAMPAIGN BUILDER (Wizard 7 pasos)
+// Utilidad: escapar HTML para evitar XSS en plantillas de string
+function escHtml(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 // ══════════════════════════════════════════════════════════
 
 // ── Estado global del wizard ────────────────────────────────────────────────
