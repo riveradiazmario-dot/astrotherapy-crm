@@ -2533,9 +2533,15 @@ function abrirWizard(campana = null) {
 
   // Rellenar campos si edición
   document.getElementById('wz-nombre').value = campana?.nombre || '';
-  let meta = {};
-  try { meta = JSON.parse(campana?.descripcion || '{}'); } catch {}
-  document.getElementById('wz-desc').value = meta.texto || campana?.descripcion || '';
+  // Parsear descripcion: puede ser JSON embebido o texto plano
+  const _rawDesc = campana?.descripcion || '';
+  let meta = null;
+  try {
+    const _p = JSON.parse(_rawDesc);
+    if (_p && typeof _p === 'object' && !Array.isArray(_p)) meta = _p;
+  } catch {}
+  // Si parseó como objeto → usar meta.texto (aunque sea ''); si no → mostrar texto plano
+  document.getElementById('wz-desc').value = meta !== null ? (meta.texto ?? '') : _rawDesc;
   document.getElementById('wz-asunto').value = meta.asunto || '';
   document.getElementById('wz-preheader').value = meta.preheader || '';
   document.getElementById('wz-from-nombre').value = meta.fromNombre || 'Mario Rivera · AstroTherapy Pro';
@@ -3196,8 +3202,8 @@ async function guardarBorradorWizard() {
       toast.style.cssText = 'position:fixed;bottom:80px;right:32px;background:#333;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;z-index:9999';
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 2000);
-      // Actualizar contador de audiencia
-      wzContarAud();
+      // Actualizar lista de audiencia si estamos en paso 2
+      if (_wz.step === 2) audCargar();
     } else alert('Error al guardar: ' + d.error);
   } catch(e) { alert('Error: ' + e.message); }
 }
