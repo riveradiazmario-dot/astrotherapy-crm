@@ -204,7 +204,9 @@ router.post('/:id/enviar', async (req: Request, res: Response) => {
 
   // Construir where de contactos
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const where: any = { organizacionId: orgId, consentimientoEmail: true };
+  const where: any = { organizacionId: orgId };
+  // Filtrar por consentimiento solo si el segmento lo indica (default: true)
+  if (segFiltro.consentimiento !== 'false') where.consentimientoEmail = true;
   if (segFiltro.estado) where.estado = segFiltro.estado;
   if (segFiltro.especialidad) where.especialidadPrimaria = segFiltro.especialidad;
   if (segFiltro.etiqueta) where.etiquetas = { contains: segFiltro.etiqueta };
@@ -222,7 +224,7 @@ router.post('/:id/enviar', async (req: Request, res: Response) => {
   if (destinatarios.length === 0) {
     return res.json({
       ok: true,
-      mensaje: 'Ningún contacto cumple el segmento o tiene consentimiento.',
+      mensaje: 'Ningún contacto cumple el segmento seleccionado.',
       totalContactos: 0,
     });
   }
@@ -274,7 +276,8 @@ router.get('/:id/preview', async (req: Request, res: Response) => {
   try { segFiltro = campana.segmento ? JSON.parse(campana.segmento) : {}; } catch { /**/ }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const where: any = { organizacionId: orgId, consentimientoEmail: true };
+  const where: any = { organizacionId: orgId };
+  if (segFiltro.consentimiento !== 'false') where.consentimientoEmail = true;
   if (segFiltro.estado) where.estado = segFiltro.estado;
   if (segFiltro.especialidad) where.especialidadPrimaria = segFiltro.especialidad;
   if (segFiltro.etiqueta) where.etiquetas = { contains: segFiltro.etiqueta };

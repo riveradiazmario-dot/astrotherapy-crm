@@ -254,3 +254,14 @@ export async function obtenerSegmento(
 
   return prisma.contacto.findMany({ where, orderBy: { leadScore: 'desc' } });
 }
+
+// ─── Marcar todos los contactos con consentimientoEmail = true ───────────────
+export async function marcarConsentimientoMasivo(
+  organizacionId: string,
+): Promise<{ actualizados: number }> {
+  const result = await prisma.contacto.updateMany({
+    where: { organizacionId },
+    data: { consentimientoEmail: true },
+  });
+  return { actualizados: result.count };
+}

@@ -9,6 +9,7 @@ import {
   eliminarContacto,
   estadisticasGenerales,
   obtenerSegmento,
+  marcarConsentimientoMasivo,
 } from '../services/contacto.service';
 import { registrarAccion } from '../services/scoring.service';
 import { requireAuth } from '../middleware/auth';
@@ -106,6 +107,14 @@ router.delete('/:id', async (req: Request, res: Response, next: NextFunction) =>
   try {
     await eliminarContacto(req.params.id, req.usuario!.organizacionId);
     res.json({ ok: true, mensaje: 'Contacto eliminado' });
+  } catch (err) { next(err); }
+});
+
+// POST /api/contactos/consentimiento-masivo — Marcar todos con consentimientoEmail = true
+router.post('/consentimiento-masivo', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const resultado = await marcarConsentimientoMasivo(req.usuario!.organizacionId);
+    res.json({ ok: true, ...resultado });
   } catch (err) { next(err); }
 });
 

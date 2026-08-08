@@ -1084,11 +1084,12 @@
                 </select>
               </div>
               <div class="wz-field">
-                <label>Solo con consentimiento</label>
+                <label>Consentimiento email</label>
                 <select id="wz-seg-consent" class="wz-input" onchange="audCargar()">
-                  <option value="true">Sí (recomendado)</option>
-                  <option value="">Todos</option>
+                  <option value="true">Solo con consentimiento</option>
+                  <option value="false">Todos los contactos</option>
                 </select>
+                <button class="btn btn-ghost btn-sm" style="margin-top:6px;width:100%;font-size:11px" onclick="marcarConsentimientoTodos()">✅ Activar consentimiento a todos</button>
               </div>
               <div class="wz-field">
                 <label>País (ISO)</label>
@@ -2679,6 +2680,22 @@ function audCargarDebounce() {
   _audTimer = setTimeout(audCargar, 500);
 }
 
+async function marcarConsentimientoTodos() {
+  if (!confirm('¿Marcar TODOS los contactos de tu organización con consentimiento de email activado?\n\nEsto permite que aparezcan al enviar campañas con el filtro de consentimiento.')) return;
+  try {
+    const r = await authFetch(`${API}/contactos/consentimiento-masivo`, { method: 'POST' });
+    const d = await r.json();
+    if (d.ok) {
+      alert(`✅ ${d.actualizados} contactos marcados con consentimiento.`);
+      audCargar(); // refresca la lista
+    } else {
+      alert('Error: ' + (d.error || 'desconocido'));
+    }
+  } catch (e) {
+    alert('Error de red: ' + e.message);
+  }
+}
+
 async function audCargar() {
   const list   = document.getElementById('aud-list');
   const header = document.getElementById('aud-list-header');
@@ -3396,7 +3413,9 @@ async function wzFinalSend() {
     return;
   }
 
-  if (!confirm(`¿Enviar la campaña "${document.getElementById('wz-nombre').value}" ahora?\n\nSe enviará a todos los contactos del segmento seleccionado que tengan consentimiento.`)) return;
+  const _consentFilter = document.getElementById('wz-seg-consent')?.value !== 'false';
+  const _consentMsg = _consentFilter ? 'Solo se enviará a contactos con consentimiento de email.' : 'Se enviará a TODOS los contactos del segmento (sin filtro de consentimiento).';
+  if (!confirm(`¿Enviar la campaña "${document.getElementById('wz-nombre').value}" ahora?\n\n${_consentMsg}`)) return;
 
   try {
     const r = await authFetch(`${API}/campanas/${_wz.id}/enviar`, { method: 'POST' });
