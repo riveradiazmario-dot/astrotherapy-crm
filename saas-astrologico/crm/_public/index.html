@@ -2639,16 +2639,51 @@ async function wzContarAud() {
 async function wzPreviewAud() {
   const box = document.getElementById('aud-sample');
   if (!_wz.id) {
-    box.innerHTML = '💡 Guarda un borrador primero para ver la muestra de destinatarios.';
-    box.style.display = 'block'; return;
+    // Auto-guardar borrador y luego mostrar muestra
+    const _t = Object.assign(document.createElement('div'), {textContent:'💾 Guardando borrador…'}); _t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;z-index:9999'; document.body.appendChild(_t); setTimeout(()=>_t.remove(),2000);
+    const ok = await wzAutoGuardar();
+    if (!ok) {
+      box.innerHTML = '⚠️ Completa el nombre de la campaña (Paso 1) antes de ver la muestra.';
+      box.style.display = 'block';
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return;
+    }
   }
-  box.innerHTML = 'Cargando…'; box.style.display = 'block';
+  box.innerHTML = '<em>Cargando muestra…</em>'; box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
     const r = await authFetch(`${API}/campanas/${_wz.id}/preview`);
     const d = await r.json();
-    const names = d.muestra?.map(c => `<strong>${c.nombre||'—'}</strong> &lt;${c.email}&gt; · ${c.especialidadPrimaria||''} · ${c.pais||''}`).join('<br>') || '';
+    if (!d.ok) { box.innerHTML = '⚠️ ' + (d.error || 'Error al cargar'); return; }
+    if (d.total === 0) { box.innerHTML = '⚠️ Ningún contacto cumple los filtros o tiene consentimiento de email.'; return; }
+    const names = d.muestra?.map(c => `<strong>${c.nombre||'—'}</strong> &lt;${c.email}&gt;${c.especialidadPrimaria ? ' · '+c.especialidadPrimaria : ''}${c.pais ? ' · '+c.pais : ''}`).join('<br>') || '';
     box.innerHTML = `<strong>👥 ${d.total} destinatarios</strong><br><br>${names}${d.total > 5 ? `<br><em style="color:var(--muted)">…y ${d.total-5} más</em>` : ''}`;
-  } catch(e) { box.innerHTML = 'Error: ' + e.message; }
+  } catch(e) { box.innerHTML = '❌ Error: ' + e.message; }
+}
+
+async function wzAutoGuardar() {
+  const nombre = document.getElementById('wz-nombre')?.value?.trim();
+  if (!nombre) return false;
+  try {
+    if (_wz.id) {
+      // ya existe, actualizar segmento
+      await authFetch(`${API}/campanas/${_wz.id}`, {
+        method: 'PUT',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ segmento: JSON.stringify(buildSegmento()) }),
+      });
+    } else {
+      const r = await authFetch(`${API}/campanas`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ nombre, tipo: _wz.tipo || 'email', segmento: JSON.stringify(buildSegmento()) }),
+      });
+      const d = await r.json();
+      if (d.ok && d.campana?.id) _wz.id = d.campana.id;
+      else return false;
+    }
+    return true;
+  } catch { return false; }
 }
 
 function buildSegmento() {
