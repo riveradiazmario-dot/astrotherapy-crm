@@ -3210,6 +3210,8 @@ async function guardarBorradorWizard() {
 
 function buildPayloadWizard() {
   const htmlContent = document.getElementById('wz-html').value || buildHtmlFromBlocks();
+  // Todo va dentro de descripcion como JSON; el backend lo almacena tal cual.
+  // NO se duplican asunto/html como campos top-level para evitar re-wrapping en el servidor.
   return {
     nombre: document.getElementById('wz-nombre').value.trim(),
     descripcion: JSON.stringify({
@@ -3219,8 +3221,6 @@ function buildPayloadWizard() {
       fromNombre: document.getElementById('wz-from-nombre').value.trim(),
       html:       htmlContent,
     }),
-    asunto: document.getElementById('wz-asunto').value.trim(),
-    html: htmlContent,
     segmento: buildSegmento(),
   };
 }

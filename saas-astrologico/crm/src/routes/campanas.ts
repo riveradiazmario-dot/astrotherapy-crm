@@ -81,14 +81,11 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
   const {
     nombre, descripcion, tipo = 'email', segmento,
-    asunto, html,
   } = req.body as {
     nombre: string;
     descripcion?: string;
     tipo?: string;
     segmento?: string;
-    asunto?: string;
-    html?: string;
   };
 
   if (!nombre) return res.status(400).json({ ok: false, error: 'El nombre es requerido' });
@@ -96,17 +93,11 @@ router.post('/', async (req: Request, res: Response) => {
   const campana = await prisma.campana.create({
     data: {
       nombre,
-      descripcion,
+      // descripcion llega ya serializada como JSON desde el wizard
+      ...(descripcion !== undefined && { descripcion }),
       tipo,
       estado: 'borrador',
       segmento: segmento ? JSON.stringify(segmento) : null,
-      // Guardamos asunto y html en descripcion por ahora (campo extendido)
-      // En una migración futura podemos agregar columnas dedicadas
-      ...(asunto || html
-        ? {
-            descripcion: JSON.stringify({ texto: descripcion, asunto, html }),
-          }
-        : {}),
       organizacionId: req.usuario!.organizacionId,
     },
   });
@@ -128,7 +119,6 @@ router.put('/:id', async (req: Request, res: Response) => {
 
   const {
     nombre, descripcion, tipo, segmento, estado,
-    asunto, html,
   } = req.body as Record<string, string>;
 
   const campana = await prisma.campana.update({
@@ -138,9 +128,8 @@ router.put('/:id', async (req: Request, res: Response) => {
       ...(tipo && { tipo }),
       ...(estado && ['borrador', 'programada', 'pausada'].includes(estado) && { estado }),
       segmento: segmento !== undefined ? JSON.stringify(segmento) : existente.segmento,
-      descripcion: asunto || html
-        ? JSON.stringify({ texto: descripcion, asunto, html })
-        : descripcion !== undefined ? descripcion : existente.descripcion,
+      // El wizard envía descripcion ya como JSON serializado — se almacena tal cual
+      ...(descripcion !== undefined && { descripcion }),
     },
   });
 
