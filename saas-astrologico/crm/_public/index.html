@@ -1252,8 +1252,8 @@
                     <label>Enviar a</label>
                     <input id="test-email-to" class="wz-input" placeholder="tu@email.com" type="email">
                   </div>
-                  <button class="btn btn-primary" style="width:100%" onclick="enviarEmailPrueba()">Enviar prueba</button>
-                  <div id="test-email-result" style="margin-top:10px;font-size:12px;display:none"></div>
+                  <button class="btn btn-primary" style="width:100%" onclick="wzEnviarEmailPrueba()">Enviar prueba</button>
+                  <div id="wz-test-email-result" style="margin-top:10px;font-size:12px;display:none"></div>
                 </div>
               </div>
               <div class="panel">
@@ -2998,9 +2998,9 @@ function correrValidaciones() {
   box.innerHTML = checks.map(c => `<div>${c.ok ? '✅' : '⚠️'} ${c.label}</div>`).join('');
 }
 
-async function enviarEmailPrueba() {
+async function wzEnviarEmailPrueba() {
   const to = document.getElementById('test-email-to').value.trim();
-  const res = document.getElementById('test-email-result');
+  const res = document.getElementById('wz-test-email-result');
   if (!to) { res.textContent = '⚠️ Ingresa un email de destino'; res.style.display = 'block'; return; }
   res.textContent = 'Enviando…'; res.style.display = 'block'; res.style.color = 'var(--muted)';
   try {
