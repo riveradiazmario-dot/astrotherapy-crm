@@ -63,7 +63,7 @@ export async function listarSmtpConfigs(
 ): Promise<Omit<SmtpConfig, 'password'>[]> {
   const { data } = await getSupabase()
     .from('smtp_configs')
-    .select('id, nombre, host, port, secure, usuario, "fromEmail", "fromNombre", activo, predeterminado, "organizacionId", "createdAt"')
+    .select('id, nombre, tipo, host, port, secure, usuario, "fromEmail", "fromNombre", activo, predeterminado, "organizacionId", "createdAt"')
     .eq('organizacionId', organizacionId)
     .order('predeterminado', { ascending: false });
 

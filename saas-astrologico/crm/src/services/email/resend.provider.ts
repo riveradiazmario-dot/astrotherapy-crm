@@ -50,8 +50,13 @@ export class ResendProvider implements EmailProvider {
       const res = await fetch('https://api.resend.com/domains', {
         headers: { 'Authorization': `Bearer ${this.apiKey}` },
       });
-      if (res.ok) return { ok: true, mensaje: 'Resend API key válida', proveedor: this.nombre };
-      return { ok: false, mensaje: `Resend: HTTP ${res.status}`, proveedor: this.nombre };
+      if (res.ok) return { ok: true, mensaje: 'Resend API key válida ✓', proveedor: this.nombre };
+      const body = await res.json().catch(() => ({})) as { name?: string; message?: string };
+      const detalle = body.message ?? body.name ?? '';
+      if (res.status === 401) {
+        return { ok: false, mensaje: `API key inválida o revocada (HTTP 401). Genera una nueva key en resend.com/api-keys`, proveedor: this.nombre };
+      }
+      return { ok: false, mensaje: `Resend: HTTP ${res.status}${detalle ? ' — ' + detalle : ''}`, proveedor: this.nombre };
     } catch (err) {
       return { ok: false, mensaje: `Resend: ${(err as Error).message}`, proveedor: this.nombre };
     }
