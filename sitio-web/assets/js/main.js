@@ -157,8 +157,17 @@ const WA_BASE       = `https://wa.me/${WA_NUMBER}`;
   requestAnimationFrame(draw);
 })();
 
-// ── Hamburger menu ──
+// ── Hamburger menu + Atribución ──
 document.addEventListener('DOMContentLoaded', () => {
+  // Capturar atribución
+  captureAttribution()
+
+  // Crear lead_id
+  getOrCreateLeadId()
+
+  // Agregar lead_id a Stripe links
+  attachLeadIdToStripeLinks()
+
   const burger = document.querySelector('.hamburger')
   const nav    = document.querySelector('.site-nav')
   if (burger && nav) {
@@ -174,18 +183,144 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 })
 
+// ═════════════════════════════════════════════════════════
+// ATRIBUCIÓN — UTILITIES
+// ═════════════════════════════════════════════════════════
+
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8)
+    return v.toString(16)
+  })
+}
+
+function setCookie(name, value, days = 365) {
+  const date = new Date()
+  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
+  document.cookie = `${name}=${value}; path=/; expires=${date.toUTCString()}`
+}
+
+function getCookie(name) {
+  const cookies = document.cookie.split(';')
+  for (let c of cookies) {
+    const [n, v] = c.split('=')
+    if (n.trim() === name) return v?.trim()
+  }
+  return null
+}
+
+// ═════════════════════════════════════════════════════════
+// CAPTURAR ATRIBUCIÓN EN PRIMERA VISITA
+// ═════════════════════════════════════════════════════════
+
+function captureAttribution() {
+  const params = new URLSearchParams(window.location.search)
+  const now = new Date().toISOString()
+
+  if (!localStorage.getItem('first_touch')) {
+    const first_touch = {
+      ts: now,
+      utm_source: params.get('utm_source'),
+      utm_medium: params.get('utm_medium'),
+      utm_campaign: params.get('utm_campaign'),
+      utm_content: params.get('utm_content'),
+      utm_term: params.get('utm_term'),
+      referrer: document.referrer || 'direct',
+      landing: window.location.pathname,
+    }
+    localStorage.setItem('first_touch', JSON.stringify(first_touch))
+  }
+
+  const last_touch = {
+    ts: now,
+    utm_source: params.get('utm_source'),
+    utm_medium: params.get('utm_medium'),
+    utm_campaign: params.get('utm_campaign'),
+    page: window.location.pathname,
+  }
+  localStorage.setItem('last_touch', JSON.stringify(last_touch))
+
+  const gclid = params.get('gclid')
+  if (gclid) {
+    localStorage.setItem('gclid', gclid)
+    localStorage.setItem('gclid_ts', Date.now().toString())
+  }
+
+  const fbclid = params.get('fbclid')
+  if (fbclid) {
+    localStorage.setItem('fbclid', fbclid)
+  }
+}
+
+// ═════════════════════════════════════════════════════════
+// OBTENER O CREAR LEAD_ID
+// ═════════════════════════════════════════════════════════
+
+function getOrCreateLeadId() {
+  let lead_id = localStorage.getItem('lead_id')
+  if (!lead_id) {
+    lead_id = generateUUID()
+    localStorage.setItem('lead_id', lead_id)
+    setCookie('lead_id', lead_id)
+  }
+  return lead_id
+}
+
+// ═════════════════════════════════════════════════════════
+// OBTENER GA4 CLIENT_ID
+// ═════════════════════════════════════════════════════════
+
+function getGAClientId() {
+  const cookies = document.cookie.split(';')
+  for (let cookie of cookies) {
+    if (cookie.trim().startsWith('_ga=')) {
+      return cookie.split('=')[1]
+    }
+  }
+  return localStorage.getItem('ga_client_id') || null
+}
+
+// ═════════════════════════════════════════════════════════
+// COMPILAR ATRIBUCIÓN JSON
+// ═════════════════════════════════════════════════════════
+
+function getAttribution() {
+  const lead_id = getOrCreateLeadId()
+  const ga_client_id = getGAClientId()
+  const first_touch = JSON.parse(localStorage.getItem('first_touch') || '{}')
+  const last_touch = JSON.parse(localStorage.getItem('last_touch') || '{}')
+
+  const gclid = localStorage.getItem('gclid')
+  const gclid_ts = localStorage.getItem('gclid_ts')
+  const isGclidValid = gclid && gclid_ts && (Date.now() - parseInt(gclid_ts) < 24 * 60 * 60 * 1000)
+
+  const fbclid = localStorage.getItem('fbclid')
+
+  return {
+    lead_id,
+    ga_client_id,
+    first_touch: Object.keys(first_touch).length > 0 ? first_touch : null,
+    last_touch: Object.keys(last_touch).length > 0 ? last_touch : null,
+    clicks: {
+      gclid: isGclidValid ? gclid : null,
+      fbclid: fbclid,
+    },
+  }
+}
+
 // ── Lead capture form ──
 async function submitLead(formEl, origen) {
   const msg = formEl.querySelector('.form-msg')
   const btn = formEl.querySelector('[type="submit"]')
 
   const data = {
-    nombre:   formEl.querySelector('[name="nombre"]')?.value?.trim()   || '',
-    email:    formEl.querySelector('[name="email"]')?.value?.trim()    || '',
-    telefono: formEl.querySelector('[name="telefono"]')?.value?.trim() || '',
-    interes:  formEl.querySelector('[name="interes"]')?.value          || '',
-    mensaje:  formEl.querySelector('[name="mensaje"]')?.value?.trim()  || '',
-    origen:   origen || document.title,
+    nombre:      formEl.querySelector('[name="nombre"]')?.value?.trim()   || '',
+    email:       formEl.querySelector('[name="email"]')?.value?.trim()    || '',
+    telefono:    formEl.querySelector('[name="telefono"]')?.value?.trim() || '',
+    interes:     formEl.querySelector('[name="interes"]')?.value          || '',
+    mensaje:     formEl.querySelector('[name="mensaje"]')?.value?.trim()  || '',
+    origen:      origen || document.title,
+    attribution: getAttribution(),
   }
 
   if (!data.nombre || !data.email) {
@@ -209,6 +344,15 @@ async function submitLead(formEl, origen) {
     })
 
     if (res.ok) {
+      // DataLayer: generate_lead
+      if (window.dataLayer) {
+        window.dataLayer.push({
+          event: 'generate_lead',
+          lead_type: data.interes || 'general',
+          email: data.email
+        })
+      }
+
       if (msg) { msg.textContent = '✦ Recibido. Te contactamos pronto.'; msg.className = 'form-msg ok' }
       formEl.reset()
     } else {
@@ -221,6 +365,45 @@ async function submitLead(formEl, origen) {
     btn.disabled = false
     btn.textContent = 'Enviar mensaje'
   }
+}
+
+// ═════════════════════════════════════════════════════════
+// AGREGAR LEAD_ID A STRIPE URLS (CON FALLBACK SEGURO)
+// ═════════════════════════════════════════════════════════
+
+function attachLeadIdToStripeLinks() {
+  document.addEventListener('click', (e) => {
+    try {
+      const link = e.target.closest('a')
+      if (link && link.href && link.href.includes('buy.stripe.com')) {
+        e.preventDefault()
+
+        // DataLayer: begin_checkout
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: 'begin_checkout',
+            item_name: link.textContent?.trim() || 'Stripe Purchase',
+            item_category: 'servicios',
+            link_url: link.href
+          })
+        }
+
+        try {
+          const lead_id = getOrCreateLeadId()
+          const url = new URL(link.href)
+          url.searchParams.set('client_reference_id', lead_id)
+          window.open(url.toString(), link.target || '_blank')
+        } catch (attrErr) {
+          // Si falla agregar atribución, abrir sin ella (fallback seguro)
+          console.warn('Could not attach lead_id to Stripe link, opening without it:', attrErr)
+          window.open(link.href, link.target || '_blank')
+        }
+      }
+    } catch (err) {
+      // Error crítico: dejar que el click se propague normalmente
+      console.error('Error in Stripe link handler:', err)
+    }
+  })
 }
 
 // ── WhatsApp helper ──

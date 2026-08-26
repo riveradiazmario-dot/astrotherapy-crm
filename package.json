@@ -5,5 +5,9 @@
   "scripts": {
     "build": "cd saas-astrologico/crm && npm ci && npm run build && npx prisma generate && npx prisma migrate deploy",
     "start": "cd saas-astrologico/crm && node dist/index.js"
+  },
+  "dependencies": {
+    "lighthouse": "^13.4.1",
+    "sharp": "^0.35.3"
   }
 }

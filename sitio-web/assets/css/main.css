@@ -2,9 +2,10 @@
    Luz Holística — Sistema de diseño compartido
    Paleta: morado profundo #1e1233 + dorado #d4a373
    Tipografía: Cormorant Garamond + Inter
-   ═══════════════════════════════════════════════════════ */
-
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;700&display=swap');
+   ═════════════════════════════════════════════════════════
+   Nota: Google Fonts se carga vía <link> en HTML head
+        para evitar render-blocking por @import.
+   ═════════════════════════════════════════════════════════ */
 
 :root {
   --bg:         #1e1233;
