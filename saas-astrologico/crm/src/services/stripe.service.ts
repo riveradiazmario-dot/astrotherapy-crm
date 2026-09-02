@@ -10,6 +10,9 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { dispatchEvento } from './automations/engine';
+import * as GA4 from './ga4.service';
+import * as Meta from './meta.service';
+import * as ConversionEvents from './conversion-events.service';
 
 let _supabase: SupabaseClient | null = null;
 function getSupabase(): SupabaseClient {
@@ -50,6 +53,7 @@ export interface StripeCheckoutSession {
   line_items?: { data?: { price?: { product?: string } }[] };
   metadata?: Record<string, string>;
   mode?: string; // 'payment' | 'subscription'
+  client_reference_id?: string; // lead_id from Stripe Payment Link
 }
 
 export interface StripeInvoice {
@@ -76,6 +80,7 @@ export async function syncCheckoutCompleted(session: StripeCheckoutSession): Pro
   const sb = getSupabase();
   const email = (session.customer_email ?? session.customer_details?.email ?? '').toLowerCase().trim();
   const nombre = session.customer_details?.name ?? email.split('@')[0];
+  const lead_id = session.client_reference_id; // ← NUEVO: Recuperar lead_id
 
   if (!email) return { ok: false, accion: 'error', error: 'Sin email en el checkout' };
 
@@ -83,6 +88,33 @@ export async function syncCheckoutCompleted(session: StripeCheckoutSession): Pro
   const productId = session.line_items?.data?.[0]?.price?.product as string | undefined;
   const producto = productId ? PRODUCT_MAP[productId] : null;
   const montoMXN = session.amount_total ? session.amount_total / 100 : (producto?.mxn ?? 0);
+
+  // ─── NUEVO: Buscar lead con atribución ─────────────────────────────────────
+  let attribution: Record<string, unknown> = {};
+  if (lead_id && email) {
+    try {
+      // Buscar por email primero, luego filtrar por lead_id en memoria
+      // (Supabase JSONB filtering puede ser inconsistente, email es más fiable)
+      const { data: leads, error: leadError } = await sb
+        .from('leads')
+        .select('attribution')
+        .eq('email', email)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (leads && leads.length > 0 && leads[0].attribution) {
+        const leadAttribution = leads[0].attribution as Record<string, unknown>;
+        // Validar que el lead_id coincida
+        if (leadAttribution.lead_id === lead_id) {
+          attribution = leadAttribution;
+        }
+      }
+    } catch (err) {
+      console.warn('[Stripe] Error searching lead by email/lead_id:', err);
+      // Continuar sin atribución si falla la búsqueda
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────────
 
   // 1. Buscar o crear contacto
   const { data: existente } = await sb
@@ -137,15 +169,124 @@ export async function syncCheckoutCompleted(session: StripeCheckoutSession): Pro
     accion = 'creado';
   }
 
-  // 2. Registrar acción
+  // 2. Registrar acción CON atribución
+  const firstTouchSource = ((attribution?.first_touch as Record<string, unknown>)?.utm_source as string) ?? 'directo';
+  const descripcionAttr = attribution?.lead_id
+    ? ` [${firstTouchSource}]`
+    : '';
+
   await sb.from('Accion').insert({
     contactoId,
     tipo: 'compra',
-    descripcion: `[Stripe] ${producto?.nombre ?? 'Pago'} — $${montoMXN} MXN`,
+    descripcion: `[Stripe] ${producto?.nombre ?? 'Pago'} — $${montoMXN} MXN${descripcionAttr}`,
     puntosAplicados: 30,
   });
 
-  // 3. Disparar al motor
+  // 2.5 UPSERT conversion_events (UNIQUE constraint protege contra duplicados)
+  // NOTA: Tabla conversion_events será creada en FASE B
+  // Código comentado hasta que SQL se ejecute:
+  /*
+  let conversionEvent: any = null;
+  try {
+    conversionEvent = await ConversionEvents.upsertConversionEvent(
+      session.id,
+      'stripe_purchase',
+      email,
+      contactoId,
+    );
+    console.log('[Stripe] Conversion event created/updated:', conversionEvent.id);
+  } catch (err) {
+    console.warn('[Stripe] Error en conversion_events (no bloquea):', ConversionEvents.sanitizeErrorForLogging(err));
+    // Continuar sin conversion_events (falla no crítica)
+  }
+  */
+
+  // 2.6 Determinar qué enviar (GA4 / Meta)
+  // En primera ejecución: enviar a ambos
+  // En reintento: enviar solo a los que fallaron
+  /*
+  let sendToGA4 = true;
+  let sendToMeta = true;
+
+  if (conversionEvent) {
+    const destinations = await ConversionEvents.getDestinationsToProcees(session.id, 'stripe_purchase');
+    sendToGA4 = destinations.sendToGA4;
+    sendToMeta = destinations.sendToMeta;
+  }
+  */
+
+  // 2.7 Enviar a GA4 (Purchase)
+  let ga4Result: { ok: boolean; error?: string } = { ok: false };
+  const sendToGA4 = true; // TODO: descomenta logica arriba
+  if (sendToGA4) {
+    ga4Result = await GA4.sendPurchaseEvent({
+      transactionId: session.id,
+      value: montoMXN,
+      currency: session.currency ?? 'MXN',
+      email,
+      userId: attribution?.lead_id as string | undefined,
+      productId: productId,
+      productName: producto?.nombre,
+      clientId: (attribution?.ga_client_id as string | null) ?? null,
+      customParams: {
+        utm_source: ((attribution?.first_touch as Record<string, unknown>)?.utm_source as string) ?? null,
+        utm_medium: ((attribution?.first_touch as Record<string, unknown>)?.utm_medium as string) ?? null,
+        utm_campaign: ((attribution?.first_touch as Record<string, unknown>)?.utm_campaign as string) ?? null,
+      },
+    });
+
+    // TODO: Descomenta cuando conversion_events esté en BD
+    // if (conversionEvent) {
+    //   await ConversionEvents.updateGA4Status(
+    //     session.id,
+    //     'stripe_purchase',
+    //     ga4Result.ok ? 'sent' : 'failed',
+    //     ga4Result.error,
+    //     ga4Result,
+    //   );
+    // }
+  }
+
+  if (!ga4Result.ok) {
+    console.warn('[Stripe] GA4 error (no bloquea):', ga4Result.error);
+  }
+
+  // 2.8 Enviar a Meta (Purchase)
+  let metaResult: { ok: boolean; error?: string } = { ok: false };
+  const sendToMeta = true; // TODO: descomenta logica arriba
+  if (sendToMeta) {
+    metaResult = await Meta.sendPurchaseEvent({
+      eventId: session.id,
+      value: montoMXN,
+      currency: session.currency ?? 'MXN',
+      contentName: producto?.nombre,
+      contentId: productId,
+      userEmail: email,
+      userId: attribution?.lead_id as string | undefined,
+      fbclid: (attribution?.clicks as Record<string, unknown>)?.fbclid as string | undefined,
+    });
+
+    // TODO: Descomenta cuando conversion_events esté en BD
+    // if (conversionEvent) {
+    //   await ConversionEvents.updateMetaStatus(
+    //     session.id,
+    //     'stripe_purchase',
+    //     metaResult.ok ? 'sent' : 'failed',
+    //     metaResult.error,
+    //     metaResult,
+    //   );
+    //
+    //   if (ga4Result.ok && metaResult.ok) {
+    //     await ConversionEvents.markCompleted(session.id, 'stripe_purchase');
+    //   }
+    // }
+  }
+
+  if (!metaResult.ok) {
+    console.warn('[Stripe] Meta error (no bloquea):', metaResult.error);
+  }
+
+  // 3. Disparar al motor CON atribución
   try {
     await dispatchEvento('stripe.checkout_completed', {
       contactoId,
@@ -157,6 +298,7 @@ export async function syncCheckoutCompleted(session: StripeCheckoutSession): Pro
       productoEtiqueta: producto?.etiqueta ?? '',
       montoMXN,
       mode: session.mode ?? 'payment',
+      attribution, // ← Incluir atribución en evento
     });
   } catch (err) {
     console.warn('[Stripe] Error en dispatchEvento:', (err as Error).message);

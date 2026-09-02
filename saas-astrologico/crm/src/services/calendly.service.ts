@@ -10,6 +10,8 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { dispatchEvento } from './automations/engine';
+import * as GA4 from './ga4.service';
+import * as Meta from './meta.service';
 
 let _supabase: SupabaseClient | null = null;
 function getSupabase(): SupabaseClient {
@@ -85,6 +87,29 @@ export async function syncCalendlyBooking(
   const nombre = invitee.name || email.split('@')[0];
   const servicio = eventTypeSlug ? (SLUG_TO_SERVICIO[eventTypeSlug] ?? eventTypeSlug) : 'calendly';
 
+  // ─── NUEVO: Buscar lead reciente con atribución ────────────────────────────
+  let attribution: Record<string, unknown> = {};
+  let attributionMatchMethod = 'none';
+
+  const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+  try {
+    const { data: lead, error: leadError } = await sb
+      .from('leads')
+      .select('attribution')
+      .eq('email', email)
+      .gte('created_at', thirtyMinutesAgo.toISOString())
+      .order('created_at', { ascending: false })
+      .single();
+
+    if (lead?.attribution) {
+      attribution = lead.attribution;
+      attributionMatchMethod = 'email_timestamp_30m';
+    }
+  } catch (err) {
+    // Lead not found or error querying; continue without attribution
+  }
+  // ────────────────────────────────────────────────────────────────────────────
+
   // 1. Buscar o crear contacto
   const { data: existente } = await sb
     .from('Contacto')
@@ -148,15 +173,86 @@ export async function syncCalendlyBooking(
     accion = 'creado';
   }
 
-  // 2. Registrar acción en historial
+  // 2. Registrar acción en historial CON información de atribución
+  const attrNote = attributionMatchMethod !== 'none'
+    ? ` [${attributionMatchMethod}]`
+    : '';
+
   await sb.from('Accion').insert({
     contactoId,
     tipo: 'demo_agendada',
-    descripcion: `[Calendly] ${event.name} — ${new Date(event.start_time).toLocaleString('es-MX')}`,
+    descripcion: `[Calendly] ${event.name} — ${new Date(event.start_time).toLocaleString('es-MX')}${attrNote}`,
     puntosAplicados: eventTypeSlug === 'demo-de-astrotherapy-pro' ? 25 : 15,
   });
 
-  // 3. Disparar evento al motor de automatizaciones
+  // 2.5 Registrar en conversion_events (idempotencia)
+  // NOTA: Tabla conversion_events aún no creada en Supabase
+  // Una vez creada, descomentar:
+  /*
+  try {
+    const { data: existing } = await sb
+      .from('conversion_events')
+      .select('id, state')
+      .eq('event_id', invitee.uri)
+      .eq('event_type', 'calendly_booking')
+      .single();
+
+    let conversionEventId: string;
+    if (!existing) {
+      const { data: created } = await sb
+        .from('conversion_events')
+        .insert({
+          event_id: invitee.uri,
+          event_type: 'calendly_booking',
+          contacto_id: contactoId,
+          email,
+          state: 'received',
+        })
+        .select('id')
+        .single();
+      conversionEventId = created?.id ?? '';
+    } else {
+      conversionEventId = existing.id;
+    }
+  } catch (err) {
+    console.warn('[Calendly] Error en conversion_events:', err);
+  }
+  */
+
+  // 2.6 Enviar a GA4 (calendar_booking) — SIEMPRE, no condicional a isPaid
+  const ga4Result = await GA4.sendCalendarBookingEvent({
+    eventId: invitee.uri,
+    eventName: event.name,
+    userEmail: email,
+    userId: attribution?.lead_id as string | undefined,
+    scheduledTime: event.start_time,
+    clientId: (attribution?.ga_client_id as string | null) ?? null,
+    customParams: {
+      utm_source: ((attribution?.first_touch as Record<string, unknown>)?.utm_source as string) ?? null,
+      utm_medium: ((attribution?.first_touch as Record<string, unknown>)?.utm_medium as string) ?? null,
+      utm_campaign: ((attribution?.first_touch as Record<string, unknown>)?.utm_campaign as string) ?? null,
+      attribution_method: attributionMatchMethod,
+    },
+  });
+
+  if (!ga4Result.ok) {
+    console.warn('[Calendly] GA4 error (no bloquea):', ga4Result.error);
+  }
+
+  // 2.7 Enviar a Meta (Schedule) — SIEMPRE, no condicional a isPaid
+  const metaResult = await Meta.sendScheduleEvent({
+    eventId: invitee.uri,
+    contentName: event.name,
+    userEmail: email,
+    userId: attribution?.lead_id as string | undefined,
+    fbclid: (attribution?.clicks as Record<string, unknown>)?.fbclid as string | undefined,
+  });
+
+  if (!metaResult.ok) {
+    console.warn('[Calendly] Meta error (no bloquea):', metaResult.error);
+  }
+
+  // 3. Disparar evento al motor de automatizaciones CON atribución
   try {
     await dispatchEvento('calendly.booking_created', {
       contactoId,
@@ -168,6 +264,8 @@ export async function syncCalendlyBooking(
       endTime: event.end_time,
       eventName: event.name,
       isPaid: eventTypeSlug !== 'demo-de-astrotherapy-pro',
+      attribution, // ← Incluir atribución
+      attributionMatchMethod, // ← Incluir nivel de confianza
     });
   } catch (err) {
     // No bloquear el sync si el dispatch falla

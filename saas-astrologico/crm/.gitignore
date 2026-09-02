@@ -1,1 +1,16 @@
 *.csv
+
+# Environment variables (never commit secrets)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Node
+node_modules/
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
