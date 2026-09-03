@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: astrotherapy-crm
+    runtime: node
+    buildCommand: npm install
+    startCommand: npx prisma migrate deploy && node dist/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: LOCAL_DEV
+        value: "false"
+      - key: CRM_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
