@@ -12,11 +12,11 @@ RUN npm ci
 # Copiar fuente
 COPY . .
 
+# Generar cliente Prisma (debe ser antes de compilar TypeScript)
+RUN npx prisma generate
+
 # Compilar TypeScript
 RUN npm run build
-
-# Generar cliente Prisma
-RUN npx prisma generate
 
 EXPOSE 3000
 
