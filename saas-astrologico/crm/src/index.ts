@@ -4,6 +4,10 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
+import WebSocket from 'ws';
+
+// Hacer WebSocket disponible globalmente para Supabase en Node 20
+(globalThis as any).WebSocket = WebSocket;
 
 import contactosRouter from './routes/contactos';
 import scrapingRouter from './routes/scraping';
