@@ -46,13 +46,19 @@ router.get('/secuencias/:id', async (req: Request, res: Response) => {
 // POST /api/automations-prisma/secuencias
 router.post('/secuencias', async (req: Request, res: Response) => {
   try {
-    const { nombre, descripcion, tipo } = req.body;
+    const { nombre, descripcion, tipo, organizacionId } = req.body;
     if (!nombre) return res.status(400).json({ error: 'nombre requerido' });
 
-    const orgId = getOrgId(req);
+    // Use provided organizacionId or extract from JWT or use default
+    let orgId = organizacionId || getOrgId(req);
+
+    // Debug log
+    console.log('[Automations] Creating secuencia', { nombre, orgId });
+
     const secuencia = await crearSecuencia(nombre, descripcion || null, tipo || 'bienvenida', orgId);
     return res.status(201).json(secuencia);
   } catch (err) {
+    console.error('[Automations Error]', err);
     return res.status(500).json({ error: (err as Error).message });
   }
 });
