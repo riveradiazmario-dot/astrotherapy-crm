@@ -126,9 +126,17 @@ router.post('/dispatch', async (req: Request, res: Response) => {
 
 // ═══ HANDLERS (DEBUG) ══════════════════════════════════════════════════════════
 
+// ═══ HANDLERS (DEBUG) ══════════════════════════════════════════════════════════
+
 // GET /api/automations-prisma/action-handlers
 router.get('/action-handlers', (_req: Request, res: Response) => {
   return res.json({ handlers: actionRegistry.listar() });
+});
+
+// GET /api/automations-prisma/debug/orgid
+router.get('/debug/orgid', (req: Request, res: Response) => {
+  const orgId = getOrgId(req);
+  return res.json({ organizacionId: orgId });
 });
 
 export default router;
