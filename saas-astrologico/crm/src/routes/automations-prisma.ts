@@ -100,11 +100,41 @@ router.post('/secuencias/:secuenciaId/pasos', async (req: Request, res: Response
 // ═══ AUTOMATIZACIONES ══════════════════════════════════════════════════════════
 
 // GET /api/automations-prisma/automatizaciones
-router.get('/automatizaciones', async (_req: Request, res: Response) => {
+router.get('/automatizaciones', async (req: Request, res: Response) => {
   try {
-    const automatizaciones = await listarAutomatizaciones();
+    const orgId = getOrgId(req);
+    const automatizaciones = await listarAutomatizaciones(orgId);
     return res.json(automatizaciones);
   } catch (err) {
+    return res.status(500).json({ error: (err as Error).message });
+  }
+});
+
+// POST /api/automations-prisma/automatizaciones
+router.post('/automatizaciones', async (req: Request, res: Response) => {
+  try {
+    const { nombre, descripcion, trigger_evento, trigger_condiciones, secuenciaId, organizacionId } = req.body;
+    if (!nombre || !trigger_evento || !secuenciaId) {
+      return res.status(400).json({ error: 'nombre, trigger_evento, secuenciaId requeridos' });
+    }
+
+    const orgId = organizacionId || getOrgId(req);
+
+    const automatizacion = await prisma.automatizacion.create({
+      data: {
+        nombre,
+        descripcion: descripcion || null,
+        trigger_evento,
+        trigger_condiciones: trigger_condiciones || null,
+        secuenciaId,
+        organizacionId: orgId,
+      },
+      include: { secuencia: { include: { pasos: true } } },
+    });
+
+    return res.status(201).json(automatizacion);
+  } catch (err) {
+    console.error('[Automatization Error]', err);
     return res.status(500).json({ error: (err as Error).message });
   }
 });
