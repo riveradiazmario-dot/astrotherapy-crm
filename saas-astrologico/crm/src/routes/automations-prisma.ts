@@ -145,4 +145,19 @@ router.get('/debug/orgid', (req: Request, res: Response) => {
   return res.json({ organizacionId: orgId });
 });
 
+// GET /api/automations-prisma/debug/organizaciones
+router.get('/debug/organizaciones', async (_req: Request, res: Response) => {
+  try {
+    const { PrismaClient } = await import('@prisma/client');
+    const prisma = new PrismaClient();
+    const orgs = await prisma.organizacion.findMany({
+      select: { id, nombre },
+    });
+    await prisma.$disconnect();
+    return res.json(orgs);
+  } catch (err) {
+    return res.status(500).json({ error: (err as Error).message });
+  }
+});
+
 export default router;
