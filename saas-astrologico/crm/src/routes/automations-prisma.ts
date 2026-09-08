@@ -3,15 +3,29 @@ import { Router, Request, Response } from 'express';
 import { dispatchEvento, listarAutomatizaciones } from '../services/automations/engine-prisma';
 import { crearSecuencia, listarSecuencias, obtenerSecuencia, crearPaso, actualizarSecuencia } from '../services/automations/secuencias.service';
 import { actionRegistry } from '../services/automations/action.registry';
+import { requireAuth } from '../middleware/auth';
 
 const router = Router();
+
+// Middleware para extraer organizacionId del JWT
+const getOrgId = (req: Request) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return 'org-luz-holistica';
+  try {
+    const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+    return payload.organizacionId || 'org-luz-holistica';
+  } catch {
+    return 'org-luz-holistica';
+  }
+};
 
 // ═══ SECUENCIAS ════════════════════════════════════════════════════════════════
 
 // GET /api/automations-prisma/secuencias
-router.get('/secuencias', async (_req: Request, res: Response) => {
+router.get('/secuencias', async (req: Request, res: Response) => {
   try {
-    const secuencias = await listarSecuencias();
+    const orgId = getOrgId(req);
+    const secuencias = await listarSecuencias(orgId);
     return res.json(secuencias);
   } catch (err) {
     return res.status(500).json({ error: (err as Error).message });
@@ -35,7 +49,8 @@ router.post('/secuencias', async (req: Request, res: Response) => {
     const { nombre, descripcion, tipo } = req.body;
     if (!nombre) return res.status(400).json({ error: 'nombre requerido' });
 
-    const secuencia = await crearSecuencia(nombre, descripcion || null, tipo || 'bienvenida');
+    const orgId = getOrgId(req);
+    const secuencia = await crearSecuencia(nombre, descripcion || null, tipo || 'bienvenida', orgId);
     return res.status(201).json(secuencia);
   } catch (err) {
     return res.status(500).json({ error: (err as Error).message });
@@ -91,7 +106,7 @@ router.get('/automatizaciones', async (_req: Request, res: Response) => {
 // POST /api/automations-prisma/dispatch
 router.post('/dispatch', async (req: Request, res: Response) => {
   try {
-    const { evento, contactoId, organizacionId } = req.body;
+    const { evento, contactoId } = req.body;
     if (!evento || !contactoId) {
       return res.status(400).json({ error: 'evento y contactoId requeridos' });
     }
@@ -101,7 +116,8 @@ router.post('/dispatch', async (req: Request, res: Response) => {
       ...req.body,
     };
 
-    const resultado = await dispatchEvento(evento, payload, organizacionId || 'org-luz-holistica');
+    const orgId = getOrgId(req);
+    const resultado = await dispatchEvento(evento, payload, orgId);
     return res.json(resultado);
   } catch (err) {
     return res.status(500).json({ error: (err as Error).message });
