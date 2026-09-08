@@ -151,7 +151,7 @@ router.get('/debug/organizaciones', async (_req: Request, res: Response) => {
     const { PrismaClient } = await import('@prisma/client');
     const prisma = new PrismaClient();
     const orgs = await prisma.organizacion.findMany({
-      select: { id, nombre },
+      select: { id: true, nombre: true },
     });
     await prisma.$disconnect();
     return res.json(orgs);
