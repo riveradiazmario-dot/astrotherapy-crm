@@ -1,7 +1,6 @@
 // ─── Acción: Enviar email ─────────────────────────────────────────────────────
 import { ActionHandler, ActionContext, ActionResult } from '../action.interface';
 import { PrismaClient } from '@prisma/client';
-import { Resend } from 'resend';
 
 const prisma = new PrismaClient();
 
@@ -58,17 +57,30 @@ export class SendEmailAction implements ActionHandler {
 
       if (smtpConfig.tipo === 'resend' && smtpConfig.api_key) {
         // Usar Resend
-        const resend = new Resend(smtpConfig.api_key);
-        resultado = await resend.emails.send({
-          from: `${smtpConfig.fromNombre} <${smtpConfig.fromEmail}>`,
-          to: contacto.email,
-          subject: (subject as string) || 'Mensaje de Luz Holística',
-          html: (htmlBody as string) || '<p>Contenido del email</p>',
-          replyTo: (replyTo as string) || smtpConfig.fromEmail,
-        });
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          const { Resend } = require('resend');
+          const resend = new Resend(smtpConfig.api_key);
+          resultado = await resend.emails.send({
+            from: `${smtpConfig.fromNombre} <${smtpConfig.fromEmail}>`,
+            to: contacto.email,
+            subject: (subject as string) || 'Mensaje de Luz Holística',
+            html: (htmlBody as string) || '<p>Contenido del email</p>',
+            replyTo: (replyTo as string) || smtpConfig.fromEmail,
+          });
 
-        if (resultado.error) {
-          throw new Error(`Resend: ${resultado.error}`);
+          if (resultado.error) {
+            throw new Error(`Resend: ${resultado.error}`);
+          }
+        } catch (err) {
+          if ((err as Error).message.includes('Cannot find module')) {
+            return {
+              ok: false,
+              tipo: this.tipo,
+              error: 'Resend no instalado. Instala: npm install resend',
+            };
+          }
+          throw err;
         }
       } else {
         // SMTP genérico (pendiente: implementar nodemailer)
