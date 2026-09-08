@@ -20,11 +20,13 @@ model Organizacion {
   activa  Boolean @default(true)
 
   // Relaciones
-  usuarios       Usuario[]
-  contactos      Contacto[]
-  campanas       Campana[]
-  oportunidades  Oportunidad[]
-  smtpConfigs    SmtpConfig[]
+  usuarios           Usuario[]
+  contactos          Contacto[]
+  campanas           Campana[]
+  oportunidades      Oportunidad[]
+  smtpConfigs        SmtpConfig[]
+  secuencias         Secuencia[]
+  automatizaciones   Automatizacion[]
 
 }
 
@@ -231,5 +233,114 @@ model Campana {
   organizacion   Organizacion @relation(fields: [organizacionId], references: [id], onDelete: Cascade)
 
   @@index([organizacionId])
+
+}
+
+// ─── Secuencias de automatización ──────────────────────────────────────────────
+model Secuencia {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  nombre        String
+  descripcion   String?
+  tipo          String   @default("bienvenida") // bienvenida | seguimiento | especial
+  activo        Boolean  @default(true)
+
+  // ── Pasos ─────────────────────────────────────────────────────────────────────
+  pasos         SecuenciaPaso[]
+
+  // ── Relaciones ────────────────────────────────────────────────────────────────
+  automatizaciones Automatizacion[]
+
+  // ── Multi-tenant ──────────────────────────────────────────────────────────────
+  organizacionId String
+  organizacion   Organizacion @relation(fields: [organizacionId], references: [id], onDelete: Cascade)
+
+  @@index([organizacionId])
+  @@index([activo])
+
+}
+
+// ─── Pasos dentro de una secuencia ────────────────────────────────────────────
+model SecuenciaPaso {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orden      Int
+  tipo       String   // email | sms | webhook | delay | decision
+  activo     Boolean  @default(true)
+
+  // ── Configuración específica del tipo de acción ──────────────────────────────
+  config     Json     // {template, subject, etc. según tipo}
+
+  // ── Condición para skipear este paso ──────────────────────────────────────────
+  condicion_skip Json?  // {campo, operador, valor}
+
+  // ── Relación con Secuencia ────────────────────────────────────────────────────
+  secuenciaId String
+  secuencia   Secuencia @relation(fields: [secuenciaId], references: [id], onDelete: Cascade)
+
+  @@index([secuenciaId])
+  @@index([orden])
+
+}
+
+// ─── Automatizaciones: triggers que lanzam secuencias ──────────────────────────
+model Automatizacion {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  nombre              String
+  descripcion         String?
+  activo              Boolean  @default(true)
+
+  // ── Trigger ───────────────────────────────────────────────────────────────────
+  trigger_evento      String   // contacto_creado | email_abierto | etc.
+  trigger_condiciones Json?    // {field: value, ...}
+
+  // ── Relación con Secuencia ────────────────────────────────────────────────────
+  secuenciaId String
+  secuencia   Secuencia @relation(fields: [secuenciaId], references: [id], onDelete: Cascade)
+
+  // ── Estadísticas ──────────────────────────────────────────────────────────────
+  total_ejecuciones  Int      @default(0)
+  ultima_ejecucion   DateTime?
+
+  // ── Logs ──────────────────────────────────────────────────────────────────────
+  logs               AutomatizacionLog[]
+
+  // ── Multi-tenant ──────────────────────────────────────────────────────────────
+  organizacionId String
+  organizacion   Organizacion @relation(fields: [organizacionId], references: [id], onDelete: Cascade)
+
+  @@index([organizacionId])
+  @@index([trigger_evento])
+  @@index([activo])
+
+}
+
+// ─── Logs de ejecución de automatizaciones ────────────────────────────────────
+model AutomatizacionLog {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  automatizacionId String
+  automatizacion   Automatizacion @relation(fields: [automatizacionId], references: [id], onDelete: Cascade)
+
+  secuenciaId String?
+  evento      String
+  estado      String  // en_progreso | completado | fallido
+
+  // ── Contexto ──────────────────────────────────────────────────────────────────
+  contactoId String?
+  contexto   Json?
+  pasos_ejecutados Json? // [{tipo, ok, detalle/error}]
+
+  @@index([automatizacionId])
+  @@index([contactoId])
+  @@index([estado])
 
 }
