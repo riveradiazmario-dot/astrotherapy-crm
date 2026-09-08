@@ -20,11 +20,11 @@ model Organizacion {
   activa  Boolean @default(true)
 
   // Relaciones
-  usuarios      Usuario[]
-  contactos     Contacto[]
-  campanas      Campana[]
-  oportunidades Oportunidad[]
-
+  usuarios       Usuario[]
+  contactos      Contacto[]
+  campanas       Campana[]
+  oportunidades  Oportunidad[]
+  smtpConfigs    SmtpConfig[]
 
 }
 
@@ -178,6 +178,33 @@ model Oportunidad {
   @@index([organizacionId])
   @@index([etapa])
   @@index([contactoId])
+
+}
+
+// ─── Configuración de proveedores SMTP/Email ──────────────────────────────────
+model SmtpConfig {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  nombre        String
+  tipo          String  // resend | smtp | brevo | sendgrid
+  api_key       String?
+  host          String?
+  port          Int?
+  secure        Boolean?
+  usuario       String?
+  password      String?
+  fromEmail     String
+  fromNombre    String
+  activo        Boolean @default(true)
+  predeterminado Boolean @default(false)
+
+  // ── Multi-tenant ─────────────────────────────────────────────────────
+  organizacionId String
+  organizacion   Organizacion @relation(fields: [organizacionId], references: [id], onDelete: Cascade)
+
+  @@index([organizacionId])
 
 }
 
