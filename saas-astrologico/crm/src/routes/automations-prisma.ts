@@ -1,9 +1,11 @@
 // ─── Rutas: Automatizaciones (Prisma) ──────────────────────────────────────────
 import { Router, Request, Response } from 'express';
+import { PrismaClient } from '@prisma/client';
 import { dispatchEvento, listarAutomatizaciones } from '../services/automations/engine-prisma';
 import { crearSecuencia, listarSecuencias, obtenerSecuencia, crearPaso, actualizarSecuencia } from '../services/automations/secuencias.service';
 import { actionRegistry } from '../services/automations/action.registry';
-import { requireAuth } from '../middleware/auth';
+
+const prisma = new PrismaClient();
 
 const router = Router();
 
@@ -148,12 +150,9 @@ router.get('/debug/orgid', (req: Request, res: Response) => {
 // GET /api/automations-prisma/debug/organizaciones
 router.get('/debug/organizaciones', async (_req: Request, res: Response) => {
   try {
-    const { PrismaClient } = await import('@prisma/client');
-    const prisma = new PrismaClient();
     const orgs = await prisma.organizacion.findMany({
       select: { id: true, nombre: true },
     });
-    await prisma.$disconnect();
     return res.json(orgs);
   } catch (err) {
     return res.status(500).json({ error: (err as Error).message });
