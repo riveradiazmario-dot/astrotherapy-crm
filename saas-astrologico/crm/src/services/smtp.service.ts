@@ -8,9 +8,9 @@ import { EmailPayload, ResultadoEnvio } from './email/provider.interface';
 export type { EmailPayload, ResultadoEnvio };
 
 // ─── Verificar conexión del proveedor predeterminado ─────────────────────────
-export async function verificarConexionSmtp() {
+export async function verificarConexionSmtp(organizacionId = 'd1d09df2-82bf-4674-b9bf-97329f799e77') {
   try {
-    const proveedor = await obtenerProveedorPredeterminado();
+    const proveedor = await obtenerProveedorPredeterminado(organizacionId);
     return await proveedor.verify();
   } catch (err) {
     return { ok: false, mensaje: (err as Error).message, proveedor: 'desconocido' };
@@ -21,11 +21,12 @@ export async function verificarConexionSmtp() {
 export async function enviarEmail(
   payload: EmailPayload,
   proveedorId?: string,
+  organizacionId = 'd1d09df2-82bf-4674-b9bf-97329f799e77',
 ): Promise<ResultadoEnvio> {
   try {
     const proveedor = proveedorId
       ? await obtenerProveedorPorId(proveedorId)
-      : await obtenerProveedorPredeterminado();
+      : await obtenerProveedorPredeterminado(organizacionId);
     return await proveedor.send(payload);
   } catch (err) {
     return { ok: false, error: (err as Error).message, para: payload.para, proveedor: 'error' };
@@ -47,10 +48,11 @@ export async function enviarCampana(
   htmlTemplate: string,
   pausaMs = 500,
   proveedorId?: string,
+  organizacionId = 'd1d09df2-82bf-4674-b9bf-97329f799e77',
 ): Promise<ResultadoCampana> {
   const proveedor = proveedorId
     ? await obtenerProveedorPorId(proveedorId)
-    : await obtenerProveedorPredeterminado();
+    : await obtenerProveedorPredeterminado(organizacionId);
 
   const detalles: ResultadoEnvio[] = [];
   let enviados = 0;

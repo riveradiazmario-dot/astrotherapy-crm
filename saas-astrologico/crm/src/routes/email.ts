@@ -28,8 +28,9 @@ router.post('/lead-bienvenida', async (req: Request, res: Response) => {
 });
 
 // ─── GET /api/email/estado — verificar conexión SMTP ─────────────────────────
-router.get('/estado', async (_req: Request, res: Response) => {
-  const resultado = await verificarConexionSmtp();
+router.get('/estado', async (req: Request, res: Response) => {
+  const organizacionId = (req as any).usuario?.organizacionId || 'd1d09df2-82bf-4674-b9bf-97329f799e77';
+  const resultado = await verificarConexionSmtp(organizacionId);
   res.status(resultado.ok ? 200 : 503).json(resultado);
 });
 
