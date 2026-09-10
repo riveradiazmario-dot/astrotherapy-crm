@@ -3,6 +3,7 @@
 // Extrae perfiles de creadores a partir de búsquedas por hashtag o keyword.
 
 import { ejecutarActor } from './apify.service';
+import { calcularScoreTikTok, DEFAULT_SCORING_CONFIG, LeadScore } from './scoring.service';
 
 // ─── Tipos de respuesta del actor ────────────────────────────────────────────
 
@@ -54,6 +55,8 @@ export interface TikTokContacto {
     likes: number;
     url: string;
   };
+  // Scoring automático
+  score?: LeadScore;
 }
 
 // ─── Detección de especialidad ────────────────────────────────────────────────
@@ -131,6 +134,7 @@ export async function buscarTikTok(
   for (const [username, item] of perfilesMap) {
     const a = item.authorMeta!;
     const bio = a.signature ?? '';
+    const especialidadDetectada = detectarEspecialidad(bio + ' ' + (a.nickName ?? ''));
 
     const contacto: TikTokContacto = {
       fuente: 'tiktok',
@@ -147,7 +151,7 @@ export async function buscarTikTok(
       perfilUrl: `https://www.tiktok.com/@${username}`,
       emailEnBio: extraerEmail(bio),
       telefonoBio: extraerTelefono(bio),
-      especialidadDetectada: detectarEspecialidad(bio + ' ' + (a.nickName ?? '')),
+      especialidadDetectada,
       videoDestacado: item.text ? {
         texto: item.text,
         plays: item.playCount ?? 0,
@@ -155,6 +159,16 @@ export async function buscarTikTok(
         url: item.webVideoUrl ?? `https://www.tiktok.com/@${username}`,
       } : undefined,
     };
+
+    // Calcular score automáticamente
+    contacto.score = calcularScoreTikTok({
+      username,
+      seguidores: a.fans,
+      videoCount: a.video,
+      bio,
+      esVerificado: a.verified,
+      especialidadDetectada,
+    }, DEFAULT_SCORING_CONFIG);
 
     resultado.push(contacto);
   }
@@ -166,6 +180,30 @@ export async function buscarTikTok(
 }
 
 // ─── Convertir a formato importable por el CRM ───────────────────────────────
+
+/**
+ * Buscar y filtrar TikTok por scoring automático
+ */
+export async function buscarTikTokFiltrado(
+  query: string,
+  maxVideos: number = 50,
+  minScore: number = 20,
+): Promise<{
+  total: number;
+  filtrados: number;
+  perfilesCompletos: TikTokContacto[];
+}> {
+  const perfiles = await buscarTikTok(query, maxVideos);
+
+  // Filtrar por puntuación mínima
+  const filtrados = perfiles.filter(p => p.score && p.score.totalScore >= minScore);
+
+  return {
+    total: perfiles.length,
+    filtrados: filtrados.length,
+    perfilesCompletos: filtrados,
+  };
+}
 
 export function tiktokAContactoCRM(t: TikTokContacto, organizacionId: string) {
   return {
@@ -181,8 +219,9 @@ export function tiktokAContactoCRM(t: TikTokContacto, organizacionId: string) {
       `Seguidores: ${t.seguidores.toLocaleString()}`,
       t.bioLink ? `Link: ${t.bioLink}` : null,
       t.videoDestacado ? `Video destacado (${t.videoDestacado.plays.toLocaleString()} plays): ${t.videoDestacado.texto.substring(0, 100)}` : null,
+      t.score ? `Score: ${t.score.totalScore}/70 (${t.score.etiqueta})` : null,
     ].filter(Boolean).join('\n'),
-    etiquetas: ['tiktok', t.especialidadDetectada, t.verificado ? 'verificado' : null].filter(Boolean) as string[],
+    etiquetas: ['tiktok', t.especialidadDetectada, t.verificado ? 'verificado' : null, t.score?.etiqueta].filter(Boolean) as string[],
     organizacionId,
   };
 }

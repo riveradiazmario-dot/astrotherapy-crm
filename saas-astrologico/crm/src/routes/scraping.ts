@@ -8,7 +8,7 @@ import { scrapearCanalTelegram, buscarGruposAstrologia } from '../services/scrap
 import { scrapearPerfilInstagram, scrapearLoteInstagram } from '../services/scraping/instagram.service';
 import { filtrarLote, DEFAULT_FILTRO_CONFIG, FiltroConfig } from '../services/scraping/filter.service';
 import { buscarAstrologos } from '../services/scraping/directorios.service';
-import { buscarTikTok, tiktokAContactoCRM } from '../services/scraping/tiktok.service';
+import { buscarTikTok, buscarTikTokFiltrado, tiktokAContactoCRM } from '../services/scraping/tiktok.service';
 import { importarDesdeDataset, lanzarApifyRun, APIFY_ACTORS, ApifyActorType } from '../services/scraping/apify.service';
 import { requireAuth } from '../middleware/auth';
 
@@ -457,6 +457,75 @@ router.post('/tiktok/buscar', async (req: Request, res: Response, next: NextFunc
       sinEmail: perfiles.filter(p => !p.emailEnBio).length,
       importacion: importacion ?? null,
       data: perfiles,
+    });
+  } catch (err) { next(err); }
+});
+
+/**
+ * POST /api/scraping/tiktok/buscar-filtrado
+ *
+ * Busca perfiles en TikTok + aplica filtrado automático por scoring.
+ *
+ * Body:
+ * {
+ *   query: string,          // ej: "terapeuta holístico"
+ *   maxVideos?: number,     // default 50, max 200
+ *   minScore?: number,      // default 20, filtrar por puntuación mínima
+ *   guardarAutomatico?: boolean
+ * }
+ */
+router.post('/tiktok/buscar-filtrado', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { query, maxVideos = 50, minScore = 20, guardarAutomatico = false } = req.body as {
+      query: string;
+      maxVideos?: number;
+      minScore?: number;
+      guardarAutomatico?: boolean;
+    };
+
+    if (!query || typeof query !== 'string' || query.trim().length < 2) {
+      res.status(400).json({ ok: false, error: 'El campo "query" es obligatorio' });
+      return;
+    }
+
+    if (!process.env.APIFY_TOKEN) {
+      res.status(503).json({ ok: false, error: 'APIFY_TOKEN no configurado' });
+      return;
+    }
+
+    const limite = Math.min(maxVideos, 200);
+    const { total, filtrados, perfilesCompletos } = await buscarTikTokFiltrado(query.trim(), limite, minScore);
+
+    let importacion = null;
+    if (guardarAutomatico) {
+      const orgId = req.usuario!.organizacionId;
+      const conEmail = perfilesCompletos.filter(p => p.emailEnBio);
+      if (conEmail.length > 0) {
+        const paraImportar = conEmail.map(p => {
+          const crm = tiktokAContactoCRM(p, orgId);
+          return {
+            email: crm.email ?? '',
+            nombre: crm.nombre,
+            telefono: crm.telefono ?? '',
+            cargo: crm.cargo ?? '',
+            fuente: crm.fuente,
+            notas: crm.notas,
+            etiquetas: crm.etiquetas.join('|'),
+          } as Record<string, string>;
+        }).filter(r => r.email);
+        importacion = await importarContactos(paraImportar, orgId);
+      }
+    }
+
+    res.json({
+      ok: true,
+      query,
+      totalPerfiles: total,
+      perfilesAprobados: filtrados,
+      tasaAprobacion: total > 0 ? Math.round((filtrados / total) * 100) : 0,
+      conEmail: perfilesCompletos.filter(p => p.emailEnBio).length,
+      importacion: importacion ?? null,
+      data: perfilesCompletos,
     });
   } catch (err) { next(err); }
 });
