@@ -673,8 +673,8 @@ function submitLead(form, source) {
   btn.textContent = 'Enviando...';
   btn.disabled = true;
 
-  // Enviar al CRM
-  fetch('https://crm.luzholistica.com.mx/api/web-forms/contacto', {
+  // Enviar al CRM (DigitalOcean)
+  fetch('http://192.241.144.147:3002/api/web-forms/contacto', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
