@@ -7,6 +7,7 @@ import {
   PaginatedResponse,
   SCORING_CONFIG,
 } from '../types';
+import { dispatchEvento } from './automations/engine-prisma';
 
 const prisma = new PrismaClient();
 
@@ -42,7 +43,7 @@ export async function crearContacto(
 
   const scoreInicial = calcularScoreInicial(dto);
 
-  return prisma.contacto.create({
+  const contacto = await prisma.contacto.create({
     data: {
       ...dto,
       email: dto.email.toLowerCase().trim(),
@@ -53,6 +54,21 @@ export async function crearContacto(
       organizacionId,
     },
   });
+
+  // Disparar evento para automatizaciones
+  try {
+    await dispatchEvento('contacto.creado', {
+      contactoId: contacto.id,
+      nombre: contacto.nombre,
+      email: contacto.email,
+      estado: contacto.estado,
+    }, organizacionId);
+  } catch (err) {
+    console.warn('[crearContacto] Error disparando evento:', err);
+    // No bloquear la creación del contacto si hay error en automaciones
+  }
+
+  return contacto;
 }
 
 export async function obtenerContacto(
