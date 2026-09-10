@@ -24,7 +24,7 @@ export type SmtpConfig = {
 
 // ─── Obtener config predeterminada ───────────────────────────────────────────
 export async function obtenerSmtpPredeterminado(
-  organizacionId = 'org-luz-holistica',
+  organizacionId = 'd1d09df2-82bf-4674-b9bf-97329f799e77',
 ): Promise<SmtpConfig | null> {
   const config = await prisma.smtpConfig.findFirst({
     where: {
@@ -46,7 +46,7 @@ export async function obtenerSmtpConfigPorId(id: string): Promise<SmtpConfig | n
 
 // ─── Listar todas las configs ─────────────────────────────────────────────────
 export async function listarSmtpConfigs(
-  organizacionId = 'org-luz-holistica',
+  organizacionId = 'd1d09df2-82bf-4674-b9bf-97329f799e77',
 ): Promise<Omit<SmtpConfig, 'password'>[]> {
   const configs = await prisma.smtpConfig.findMany({
     where: { organizacionId },
@@ -111,7 +111,7 @@ export async function eliminarSmtpConfig(id: string): Promise<void> {
 // ─── Marcar como predeterminado ───────────────────────────────────────────────
 export async function marcarPredeterminado(
   id: string,
-  organizacionId = 'org-luz-holistica',
+  organizacionId = 'd1d09df2-82bf-4674-b9bf-97329f799e77',
 ): Promise<void> {
   await prisma.smtpConfig.updateMany({
     where: { organizacionId },
