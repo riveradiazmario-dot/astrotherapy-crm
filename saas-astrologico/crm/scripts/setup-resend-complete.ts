@@ -17,62 +17,153 @@ interface EmailTemplate {
 const TEMPLATES: EmailTemplate[] = [
   {
     nombre: 'bienvenida',
-    asunto: '¡Bienvenida a Luz Holística!',
+    asunto: '¡Bienvenido a Astrología Terapéutica e Integración Energética!',
     html: `
-<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-  <h1 style="color: #1e1233;">¡Bienvenido a Luz Holística!</h1>
-  <p>Hola,</p>
-  <p>Gracias por tu interés en nuestros servicios de astrología terapéutica e integración energética.</p>
-  <p>Aquí encontrarás:</p>
-  <ul>
-    <li>Consultas personalizadas de astrología</li>
-    <li>Tarot terapéutico</li>
-    <li>Sesiones de integración energética</li>
-    <li>Cursos y talleres especializados</li>
-  </ul>
-  <p>Si tienes alguna pregunta, no dudes en escribirnos a contacto@luzholistica.com.mx o al WhatsApp <strong>+52 555 651 8415</strong></p>
-  <hr style="border: none; border-top: 1px solid #d4a373; margin: 30px 0;">
-  <p style="font-size: 12px; color: #666;">Instituto de Astrología Terapéutica e Integración Energética</p>
+<div style="font-family: 'Georgia', serif; max-width: 600px; margin: 0 auto; background: linear-gradient(180deg, #f5f3f0 0%, #fff 100%); padding: 0;">
+  <!-- Header with branding -->
+  <div style="background: #1e1233; padding: 30px 20px; text-align: center; border-bottom: 3px solid #d4a373;">
+    <h2 style="color: #d4a373; margin: 0; font-size: 24px; font-weight: normal; letter-spacing: 1px;">✨ Astrología Terapéutica ✨</h2>
+    <p style="color: #d4a373; margin: 8px 0 0 0; font-size: 14px; letter-spacing: 0.5px;">Integración Energética</p>
+  </div>
+
+  <!-- Content -->
+  <div style="padding: 40px 30px;">
+    <h1 style="color: #1e1233; font-size: 28px; margin: 0 0 20px 0; text-align: center;">¡Bienvenido a tu Transformación!</h1>
+
+    <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+      Nos alegra enormemente que hayas decidido acompañarnos en este camino de autoconocimiento y sanación integral.
+    </p>
+
+    <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+      En el Instituto de Astrología Terapéutica e Integración Energética, creemos que tus astros guardan mensajes profundos para tu vida. Nuestro propósito es ayudarte a descodificar esos mensajes y acceder a tu sabiduría interior.
+    </p>
+
+    <div style="background: #f0e6d8; border-left: 4px solid #d4a373; padding: 20px; margin: 30px 0; border-radius: 4px;">
+      <h3 style="color: #1e1233; margin: 0 0 15px 0; font-size: 18px;">Nuestros Servicios:</h3>
+      <ul style="color: #333; margin: 0; padding-left: 20px; line-height: 1.8;">
+        <li><strong>Astrología Natal y Tránsitos:</strong> Comprende tu propósito y ciclos de vida</li>
+        <li><strong>Tarot Terapéutico:</strong> Claridad y orientación desde la sabiduría arquetípica</li>
+        <li><strong>Integración Energética:</strong> Armonización del cuerpo físico y energético</li>
+        <li><strong>Cursos y Formaciones:</strong> Programas diseñados para tu crecimiento integral</li>
+      </ul>
+    </div>
+
+    <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+      <strong>¿Listo para tu primer paso?</strong> Agenda una consulta y descubre qué tus astros tienen para ti en este momento de tu vida.
+    </p>
+
+    <!-- CTA Button -->
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="https://wa.me/5255651841 5" style="background: #d4a373; color: #1e1233; padding: 14px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; font-family: Arial, sans-serif;">Agendar Consulta por WhatsApp</a>
+    </div>
+
+    <p style="color: #666; font-size: 14px; text-align: center; margin: 20px 0;">O contacta directamente:</p>
+    <p style="color: #d4a373; font-size: 14px; text-align: center; margin: 0; font-weight: bold;">📱 +52 555 651 8415</p>
+    <p style="color: #d4a373; font-size: 14px; text-align: center; margin: 5px 0;">📧 contacto@luzholistica.com.mx</p>
+  </div>
+
+  <!-- Footer -->
+  <div style="background: #1e1233; padding: 20px; text-align: center; border-top: 3px solid #d4a373;">
+    <p style="color: #d4a373; margin: 0; font-size: 12px; letter-spacing: 0.5px;">Instituto de Astrología Terapéutica e Integración Energética</p>
+    <p style="color: #999; margin: 8px 0 0 0; font-size: 11px;">Tu camino hacia la autenticidad y la sanación</p>
+  </div>
 </div>
     `.trim(),
   },
   {
     nombre: 'seguimiento',
-    asunto: 'Próximo paso en tu camino holístico',
+    asunto: 'Tu Carta Astral te Espera — Próximos Pasos',
     html: `
-<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-  <h1 style="color: #1e1233;">Continuemos tu viaje holístico</h1>
-  <p>Hola,</p>
-  <p>Nos gustaría saber cómo te va. ¿Hay algo que podamos ayudarte con nuestros servicios?</p>
-  <p>Ofrecemos:</p>
-  <ul>
-    <li><strong>Consulta de Astrología Natal:</strong> Descubre tu propósito según tus astros</li>
-    <li><strong>Sesión de Tarot Terapéutico:</strong> Claridad y orientación para decisiones importantes</li>
-    <li><strong>Sesión de Integración Energética:</strong> Sanación y armonización del cuerpo energético</li>
-  </ul>
-  <p><strong>Agenda tu consulta:</strong> +52 555 651 8415</p>
-  <hr style="border: none; border-top: 1px solid #d4a373; margin: 30px 0;">
-  <p style="font-size: 12px; color: #666;">Instituto de Astrología Terapéutica e Integración Energética</p>
+<div style="font-family: 'Georgia', serif; max-width: 600px; margin: 0 auto; background: linear-gradient(180deg, #f5f3f0 0%, #fff 100%); padding: 0;">
+  <!-- Header -->
+  <div style="background: #1e1233; padding: 30px 20px; text-align: center; border-bottom: 3px solid #d4a373;">
+    <h2 style="color: #d4a373; margin: 0; font-size: 24px; font-weight: normal; letter-spacing: 1px;">✨ Profundiza en tu Camino ✨</h2>
+  </div>
+
+  <!-- Content -->
+  <div style="padding: 40px 30px;">
+    <h1 style="color: #1e1233; font-size: 28px; margin: 0 0 20px 0; text-align: center;">Continuemos tu Viaje de Transformación</h1>
+
+    <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+      Esperamos que hayas sentido la resonancia de nuestro primer encuentro. Ahora es momento de ir más profundo y acceder a los mensajes que tus astros tienen especialmente para ti.
+    </p>
+
+    <div style="background: #f0e6d8; border-left: 4px solid #d4a373; padding: 20px; margin: 30px 0; border-radius: 4px;">
+      <h3 style="color: #1e1233; margin: 0 0 15px 0; font-size: 18px;">Servicios Complementarios:</h3>
+      <ul style="color: #333; margin: 0; padding-left: 20px; line-height: 1.8; font-size: 15px;">
+        <li><strong>Lectura de Carta Natal Completa:</strong> Análisis profundo de tu psicología cósmica</li>
+        <li><strong>Tránsitos Personalizados:</strong> Entiende los ciclos actuales de tu vida</li>
+        <li><strong>Sesión Combinada (Astrología + Tarot):</strong> Doble perspectiva para decisiones importantes</li>
+        <li><strong>Integración Energética Individual:</strong> Sanación personalizada según tus necesidades</li>
+      </ul>
+    </div>
+
+    <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+      Cada servicio está diseñado para acompañarte en momentos clave de tu evolución. <strong>¿Cuál resuena contigo en este momento?</strong>
+    </p>
+
+    <!-- CTA Button -->
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="https://wa.me/55256518415" style="background: #d4a373; color: #1e1233; padding: 14px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; font-family: Arial, sans-serif;">Reservar Cita Ahora</a>
+    </div>
+
+    <p style="color: #666; font-size: 14px; text-align: center; margin: 20px 0;">Disponibles citas online y presenciales</p>
+  </div>
+
+  <!-- Footer -->
+  <div style="background: #1e1233; padding: 20px; text-align: center; border-top: 3px solid #d4a373;">
+    <p style="color: #d4a373; margin: 0; font-size: 12px;">📱 +52 555 651 8415 | 📧 contacto@luzholistica.com.mx</p>
+    <p style="color: #999; margin: 8px 0 0 0; font-size: 11px;">Instituto de Astrología Terapéutica e Integración Energética</p>
+  </div>
 </div>
     `.trim(),
   },
   {
     nombre: 're-engagement',
-    asunto: 'Te extrañamos — ofertas especiales para ti',
+    asunto: '✨ Te Extrañamos — Una Invitación Especial',
     html: `
-<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-  <h1 style="color: #1e1233;">Una oportunidad especial para ti</h1>
-  <p>Hola,</p>
-  <p>Hace tiempo que no nos vemos. Queremos recordarte que seguimos aquí para acompañarte en tu camino de crecimiento y sanación.</p>
-  <p><strong>Ofertas especiales este mes:</strong></p>
-  <ul>
-    <li>10% de descuento en consultas de astrología</li>
-    <li>Sesión de tarot gratis (primera vez o reactivación)</li>
-    <li>Acceso a nuevo curso de astrología aplicada</li>
-  </ul>
-  <p>¿Nos reencontramos? Escribe a contacto@luzholistica.com.mx o llama al +52 555 651 8415</p>
-  <hr style="border: none; border-top: 1px solid #d4a373; margin: 30px 0;">
-  <p style="font-size: 12px; color: #666;">Instituto de Astrología Terapéutica e Integración Energética</p>
+<div style="font-family: 'Georgia', serif; max-width: 600px; margin: 0 auto; background: linear-gradient(180deg, #f5f3f0 0%, #fff 100%); padding: 0;">
+  <!-- Header -->
+  <div style="background: #1e1233; padding: 30px 20px; text-align: center; border-bottom: 3px solid #d4a373;">
+    <h2 style="color: #d4a373; margin: 0; font-size: 24px; font-weight: normal; letter-spacing: 1px;">✨ Tu Espacio de Sanación ✨</h2>
+    <p style="color: #d4a373; margin: 8px 0 0 0; font-size: 14px;">Te Invita a Regresar</p>
+  </div>
+
+  <!-- Content -->
+  <div style="padding: 40px 30px;">
+    <h1 style="color: #1e1233; font-size: 28px; margin: 0 0 20px 0; text-align: center;">Regresa a Tu Camino de Transformación</h1>
+
+    <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+      Ha pasado tiempo, y notamos tu ausencia. En este Instituto de Astrología Terapéutica e Integración Energética, creemos que cada encuentro deja una huella. Tu camino de sanación continúa esperándote.
+    </p>
+
+    <div style="background: #f0e6d8; border-left: 4px solid #d4a373; padding: 20px; margin: 30px 0; border-radius: 4px;">
+      <h3 style="color: #1e1233; margin: 0 0 15px 0; font-size: 18px;">🎁 Especial de Reactivación:</h3>
+      <ul style="color: #333; margin: 0; padding-left: 20px; line-height: 1.8; font-size: 15px;">
+        <li><strong>20% descuento</strong> en tu próxima consulta de Astrología</li>
+        <li><strong>Sesión de Tarot Terapéutico gratis</strong> (evaluación energética)</li>
+        <li><strong>Integración Energética especial</strong> para liberar bloqueos</li>
+        <li><strong>Acceso privilegiado</strong> a nuestros nuevos cursos de formación</li>
+      </ul>
+    </div>
+
+    <p style="color: #333; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+      <strong>Este año es tu año de transformación.</strong> Los astros te llaman a regresar. Déjate guiar por la sabiduría que ya conoces y expande tus horizontes espirituales.
+    </p>
+
+    <!-- CTA Button -->
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="https://wa.me/55256518415" style="background: #d4a373; color: #1e1233; padding: 14px 30px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; font-family: Arial, sans-serif;">Retomar Mi Camino</a>
+    </div>
+
+    <p style="color: #666; font-size: 14px; text-align: center; margin: 20px 0;">Tu descuento especial es válido hasta fin de mes</p>
+  </div>
+
+  <!-- Footer -->
+  <div style="background: #1e1233; padding: 20px; text-align: center; border-top: 3px solid #d4a373;">
+    <p style="color: #d4a373; margin: 0; font-size: 12px; letter-spacing: 0.5px;">Instituto de Astrología Terapéutica e Integración Energética</p>
+    <p style="color: #999; margin: 8px 0 0 0; font-size: 11px;">📱 +52 555 651 8415 | Tu Espacio de Sanación y Transformación</p>
+  </div>
 </div>
     `.trim(),
   },
