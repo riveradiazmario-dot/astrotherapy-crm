@@ -5,6 +5,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { body, validationResult } from 'express-validator';
 import { PrismaClient } from '@prisma/client';
 import { crearContacto } from '../services/contacto.service';
+import { asignarContactoAutomatico } from '../services/lead-routing.service';
 import { CrearContactoDTO } from '../types';
 
 const router = Router();
@@ -109,6 +110,16 @@ router.post('/contacto', [
 
     // Logging
     console.log(`[Web Form] Nuevo contacto creado: ${contacto.email} (${interes || 'sin especificar'})`);
+
+    // Lead routing automático
+    try {
+      const routing = await asignarContactoAutomatico(contacto, ORG_ID_SITIO_WEB);
+      if (routing.asignado) {
+        console.log(`[Lead Routing] ${contacto.email} → ${routing.agente}`);
+      }
+    } catch (err) {
+      console.warn('Error en lead routing:', err);
+    }
 
     res.json({
       ok: true,
