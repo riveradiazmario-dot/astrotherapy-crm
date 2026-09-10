@@ -4,7 +4,7 @@ import multer from 'multer';
 import { parse } from 'csv-parse/sync';
 import { importarContactos } from '../services/contacto.service';
 import { extraerContactosDeTexto, deduplicarContactos } from '../services/scraping/extractor.service';
-import { scrapearCanalTelegram, buscarGruposAstrologia } from '../services/scraping/telegram.service';
+import { scrapearCanalTelegram, buscarGruposAstrologia, scrapearYFiltrarTelegramLote } from '../services/scraping/telegram.service';
 import { scrapearPerfilInstagram, scrapearLoteInstagram } from '../services/scraping/instagram.service';
 import { filtrarLote, DEFAULT_FILTRO_CONFIG, FiltroConfig } from '../services/scraping/filter.service';
 import { buscarAstrologos } from '../services/scraping/directorios.service';
@@ -242,6 +242,55 @@ router.get('/telegram-buscar', async (req: Request, res: Response, next: NextFun
     const termino = (req.query.q as string) || 'astrologia';
     const grupos = await buscarGruposAstrologia(termino);
     res.json({ ok: true, total: grupos.length, data: grupos });
+  } catch (err) { next(err); }
+});
+
+/**
+ * POST /api/scraping/telegram/lote-filtrado
+ *
+ * Scrape de canales/grupos de Telegram + filtrado automático por calidad.
+ *
+ * Body:
+ * {
+ *   usernames: ["astrologiamx", "tarotistas_latam", ...],
+ *   minCalidad?: "baja" | "media" | "alta"  // default "media"
+ * }
+ *
+ * Response:
+ * {
+ *   ok: true,
+ *   estadisticas: { total, aprobados },
+ *   canales: [ { titulo, especialidad, calidad, scoreCalidad, emails, ... } ]
+ * }
+ */
+router.post('/telegram/lote-filtrado', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { usernames, minCalidad = 'media' } = req.body as {
+      usernames: string[];
+      minCalidad?: 'baja' | 'media' | 'alta';
+    };
+
+    if (!Array.isArray(usernames) || usernames.length === 0) {
+      res.status(400).json({ ok: false, error: 'Body debe tener { usernames: [...] }' });
+      return;
+    }
+
+    if (usernames.length > 50) {
+      res.status(400).json({ ok: false, error: 'Máximo 50 canales por lote' });
+      return;
+    }
+
+    const { total, aprobados, canalesDetallados } = await scrapearYFiltrarTelegramLote(usernames, minCalidad);
+
+    res.json({
+      ok: true,
+      estadisticas: {
+        total,
+        aprobados,
+        tasaAprobacion: total > 0 ? Math.round((aprobados / total) * 100) : 0,
+      },
+      canales: canalesDetallados,
+    });
   } catch (err) { next(err); }
 });
 

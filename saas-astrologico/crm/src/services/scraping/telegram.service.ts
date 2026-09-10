@@ -15,6 +15,10 @@ export interface TelegramCanalInfo {
   ultimosMensajes: TelegramMensaje[];
   perfilesMencionados: string[]; // @usernames que aparecen en mensajes
   emailsEncontrados: string[];
+  // Mejoras de scoring
+  especialidadDetectada?: string;
+  calidad?: 'alta' | 'media' | 'baja';
+  scoreCalidad?: number;
 }
 
 export interface TelegramMensaje {
@@ -28,6 +32,59 @@ const HEADERS = {
   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
   'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
 };
+
+// ─── Detección de especialidad ───────────────────────────────────────────────
+
+const ESPECIALIDADES_TELEGRAM: Record<string, string[]> = {
+  'astrologia': ['astrólog', 'astrolog', 'carta natal', 'horóscopo', 'astro'],
+  'tarot': ['tarot', 'tarotista', 'oracl'],
+  'coaching': ['coach', 'mentoría', 'mentor'],
+  'reiki': ['reiki', 'energétic'],
+  'numerologia': ['numerolog'],
+  'constelaciones': ['constelac', 'bert hellinger'],
+  'psicologia': ['psicólog', 'terapia', 'psicolog'],
+  'holistico': ['holístic', 'wellness', 'bienestar'],
+};
+
+function detectarEspecialidadTelegram(texto: string): string | undefined {
+  const t = texto.toLowerCase();
+  for (const [esp, kws] of Object.entries(ESPECIALIDADES_TELEGRAM)) {
+    if (kws.some(kw => t.includes(kw))) return esp;
+  }
+  return undefined;
+}
+
+function calcularCalidadTelegram(info: Partial<TelegramCanalInfo>): { calidad: 'alta' | 'media' | 'baja'; score: number } {
+  let score = 0;
+
+  // Suscriptores/miembros
+  const suscriptores = info.suscriptores ?? 0;
+  if (suscriptores >= 10000) score += 20;
+  else if (suscriptores >= 1000) score += 10;
+  else if (suscriptores >= 100) score += 5;
+
+  // Tiene especialidad detectada
+  if (info.especialidadDetectada) score += 15;
+
+  // Tiene descripción detallada
+  if (info.descripcion && info.descripcion.length > 30) score += 10;
+
+  // Tiene actividad reciente (mensajes)
+  if (info.ultimosMensajes && info.ultimosMensajes.length >= 5) score += 10;
+
+  // Tiene emails encontrados
+  if (info.emailsEncontrados && info.emailsEncontrados.length > 0) score += 10;
+
+  // Tiene perfiles mencionados (moderadores, admins potenciales)
+  if (info.perfilesMencionados && info.perfilesMencionados.length >= 3) score += 5;
+
+  // Clasificar por calidad
+  let calidad: 'alta' | 'media' | 'baja' = 'baja';
+  if (score >= 35) calidad = 'alta';
+  else if (score >= 15) calidad = 'media';
+
+  return { calidad, score };
+}
 
 export async function scrapearCanalTelegram(username: string): Promise<TelegramCanalInfo> {
   // Limpiar el username (quitar @ si lo tiene)
@@ -117,6 +174,15 @@ export async function scrapearCanalTelegram(username: string): Promise<TelegramC
     // Limitar a los 20 más recientes
     info.ultimosMensajes = info.ultimosMensajes.slice(0, 20);
 
+    // Detectar especialidad
+    const textoCompleto = (info.titulo || '') + ' ' + (info.descripcion || '');
+    info.especialidadDetectada = detectarEspecialidadTelegram(textoCompleto);
+
+    // Calcular calidad
+    const { calidad, score } = calcularCalidadTelegram(info);
+    info.calidad = calidad;
+    info.scoreCalidad = score;
+
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : 'Error desconocido';
     if (axios.isAxiosError(err) && err.response?.status === 404) {
@@ -177,6 +243,39 @@ export async function buscarGruposAstrologia(termino: string = 'astrologia'): Pr
       g.descripcion?.toLowerCase().includes(termino.toLowerCase())
     );
   }
+}
+
+// ─── Filtrar canales por calidad ──────────────────────────────────────────────
+
+export async function scrapearYFiltrarTelegramLote(
+  usernames: string[],
+  minCalidad: 'baja' | 'media' | 'alta' = 'media',
+): Promise<{
+  total: number;
+  aprobados: number;
+  canalesDetallados: TelegramCanalInfo[];
+}> {
+  const resultados: TelegramCanalInfo[] = [];
+  const nivelesCalidad = { baja: 0, media: 1, alta: 2 };
+  const minNivel = nivelesCalidad[minCalidad];
+
+  for (const username of usernames) {
+    try {
+      const info = await scrapearCanalTelegram(username);
+      const nivelActual = nivelesCalidad[info.calidad || 'baja'];
+      if (nivelActual >= minNivel) {
+        resultados.push(info);
+      }
+    } catch {
+      // Ignorar canales que no se puedan acceder
+    }
+  }
+
+  return {
+    total: usernames.length,
+    aprobados: resultados.length,
+    canalesDetallados: resultados,
+  };
 }
 
 // ─── Grupos curados conocidos ─────────────────────────────────────────────────
