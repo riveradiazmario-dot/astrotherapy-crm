@@ -20,7 +20,7 @@ export function crearProveedorDesdeConfig(config: ProviderConfig): EmailProvider
 
 // ─── Obtener el proveedor predeterminado desde DB ─────────────────────────────
 export async function obtenerProveedorPredeterminado(
-  organizacionId = 'org-luz-holistica',
+  organizacionId = 'd1d09df2-82bf-4674-b9bf-97329f799e77',
 ): Promise<EmailProvider> {
   const config = await obtenerSmtpPredeterminado(organizacionId);
   if (!config) throw new Error('No hay proveedor de email configurado como predeterminado');
