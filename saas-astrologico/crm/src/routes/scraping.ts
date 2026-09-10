@@ -6,6 +6,7 @@ import { importarContactos } from '../services/contacto.service';
 import { extraerContactosDeTexto, deduplicarContactos } from '../services/scraping/extractor.service';
 import { scrapearCanalTelegram, buscarGruposAstrologia } from '../services/scraping/telegram.service';
 import { scrapearPerfilInstagram, scrapearLoteInstagram } from '../services/scraping/instagram.service';
+import { filtrarLote, DEFAULT_FILTRO_CONFIG, FiltroConfig } from '../services/scraping/filter.service';
 import { buscarAstrologos } from '../services/scraping/directorios.service';
 import { buscarTikTok, tiktokAContactoCRM } from '../services/scraping/tiktok.service';
 import { importarDesdeDataset, lanzarApifyRun, APIFY_ACTORS, ApifyActorType } from '../services/scraping/apify.service';
@@ -296,6 +297,71 @@ router.post('/instagram/lote', async (req: Request, res: Response, next: NextFun
   } catch (err) { next(err); }
 });
 
+/**
+ * POST /api/scraping/instagram/lote-filtrado
+ *
+ * Scrape de Instagram + filtrado automático por scoring.
+ * Retorna perfiles divididos en incluidos (aprobados) y excluidos.
+ *
+ * Body:
+ * {
+ *   usernames: ["maria_astro", "carlos_tarot", ...],
+ *   config?: {
+ *     minScore?: 30,
+ *     excluirBots?: true,
+ *     excluirInactivos?: true,
+ *     excluirSinContacto?: true,
+ *     excluirSinEspecialidad?: false,
+ *     especialidadesAceptadas?: ["tarot", "astrologia_tropical"]
+ *   }
+ * }
+ *
+ * Response:
+ * {
+ *   ok: true,
+ *   estadisticas: { total, incluidos, excluidos, tasaAprobacion, scorePromedio },
+ *   incluidos: [ { ...perfil con score y etiqueta } ],
+ *   excluidos: [ { ...perfil con razon y score } ]
+ * }
+ */
+router.post('/instagram/lote-filtrado', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { usernames, config = {} } = req.body as {
+      usernames: string[];
+      config?: Partial<FiltroConfig>;
+    };
+
+    if (!Array.isArray(usernames) || usernames.length === 0) {
+      res.status(400).json({ ok: false, error: 'Body debe tener { usernames: [...] }' });
+      return;
+    }
+
+    if (usernames.length > 50) {
+      res.status(400).json({ ok: false, error: 'Máximo 50 perfiles por lote' });
+      return;
+    }
+
+    // Scrape
+    const resultados = await scrapearLoteInstagram(usernames);
+    const perfilesExitosos = resultados.filter(r => r.ok).map(r => r.data!);
+
+    // Aplicar filtrado + scoring
+    const filtroConfig: FiltroConfig = {
+      ...DEFAULT_FILTRO_CONFIG,
+      ...config,
+    };
+
+    const { incluidos, excluidos, estadisticas } = filtrarLote(perfilesExitosos, 'instagram', filtroConfig);
+
+    res.json({
+      ok: true,
+      estadisticas,
+      incluidos,
+      excluidos,
+    });
+  } catch (err) { next(err); }
+});
+
 // ─── NUEVO: Búsqueda en directorios ──────────────────────────────────────────
 
 /**
@@ -553,6 +619,15 @@ router.get('/fuentes', (_req: Request, res: Response) => {
           endpoint: 'POST /api/scraping/instagram/lote',
           requiereApiKey: false,
           confiabilidad: 'media',
+        },
+        {
+          id: 'instagram_lote_filtrado',
+          nombre: 'Instagram — Lote filtrado automático',
+          descripcion: 'Scrape de 50 perfiles + scoring automático + filtrado por calidad',
+          endpoint: 'POST /api/scraping/instagram/lote-filtrado',
+          requiereApiKey: false,
+          confiabilidad: 'media',
+          caracteristicas: ['Scoring automático', 'Filtrado por minScore', 'Detección de bots', 'Etiquetado de leads'],
         },
         {
           id: 'directorios_web',

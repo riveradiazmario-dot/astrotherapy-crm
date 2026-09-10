@@ -4,6 +4,7 @@
 // Apify usa proxies rotativos → mucho más confiable.
 
 import { ejecutarActor } from './apify.service';
+import { calcularScoreInstagram, DEFAULT_SCORING_CONFIG, LeadScore } from './scoring.service';
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -22,6 +23,8 @@ export interface InstagramPerfilInfo {
   esBusiness?: boolean;
   imagenPerfil?: string;
   especialidadDetectada?: string;
+  // Scoring automático
+  score?: LeadScore;
 }
 
 // Forma que devuelve el actor apify/instagram-scraper para perfiles
@@ -76,8 +79,10 @@ function extraerWeb(texto: string): string | undefined {
 function mapearPerfil(raw: ApifyInstagramPerfil): InstagramPerfilInfo {
   const username = raw.username ?? '';
   const bio = raw.biography ?? '';
+  const emailEnBio = raw.businessEmail ?? extraerEmail(bio);
+  const especialidadDetectada = detectarEspecialidad(bio + ' ' + (raw.fullName ?? ''));
 
-  return {
+  const perfil: InstagramPerfilInfo = {
     username,
     url: `https://www.instagram.com/${username}/`,
     nombre: raw.fullName,
@@ -88,12 +93,26 @@ function mapearPerfil(raw: ApifyInstagramPerfil): InstagramPerfilInfo {
     esVerificado: raw.isVerified,
     esBusiness: raw.isBusinessAccount,
     imagenPerfil: raw.profilePicUrl,
-    // Apify entrega email/teléfono de cuentas business directamente
-    emailEnBio: raw.businessEmail ?? extraerEmail(bio),
+    emailEnBio,
     telefonoBio: raw.businessPhoneNumber ?? undefined,
     webEnBio: raw.externalUrl ?? extraerWeb(bio),
-    especialidadDetectada: detectarEspecialidad(bio + ' ' + (raw.fullName ?? '')),
+    especialidadDetectada,
   };
+
+  // Calcular score automáticamente
+  perfil.score = calcularScoreInstagram({
+    username,
+    seguidores: raw.followersCount,
+    siguiendo: raw.followsCount,
+    publicaciones: raw.postsCount,
+    esVerificado: raw.isVerified,
+    esBusiness: raw.isBusinessAccount,
+    bio,
+    emailEnBio,
+    especialidadDetectada,
+  }, DEFAULT_SCORING_CONFIG);
+
+  return perfil;
 }
 
 // ─── Scraping de un perfil ────────────────────────────────────────────────────
