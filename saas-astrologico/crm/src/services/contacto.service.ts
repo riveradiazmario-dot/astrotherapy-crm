@@ -281,3 +281,28 @@ export async function marcarConsentimientoMasivo(
   });
   return { actualizados: result.count };
 }
+
+// ─── Cambiar fuente de captura de un contacto ────────────────────────────────
+
+/**
+ * Cambiar la fuente de un contacto.
+ * Útil para reasignar un contacto de un scraper a manual o a otra fuente.
+ */
+export async function cambiarFuenteContacto(
+  contactoId: string,
+  nuevaFuente: string,
+  organizacionId: string,
+): Promise<Contacto> {
+  const contacto = await prisma.contacto.findFirst({
+    where: { id: contactoId, organizacionId },
+  });
+
+  if (!contacto) {
+    throw new Error(`Contacto no encontrado: ${contactoId}`);
+  }
+
+  return prisma.contacto.update({
+    where: { id: contactoId },
+    data: { fuente: nuevaFuente },
+  });
+}

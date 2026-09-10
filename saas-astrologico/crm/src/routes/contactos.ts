@@ -10,10 +10,11 @@ import {
   estadisticasGenerales,
   obtenerSegmento,
   marcarConsentimientoMasivo,
+  cambiarFuenteContacto,
 } from '../services/contacto.service';
 import { registrarAccion } from '../services/scoring.service';
 import { requireAuth } from '../middleware/auth';
-import { FiltrosContacto, TipoAccion } from '../types';
+import { FiltrosContacto, TipoAccion, FUENTES_PERMITIDAS } from '../types';
 
 const router = Router();
 
@@ -99,6 +100,56 @@ router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const contacto = await actualizarContacto(req.params.id, req.body, req.usuario!.organizacionId);
     res.json({ ok: true, data: contacto, mensaje: 'Contacto actualizado' });
+  } catch (err) { next(err); }
+});
+
+/**
+ * PATCH /api/contactos/:id/fuente — Cambiar fuente de captura
+ *
+ * Permite cambiar o reasignar la fuente de un contacto.
+ * Registra la acción para auditoría.
+ *
+ * Body: { fuente: "instagram" | "tiktok" | "telegram" | "manual" | ... }
+ */
+router.patch('/:id/fuente', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { fuente } = req.body as { fuente?: string };
+
+    if (!fuente || typeof fuente !== 'string') {
+      res.status(400).json({ ok: false, error: 'El campo "fuente" es obligatorio' });
+      return;
+    }
+
+    if (!FUENTES_PERMITIDAS.includes(fuente as any)) {
+      res.status(400).json({
+        ok: false,
+        error: `Fuente inválida. Opciones: ${FUENTES_PERMITIDAS.join(', ')}`,
+      });
+      return;
+    }
+
+    const contacto = await cambiarFuenteContacto(
+      req.params.id,
+      fuente,
+      req.usuario!.organizacionId,
+    );
+
+    // Registrar acción para auditoría
+    try {
+      await registrarAccion({
+        contactoId: req.params.id,
+        tipo: 'nota_manual' as TipoAccion,
+        descripcion: `Fuente cambió a: ${fuente}`,
+      }, req.usuario!.organizacionId);
+    } catch (err) {
+      console.warn('Error registrando acción de cambio de fuente:', err);
+    }
+
+    res.json({
+      ok: true,
+      data: contacto,
+      mensaje: `Fuente actualizada a: ${fuente}`,
+    });
   } catch (err) { next(err); }
 });
 

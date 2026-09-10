@@ -29,12 +29,33 @@ export type FuenteCaptura =
   | 'facebook'
   | 'telegram'
   | 'instagram'
+  | 'tiktok'
   | 'linkedin'
   | 'directorio'
   | 'formulario_web'
   | 'referido'
   | 'manual'
-  | 'scraping_google_maps';
+  | 'scraping_google_maps'
+  | 'campana_email'
+  | 'evento'
+  | 'otro';
+
+// Constante con todas las fuentes disponibles para validación
+export const FUENTES_PERMITIDAS: FuenteCaptura[] = [
+  'facebook',
+  'telegram',
+  'instagram',
+  'tiktok',
+  'linkedin',
+  'directorio',
+  'formulario_web',
+  'referido',
+  'manual',
+  'scraping_google_maps',
+  'campana_email',
+  'evento',
+  'otro',
+];
 
 export type TipoAccion =
   | 'email_enviado'
