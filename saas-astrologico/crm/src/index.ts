@@ -24,6 +24,7 @@ import iaRouter from './routes/ia';
 import authRouter from './routes/auth';
 import pipelineRouter from './routes/oportunidades';
 import campanasRouter from './routes/campanas';
+import emailTemplatesRouter from './routes/email-templates';
 import { bootstrapAutomations } from './services/automations/bootstrap';
 import { errorHandler } from './middleware/errorHandler';
 import { logger } from './logger';
@@ -59,6 +60,7 @@ app.use('/api/campanas', campanasRouter);    // Módulo C — Campaign Builder
 app.use('/api/scraping', scrapingRouter);    // Protegidas por requireAuth
 app.use('/api/mailerlite', mailerliteRouter);
 app.use('/api/email', emailRouter);
+app.use('/api/email-templates', emailTemplatesRouter);
 app.use('/api/smtp-config', smtpConfigRouter);
 app.use('/api/automations', automationsRouter);
 app.use('/api/automations-prisma', automationsPrismaRouter);
