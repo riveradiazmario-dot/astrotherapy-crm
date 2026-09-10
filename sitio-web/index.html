@@ -634,6 +634,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </style>
 
 <script>
+// ─── FAQ Accordion ────────────────────────────────────────────────────────────
 (function(){
   document.querySelectorAll('.faq-q').forEach(function(btn){
     btn.addEventListener('click', function(){
@@ -648,6 +649,74 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
   });
 })();
+
+// ─── Formularios → CRM Integration ────────────────────────────────────────────
+function submitLead(form, source) {
+  var formData = {
+    nombre: form.querySelector('[name="nombre"]')?.value || '',
+    email: form.querySelector('[name="email"]')?.value || '',
+    telefono: form.querySelector('[name="telefono"]')?.value || '',
+    interes: form.querySelector('[name="interes"]')?.value || '',
+    mensaje: form.querySelector('[name="mensaje"]')?.value || '',
+    fuente: source || 'home'
+  };
+
+  // Validar datos mínimos
+  if (!formData.email || !formData.nombre) {
+    alert('Por favor completa nombre y correo electrónico.');
+    return false;
+  }
+
+  // Mostrar estado
+  var btn = form.querySelector('button[type="submit"]');
+  var originalText = btn.textContent;
+  btn.textContent = 'Enviando...';
+  btn.disabled = true;
+
+  // Enviar al CRM
+  fetch('https://crm.luzholistica.com.mx/api/web-forms/contacto', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData)
+  })
+  .then(function(response) { return response.json(); })
+  .then(function(data) {
+    if (data.ok) {
+      // Éxito
+      var msgEl = form.querySelector('.form-msg');
+      msgEl.textContent = '✓ ' + data.mensaje;
+      msgEl.style.color = 'var(--gold)';
+      msgEl.style.marginTop = '12px';
+      form.reset();
+      // Guardar ID para seguimiento
+      localStorage.setItem('lastLeadId', data.contactoId);
+      // Limpiar mensaje después de 5 segundos
+      setTimeout(function() {
+        msgEl.textContent = '';
+      }, 5000);
+    } else {
+      var msgEl = form.querySelector('.form-msg');
+      msgEl.textContent = '✗ Error: ' + (data.error || 'No se pudo enviar el formulario');
+      msgEl.style.color = '#d9534f';
+      msgEl.style.marginTop = '12px';
+    }
+  })
+  .catch(function(err) {
+    var msgEl = form.querySelector('.form-msg');
+    msgEl.textContent = '✗ Error de conexión. Intenta de nuevo o contáctanos por WhatsApp.';
+    msgEl.style.color = '#d9534f';
+    msgEl.style.marginTop = '12px';
+    console.error('Form submission error:', err);
+  })
+  .finally(function() {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  });
+
+  return false;
+}
 </script>
 
 <!-- ══ FOOTER ══ -->
